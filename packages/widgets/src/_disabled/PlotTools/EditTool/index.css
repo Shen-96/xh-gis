@@ -1,0 +1,119 @@
+.xh-gis-plot-tools-editor {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 18px;
+  z-index: 999;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -moz-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  transform: translateX(-50%);
+  background-color: var(--body-color);
+  color: var(--text-color-base);
+  height: 72px;
+
+  .editor-item {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -moz-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
+
+    & > .margin {
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+
+    & > .title {
+    }
+
+    & > .value {
+      &.text {
+        width: 80px;
+      }
+
+      &.color {
+        width: 20px;
+        height: 20px;
+
+        & > .editor {
+          height: 20px;
+        }
+      }
+
+      &.number {
+        width: 80px;
+      }
+
+      &.image-list {
+        display: -webkit-inline-box;
+        display: -webkit-inline-flex;
+        display: -moz-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+
+        .image-item {
+          cursor: pointer;
+          display: block;
+          width: 24px;
+          height: 24px;
+          background-repeat: no-repeat;
+          -o-background-size: contain;
+          background-size: contain;
+          background-position: center;
+          border: 1px solid #ffffff00;
+
+          &:not(:last-child) {
+            margin-right: 3px;
+          }
+
+          &:hover {
+            border: 1px solid var(--text-color-base);
+          }
+
+          &.checked {
+            border: 1px solid var(--text-color-base);
+          }
+        }
+      }
+    }
+  }
+
+  & > .xg-plot-label {
+  }
+
+  & > .xg-billboard-scale {
+  }
+
+  & > .xg-billboard-image {
+  }
+
+  & > .xg-plot-ployline-type {
+    & > .value {
+      width: 80px;
+    }
+  }
+}

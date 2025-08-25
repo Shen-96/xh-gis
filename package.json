@@ -1,0 +1,47 @@
+{
+    "name": "xh-gis",
+    "version": "1.0.0",
+    "description": "Bundle package that installs @xh-gis/engine and @xh-gis/widgets",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "module": "./dist/index.js",
+    "scripts": {
+        "build": "tsc",
+        "build:packages": "pnpm -r build",
+        "prepublishOnly": "pnpm build:packages && pnpm build",
+        "publish:all": "pnpm -r publish"
+    },
+    "keywords": [
+        "gis",
+        "cesium",
+        "3d",
+        "maps",
+        "typescript",
+        "webgl"
+    ],
+    "author": "Xiaohu.Shen",
+    "license": "MIT",
+    "dependencies": {
+        "@xh-gis/engine": "workspace:^1.0.0",
+        "@xh-gis/widgets": "workspace:^1.0.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Shen-96/xh-gis.git"
+    },
+    "homepage": "https://github.com/Shen-96/xh-gis#readme",
+    "bugs": {
+        "url": "https://github.com/Shen-96/xh-gis/issues"
+    }
+}

@@ -1,0 +1,28 @@
+.xh-gis-toolbar {
+  pointer-events: all;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.xh-gis-viewer-toolbar {
+  border-radius: 2px;
+  border-width: 1px;
+  color: var(--ant-color-primary-text, #ffffff);
+  background-color: var(--ant-color-primary-bg, rgba(63, 72, 84, 0.9));
+  fill: #e6e6e6;
+  font-size: 32px;
+  line-height: 32px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.xh-gis-viewer-toolbar:hover {
+  color: var(--ant-color-primary-hover, #ffffff);
+  background-color: var(--ant-color-primary-bg-hover, rgba(63, 72, 84, 0.9));
+}

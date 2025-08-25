@@ -1,0 +1,39 @@
+.xh-gis-viewer-foot-line {
+  pointer-events: none;
+  height: 28px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  color: #dfd9c8f0;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+  background: #0000006b;
+  font-size: 16px;
+  padding: 0 2px;
+  display: flex;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.xh-gis-viewer-foot-line > span {
+  margin-right: 10px;
+}
+
+.xh-gis-viewer-foot-line > .camera {
+  @media screen and (max-width: 1300px) {
+    display: none;
+  }
+}

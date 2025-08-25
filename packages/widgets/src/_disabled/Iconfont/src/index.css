@@ -1,0 +1,33 @@
+.iconfont {
+  font-size: var(--ant-font-size-xl);
+}
+
+.iconfont > svg > path {
+  fill: var(--ant-color-text);
+}
+
+.iconfont.button > span {
+  cursor: pointer;
+  color: var(--ant-color-text);
+}
+
+.iconfont.bg > span {
+  background: var(--ant-color-primary-bg);
+  border: 1px solid var(--ant-color-primary-border);
+}
+
+.iconfont.button:hover > span {
+  color: var(--ant-color-primary-hover);
+}
+
+.iconfont.button.active > span {
+  color: var(--ant-color-primary-active);
+}
+
+.icon_unicode:hover {
+  background-color: #c7d0da;
+}
+.icon_unicode:hover::before {
+  color: #ff7a45;
+  cursor: pointer;
+}

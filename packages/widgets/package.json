@@ -1,0 +1,54 @@
+{
+  "name": "@xh-gis/widgets",
+  "version": "1.0.0",
+  "description": "XH GIS React Widgets - 基于 Engine 的 React 组件",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "pnpm build",
+    "dev": "tsc -w"
+  },
+  "keywords": [
+    "gis",
+    "react",
+    "widgets",
+    "typescript",
+    "cesium",
+    "3d",
+    "maps",
+    "ui"
+  ],
+  "author": "Xiaohu.Shen",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "@xh-gis/engine": "workspace:^1.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shen-96/xh-gis.git",
+    "directory": "packages/widgets"
+  },
+  "homepage": "https://github.com/Shen-96/xh-gis#readme",
+  "bugs": {
+    "url": "https://github.com/Shen-96/xh-gis/issues"
+  }
+}

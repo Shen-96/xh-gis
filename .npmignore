@@ -1,0 +1,28 @@
+# Source files
+src/
+packages/
+
+# Development files
+*.md
+!README.md
+.gitignore
+.git/
+.vscode/
+.idea/
+
+# Build files
+node_modules/
+*.log
+*.lock
+pnpm-lock.yaml
+
+# Scripts
+publish.sh
+tsconfig.json
+
+# Tests
+test/
+tests/
+__tests__/
+*.test.*
+*.spec.*

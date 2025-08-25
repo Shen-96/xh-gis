@@ -1,0 +1,57 @@
+{
+    "name": "@xh-gis/engine",
+    "version": "1.0.0",
+    "description": "XH GIS Engine - 核心功能模块",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "rollup -c",
+        "prepublishOnly": "pnpm build",
+        "dev": "rollup -c -w"
+    },
+    "keywords": [
+        "gis",
+        "engine",
+        "typescript",
+        "cesium",
+        "3d",
+        "maps",
+        "webgl"
+    ],
+    "author": "Xiaohu.Shen",
+    "license": "MIT",
+    "peerDependencies": {
+        "cesium": "1.108.0",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    },
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^28.0.6",
+        "@rollup/plugin-node-resolve": "^16.0.1",
+        "@rollup/plugin-typescript": "^12.1.4",
+        "@rollup/plugin-url": "^8.0.2",
+        "@types/react": "^18.3.18",
+        "@types/react-dom": "^18.3.5",
+        "rollup": "^4.46.3",
+        "tslib": "^2.8.1",
+        "typescript": "^5.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Shen-96/xh-gis.git",
+        "directory": "packages/engine"
+    },
+    "homepage": "https://github.com/Shen-96/xh-gis#readme",
+    "bugs": {
+        "url": "https://github.com/Shen-96/xh-gis/issues"
+    }
+}

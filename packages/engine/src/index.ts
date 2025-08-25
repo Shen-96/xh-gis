@@ -1,0 +1,82 @@
+/*
+ * @Descripttion: xxx
+ * @Author: EV-申小虎
+ * @version: 1.0.0
+ * @Date: 2022-01-11 17:11:44
+ * @LastEditors: EV-申小虎
+ * @LastEditTime: 2025-08-14 18:59:34
+ */
+export * from "./enum";
+export * from "./types";
+
+import TimeManager from "./Core/TimeManager";
+import RoamManager from "./Core/RoamManager";
+import AnimationManager from "./Core/AnimationManager";
+import Geographic from "./Core/Geographic";
+import LayerManager from "./Core/LayerManager";
+// import MouseHandlerManager from "./Core/MouseHandlerManager";
+import ParticleManager from "./Core/ParticleManager";
+import SceneListenerManager from "./Core/SceneListenerManager";
+import WeatherManager from "./Core/WeatherManager";
+import MathUtils from "./Core/MathUtils";
+import GraphicManager from "./Core/GraphicManager";
+import GraphicUtils from "./Core/GraphicUtils";
+import Constant from "./Core/Constant";
+// import SpatialAnalysis from "./Core/SpatialAnalysis";
+import SpecialEffectManager from "./Core/SpecialEffectManager";
+import AbstractCore from "./Core/AbstractCore";
+import XgEarth from "./Core/XgEarth";
+import XgMap from "./Core/XgMap";
+// import XgIntegrated from "./Core/XgIntegrated";
+import CoordinateUtils from "./Core/CoordinateUtils";
+import MouseEventUtils from "./Core/MouseEventUtils";
+
+export {
+  RoamManager,
+  AbstractCore,
+  XgEarth,
+  XgMap,
+  // XgIntegrated,
+  AnimationManager,
+  Geographic,
+  LayerManager,
+  // MouseHandlerManager,
+  ParticleManager,
+  SceneListenerManager,
+  TimeManager,
+  WeatherManager,
+  MathUtils,
+  CoordinateUtils,
+  MouseEventUtils,
+  // Roam,
+  GraphicManager,
+  GraphicUtils,
+  Constant,
+  // SpatialAnalysis,
+  SpecialEffectManager,
+};
+
+declare global {
+  type PartialDeep<T> = {
+    [P in keyof T]?: T[P] extends (infer U)[]
+      ? PartialDeep<U>[] // 处理数组
+      : T[P] extends ReadonlyArray<infer U>
+      ? ReadonlyArray<PartialDeep<U>> // 处理只读数组
+      : T[P] extends Set<infer U>
+      ? Set<PartialDeep<U>> // 处理Set
+      : T[P] extends Map<infer K, infer V>
+      ? Map<K, PartialDeep<V>> // 处理Map
+      : T[P] extends object
+      ? PartialDeep<T[P]> // 普通对象
+      : T[P]; // 基础类型
+  };
+
+  type PartialPrivate<T> = {
+    [K in keyof T]: K extends string & `_${string}` ? T[K] | undefined : T[K];
+  };
+
+  interface Window {
+    xgMap?: XgMap;
+    xgEarth?: XgEarth;
+  }
+}

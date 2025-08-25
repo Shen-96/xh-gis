@@ -1,0 +1,22 @@
+# Source files
+src/
+
+# Development files
+*.md
+!README.md
+.gitignore
+rollup.config.mjs
+tsconfig.json
+
+# Build files
+node_modules/
+*.log
+*.lock
+pnpm-lock.yaml
+
+# Tests
+test/
+tests/
+__tests__/
+*.test.*
+*.spec.*

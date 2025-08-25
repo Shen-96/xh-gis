@@ -1,0 +1,93 @@
+/* 引入iconfont字体块 */
+@import url("./assets/iconfont/iconfont.css");
+@font-face {
+  font-family: iconfont;
+  src: url("./assets/iconfont/iconfont.woff2") format("woff2");
+  /* url("./assets/iconfont/iconfont/iconfont.woff") format("woff"), */
+  /* url("./assets/iconfont/iconfont/iconfont.ttf") format("truetype"); */
+}
+
+.xh-gis-viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  -webkit-transition: width 0.5s;
+  -o-transition: width 0.5s;
+  -moz-transition: width 0.5s;
+  transition: width 0.5s;
+}
+
+.xh-gis-viewer.map {
+  float: left;
+}
+
+.xh-gis-viewer.earth {
+  float: right;
+}
+
+.xh-gis-viewer.only {
+  width: 100%;
+}
+
+.xh-gis-viewer.both {
+  width: 50%;
+}
+
+.xh-gis-viewer.invisible {
+  display: none;
+}
+
+.xh-gis-viewer > .xh-gis-viewer-scene {
+  height: 100%;
+  width: 100%;
+}
+
+.xh-gis-viewer > .xh-gis-popup-container {
+  user-select: none;
+}
+
+.xh-gis-popup-container > .xh-gis-popup {
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  word-break: keep-all;
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+  min-width: 32px;
+  min-height: 24px;
+  /* background-color: #fff; */
+}
+
+.xh-gis-popup > div {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  /* padding: 6px 12px; */
+  white-space: nowrap;
+}
+
+.xh-gis-popup-container > .xh-gis-popup-icon {
+  position: absolute;
+  position: absolute;
+  pointer-events: none;
+}
+
+.xh-gis-popup-container > .xh-gis-popup-link {
+  position: absolute;
+  position: absolute;
+  pointer-events: none;
+  height: 0;
+  border-top: 1px dashed rgb(255, 255, 255);
+}
+
+.xh-gis-integrated {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
