@@ -6,7 +6,8 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node compress.mjs",
+    "build:dev": "tsc",
     "prepublishOnly": "pnpm build",
     "dev": "tsc -w"
   },
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "terser": "^5.43.1",
     "typescript": "^5.0.0"
   },
   "publishConfig": {

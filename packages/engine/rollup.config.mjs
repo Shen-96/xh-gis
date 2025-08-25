@@ -11,6 +11,7 @@ import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import url from "@rollup/plugin-url";
+import terser from "@rollup/plugin-terser";
 
 export default {
   input: "src/index.ts", // TypeScript 入口文件
@@ -29,6 +30,21 @@ export default {
       limit: 8192, // 小于 8KB 的图片转为 base64（可选）
       include: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.svg"],
       emitFiles: true, // 必须！让图片输出到 dist 目录
+    }),
+    // 压缩和去注释
+    terser({
+      compress: {
+        drop_console: false, // 保留 console，如需去掉可设为 true
+        drop_debugger: true, // 去掉 debugger
+        pure_funcs: [], // 可以指定纯函数进行优化
+      },
+      format: {
+        comments: false, // 去掉所有注释
+        beautify: false, // 不美化，保持压缩
+      },
+      mangle: {
+        reserved: ['Cesium'], // 保留 Cesium 相关变量名不被混淆
+      },
     }),
   ],
 };

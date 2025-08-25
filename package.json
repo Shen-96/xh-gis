@@ -6,7 +6,8 @@
     "types": "./dist/index.d.ts",
     "module": "./dist/index.js",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && node compress.mjs",
+        "build:dev": "tsc",
         "build:packages": "pnpm -r build",
         "prepublishOnly": "pnpm build:packages && pnpm build",
         "publish:all": "pnpm -r publish"
@@ -26,6 +27,7 @@
         "@xh-gis/widgets": "workspace:^1.0.0"
     },
     "devDependencies": {
+        "terser": "^5.43.1",
         "typescript": "^5.0.0"
     },
     "publishConfig": {

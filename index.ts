@@ -15,7 +15,3 @@ export * from "@xh-gis/widgets";
 
 // 提供版本信息
 export const version = "1.0.0";
-
-// 默认导出包含所有模块的对象
-export { default as Engine } from "@xh-gis/engine";
-export { default as Widgets } from "@xh-gis/widgets";
