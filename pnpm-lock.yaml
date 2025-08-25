@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       '@xh-gis/engine':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:packages/engine
       '@xh-gis/widgets':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:packages/widgets
     devDependencies:
       terser:
@@ -68,7 +68,7 @@ importers:
   packages/widgets:
     dependencies:
       '@xh-gis/engine':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../engine
       react:
         specifier: '>=16.8.0'
