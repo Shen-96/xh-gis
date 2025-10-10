@@ -192,7 +192,8 @@ fi
 
 # 检查工作目录是否干净（除非是模拟运行，排除 pnpm-lock.yaml 文件）
 if [ "$DRY_RUN" = false ] && [ "$NO_COMMIT" = false ]; then
-    UNCOMMITTED_FILES=$(git status --porcelain | grep -v "pnpm-lock.yaml")
+    # 使用 || true 确保即使 grep 没有匹配也不会导致脚本退出
+    UNCOMMITTED_FILES=$(git status --porcelain | grep -v "pnpm-lock.yaml" || true)
     if [[ -n "$UNCOMMITTED_FILES" ]]; then
         error "工作目录不干净，请先提交所有更改"
         echo "未提交的文件:"
