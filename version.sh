@@ -344,10 +344,18 @@ if [ "$DRY_RUN" = false ]; then
             info "自动确认版本更新..."
         else
             echo "确定要继续吗？ (y/n)"
-            read -r response
-            if [[ ! "$response" =~ ^[Yy]$ ]]; then
-                info "版本更新已取消"
-                exit 0
+            # 在非交互式环境中，read 命令会阻塞，所以我们添加一个超时机制
+            if [ -t 0 ]; then
+                # 如果是终端输入，等待用户输入
+                read -r response
+                if [[ ! "$response" =~ ^[Yy]$ ]]; then
+                    info "版本更新已取消"
+                    exit 0
+                fi
+            else
+                # 如果不是终端输入（如在脚本中），默认确认
+                info "非交互式环境，默认确认..."
+                response="y"
             fi
         fi
         
