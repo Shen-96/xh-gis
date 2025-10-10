@@ -220,13 +220,21 @@ update_version() {
     if [ "$package_path" = "." ]; then
         info "在当前目录执行: npm version $NEW_VERSION --no-git-tag-version"
         npm version $NEW_VERSION --no-git-tag-version > /dev/null
+        info "npm version 命令执行完成"
     else
         info "切换到目录: $package_path"
         cd "$package_path"
         info "在 $package_path 目录执行: npm version $NEW_VERSION --no-git-tag-version"
-        npm version $NEW_VERSION --no-git-tag-version > /dev/null
+        # 添加错误检查
+        if ! npm version $NEW_VERSION --no-git-tag-version > /dev/null 2>&1; then
+            error "npm version 命令执行失败"
+            cd - > /dev/null
+            exit 1
+        fi
+        info "npm version 命令执行完成"
         info "切换回原目录"
         cd - > /dev/null
+        info "目录切换完成"
     fi
 }
 
