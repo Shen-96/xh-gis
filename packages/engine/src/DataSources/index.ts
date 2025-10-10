@@ -33,3 +33,6 @@
 // export * from "./SpecialEffect/XgSuperGifFX";
 
 export * from "./Graphics";
+export * from "./Materials";
+export * from "./SpecialEffect";
+export * from "./XgPopup";

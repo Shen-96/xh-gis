@@ -8,6 +8,7 @@
  */
 export * from "./enum";
 export * from "./types";
+export * from "./DataSources";
 
 import TimeManager from "./Core/TimeManager";
 import RoamManager from "./Core/RoamManager";
@@ -21,6 +22,7 @@ import WeatherManager from "./Core/WeatherManager";
 import MathUtils from "./Core/MathUtils";
 import GraphicManager from "./Core/GraphicManager";
 import GraphicUtils from "./Core/GraphicUtils";
+import GeometryUtils from "./Core/GeometryUtils";
 import Constant from "./Core/Constant";
 // import SpatialAnalysis from "./Core/SpatialAnalysis";
 import SpecialEffectManager from "./Core/SpecialEffectManager";
@@ -51,6 +53,7 @@ export {
   // Roam,
   GraphicManager,
   GraphicUtils,
+  GeometryUtils,
   Constant,
   // SpatialAnalysis,
   SpecialEffectManager,

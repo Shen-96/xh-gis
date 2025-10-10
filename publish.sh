@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # XH-GIS 发布脚本
-# 用于发布 @xh-gis/engine, @xh-gis/widgets, 和 xh-gis 三个包
+# 用于发布 @xh-gis/engine, @xh-gis/widgets, 和 xh-gis 三个包或单独发布指定包
 
 set -e
 
@@ -24,6 +24,7 @@ show_help() {
     echo ""
     echo "用法:"
     echo "  $0 [选项]"
+    echo "  $0 [选项] <包名>"
     echo ""
     echo "选项:"
     echo "  -h, --help     显示帮助信息"
@@ -31,16 +32,24 @@ show_help() {
     echo "  -s, --skip-build 跳过构建步骤"
     echo "  -t, --tag <tag> 指定发布标签 (默认: latest)"
     echo ""
+    echo "包名:"
+    echo "  engine    - @xh-gis/engine 包"
+    echo "  widgets   - @xh-gis/widgets 包"
+    echo "  root      - xh-gis 根包"
+    echo ""
     echo "示例:"
-    echo "  $0                    # 正常发布"
-    echo "  $0 --dry-run          # 模拟发布"
-    echo "  $0 --tag beta         # 发布beta版本"
+    echo "  $0                    # 正常发布所有包"
+    echo "  $0 --dry-run          # 模拟发布所有包"
+    echo "  $0 --tag beta         # 发布所有包的beta版本"
+    echo "  $0 engine             # 发布 engine 包"
+    echo "  $0 widgets --tag beta # 发布 widgets 包的beta版本"
 }
 
 # 默认参数
 DRY_RUN=false
 SKIP_BUILD=false
 TAG="latest"
+PACKAGE_NAME=""
 
 # 解析命令行参数
 while [[ $# -gt 0 ]]; do
@@ -67,14 +76,23 @@ while [[ $# -gt 0 ]]; do
             exit 1
             ;;
         *)
-            error "多余的参数: $1"
-            echo "使用 $0 --help 查看帮助信息"
-            exit 1
+            if [ -z "$PACKAGE_NAME" ] && [[ "$1" =~ ^(engine|widgets|root)$ ]]; then
+                PACKAGE_NAME="$1"
+            else
+                error "多余的参数: $1"
+                echo "使用 $0 --help 查看帮助信息"
+                exit 1
+            fi
+            shift
             ;;
     esac
 done
 
-info "🚀 开始 XH-GIS 包发布流程..."
+if [ -n "$PACKAGE_NAME" ]; then
+    info "🚀 开始发布 $PACKAGE_NAME 包..."
+else
+    info "🚀 开始 XH-GIS 包发布流程..."
+fi
 
 if [ "$DRY_RUN" = true ]; then
     warn "模拟模式：不会实际发布到 NPM"
@@ -113,38 +131,73 @@ if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
 fi
 
 # 获取版本信息
-ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
-WIDGETS_VERSION=$(node -p "require('./packages/widgets/package.json').version")
-ROOT_VERSION=$(node -p "require('./package.json').version")
+if [ -n "$PACKAGE_NAME" ]; then
+    # 单包模式
+    if [ "$PACKAGE_NAME" = "engine" ]; then
+        PACKAGE_VERSION=$(node -p "require('./packages/engine/package.json').version")
+        FULL_PACKAGE_NAME="@xh-gis/engine"
+        PACKAGE_DIR="packages/engine"
+    elif [ "$PACKAGE_NAME" = "widgets" ]; then
+        PACKAGE_VERSION=$(node -p "require('./packages/widgets/package.json').version")
+        FULL_PACKAGE_NAME="@xh-gis/widgets"
+        PACKAGE_DIR="packages/widgets"
+    else
+        PACKAGE_VERSION=$(node -p "require('./package.json').version")
+        FULL_PACKAGE_NAME="xh-gis"
+        PACKAGE_DIR="."
+    fi
+    
+    info "当前版本信息:"
+    echo "  - $FULL_PACKAGE_NAME@$PACKAGE_VERSION"
+else
+    # 统一模式
+    ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
+    WIDGETS_VERSION=$(node -p "require('./packages/widgets/package.json').version")
+    ROOT_VERSION=$(node -p "require('./package.json').version")
 
-info "当前版本信息:"
-echo "  - @xh-gis/engine@$ENGINE_VERSION"
-echo "  - @xh-gis/widgets@$WIDGETS_VERSION"
-echo "  - xh-gis@$ROOT_VERSION"
+    info "当前版本信息:"
+    echo "  - @xh-gis/engine@$ENGINE_VERSION"
+    echo "  - @xh-gis/widgets@$WIDGETS_VERSION"
+    echo "  - xh-gis@$ROOT_VERSION"
 
-# 检查版本一致性
-if [ "$ENGINE_VERSION" != "$WIDGETS_VERSION" ] || [ "$ENGINE_VERSION" != "$ROOT_VERSION" ]; then
-    error "包版本不一致，请先运行版本管理脚本统一版本"
-    echo "运行: ./version.sh <版本号>"
-    exit 1
+    # 检查版本一致性
+    if [ "$ENGINE_VERSION" != "$WIDGETS_VERSION" ] || [ "$ENGINE_VERSION" != "$ROOT_VERSION" ]; then
+        error "包版本不一致，请先运行版本管理脚本统一版本"
+        echo "运行: ./version.sh <版本号>"
+        exit 1
+    fi
 fi
 
 # 安装依赖
 info "📥 安装依赖..."
 pnpm install
 
-# 构建所有包
+# 构建包
 if [ "$SKIP_BUILD" = false ]; then
-    info "🔨 构建所有包..."
-    pnpm run build:packages
-    pnpm run build
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式
+        info "🔨 构建 $FULL_PACKAGE_NAME 包..."
+        if [ "$PACKAGE_DIR" = "." ]; then
+            pnpm run build:packages
+            pnpm run build
+        else
+            cd "$PACKAGE_DIR"
+            pnpm run build
+            cd - > /dev/null
+        fi
+    else
+        # 统一模式
+        info "🔨 构建所有包..."
+        pnpm run build:packages
+        pnpm run build
+    fi
     success "构建完成"
 else
     warn "跳过构建步骤"
 fi
 
-# 运行测试（如果存在）
-if [ -f "package.json" ] && grep -q '"test"' package.json; then
+# 运行测试（如果存在）- 仅在统一模式下运行
+if [ -z "$PACKAGE_NAME" ] && [ -f "package.json" ] && grep -q '"test"' package.json; then
     info "🧪 运行测试..."
     if ! pnpm test; then
         error "测试失败，发布已终止"
@@ -154,27 +207,49 @@ if [ -f "package.json" ] && grep -q '"test"' package.json; then
 fi
 
 # 检查包是否已构建
-if [ ! -d "packages/engine/dist" ]; then
-    error "Engine 包未构建，请先运行构建命令"
-    exit 1
-fi
+if [ -n "$PACKAGE_NAME" ]; then
+    # 单包模式
+    if [ "$PACKAGE_NAME" = "engine" ] || [ "$PACKAGE_NAME" = "widgets" ]; then
+        if [ ! -d "$PACKAGE_DIR/dist" ]; then
+            error "$FULL_PACKAGE_NAME 包未构建，请先运行构建命令"
+            exit 1
+        fi
+    else
+        if [ ! -d "dist" ]; then
+            error "$FULL_PACKAGE_NAME 包未构建，请先运行构建命令"
+            exit 1
+        fi
+    fi
+else
+    # 统一模式
+    if [ ! -d "packages/engine/dist" ]; then
+        error "Engine 包未构建，请先运行构建命令"
+        exit 1
+    fi
 
-if [ ! -d "packages/widgets/dist" ]; then
-    error "Widgets 包未构建，请先运行构建命令"
-    exit 1
-fi
+    if [ ! -d "packages/widgets/dist" ]; then
+        error "Widgets 包未构建，请先运行构建命令"
+        exit 1
+    fi
 
-if [ ! -d "dist" ]; then
-    error "根包未构建，请先运行构建命令"
-    exit 1
+    if [ ! -d "dist" ]; then
+        error "根包未构建，请先运行构建命令"
+        exit 1
+    fi
 fi
 
 # 发布前确认
 if [ "$DRY_RUN" = false ]; then
-    warn "即将发布以下包到 NPM:"
-    echo "  - @xh-gis/engine@$ENGINE_VERSION"
-    echo "  - @xh-gis/widgets@$WIDGETS_VERSION"
-    echo "  - xh-gis@$ROOT_VERSION"
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式
+        warn "即将发布 $FULL_PACKAGE_NAME@$PACKAGE_VERSION 到 NPM"
+    else
+        # 统一模式
+        warn "即将发布以下包到 NPM:"
+        echo "  - @xh-gis/engine@$ENGINE_VERSION"
+        echo "  - @xh-gis/widgets@$WIDGETS_VERSION"
+        echo "  - xh-gis@$ROOT_VERSION"
+    fi
     echo ""
     echo "确定要继续吗？ (y/n)"
     read -r response
@@ -187,22 +262,50 @@ fi
 # 准备发布 - 转换 workspace 依赖
 info "🔄 准备发布文件..."
 
-# 为 widgets 包准备发布版本
-cp packages/widgets/package.json packages/widgets/package.json.backup
-sed "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
+if [ -n "$PACKAGE_NAME" ]; then
+    # 单包模式
+    if [ "$PACKAGE_NAME" = "widgets" ]; then
+        # 为 widgets 包准备发布版本
+        cp packages/widgets/package.json packages/widgets/package.json.backup
+        sed "s/\"@xh-gis\/engine\": \"workspace:\^$PACKAGE_VERSION\"/\"@xh-gis\/engine\": \"^$PACKAGE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
+    elif [ "$PACKAGE_NAME" = "root" ]; then
+        # 获取其他包的版本
+        ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
+        WIDGETS_VERSION=$(node -p "require('./packages/widgets/package.json').version")
+        
+        # 为根包准备发布版本
+        cp package.json package.json.backup
+        sed -e "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:\^$WIDGETS_VERSION\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+    fi
+else
+    # 统一模式
+    # 为 widgets 包准备发布版本
+    cp packages/widgets/package.json packages/widgets/package.json.backup
+    sed "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
 
-# 为根包准备发布版本
-cp package.json package.json.backup
-sed -e "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:\^$WIDGETS_VERSION\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+    # 为根包准备发布版本
+    cp package.json package.json.backup
+    sed -e "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:\^$WIDGETS_VERSION\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+fi
 
 # 定义清理函数
 cleanup() {
     info "🔄 恢复原始文件..."
-    if [ -f "package.json.backup" ]; then
-        mv package.json.backup package.json
-    fi
-    if [ -f "packages/widgets/package.json.backup" ]; then
-        mv packages/widgets/package.json.backup packages/widgets/package.json
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式
+        if [ "$PACKAGE_NAME" = "widgets" ] && [ -f "packages/widgets/package.json.backup" ]; then
+            mv packages/widgets/package.json.backup packages/widgets/package.json
+        elif [ "$PACKAGE_NAME" = "root" ] && [ -f "package.json.backup" ]; then
+            mv package.json.backup package.json
+        fi
+    else
+        # 统一模式
+        if [ -f "package.json.backup" ]; then
+            mv package.json.backup package.json
+        fi
+        if [ -f "packages/widgets/package.json.backup" ]; then
+            mv packages/widgets/package.json.backup packages/widgets/package.json
+        fi
     fi
 }
 
@@ -212,41 +315,67 @@ trap cleanup EXIT
 if [ "$DRY_RUN" = true ]; then
     warn "模拟模式：跳过实际发布"
     echo "将要执行的发布命令:"
-    echo "  1. cd packages/engine && npm publish --tag $TAG"
-    echo "  2. cd packages/widgets && npm publish --tag $TAG"
-    echo "  3. npm publish --tag $TAG"
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式
+        if [ "$PACKAGE_DIR" = "." ]; then
+            echo "  npm publish --tag $TAG"
+        else
+            echo "  cd $PACKAGE_DIR && npm publish --tag $TAG"
+        fi
+    else
+        # 统一模式
+        echo "  1. cd packages/engine && npm publish --tag $TAG"
+        echo "  2. cd packages/widgets && npm publish --tag $TAG"
+        echo "  3. npm publish --tag $TAG"
+    fi
 else
-    # 发布顺序：先发布 engine，再发布 widgets，最后发布根包
-    info "📤 开始发布包..."
-    
-    # 1. 发布 @xh-gis/engine
-    info "📤 发布 @xh-gis/engine@$ENGINE_VERSION..."
-    cd packages/engine
-    npm publish --tag $TAG
-    cd ../..
-    success "@xh-gis/engine 发布成功"
-    
-    # 等待 CDN 传播
-    info "⏳ 等待 NPM CDN 传播（30秒）..."
-    sleep 30
-    
-    # 2. 发布 @xh-gis/widgets
-    info "📤 发布 @xh-gis/widgets@$WIDGETS_VERSION..."
-    cd packages/widgets
-    npm publish --tag $TAG
-    cd ../..
-    success "@xh-gis/widgets 发布成功"
-    
-    # 等待 CDN 传播
-    info "⏳ 等待 NPM CDN 传播（30秒）..."
-    sleep 30
-    
-    # 3. 发布 xh-gis
-    info "📤 发布 xh-gis@$ROOT_VERSION..."
-    npm publish --tag $TAG
-    success "xh-gis 发布成功"
-    
-    success "所有包发布完成！"
+    # 发布包
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式
+        info "📤 开始发布 $FULL_PACKAGE_NAME@$PACKAGE_VERSION..."
+        
+        if [ "$PACKAGE_DIR" = "." ]; then
+            npm publish --tag $TAG
+        else
+            cd "$PACKAGE_DIR"
+            npm publish --tag $TAG
+            cd - > /dev/null
+        fi
+        
+        success "$FULL_PACKAGE_NAME 发布成功"
+    else
+        # 统一模式
+        info "📤 开始发布包..."
+        
+        # 1. 发布 @xh-gis/engine
+        info "📤 发布 @xh-gis/engine@$ENGINE_VERSION..."
+        cd packages/engine
+        npm publish --tag $TAG
+        cd ../..
+        success "@xh-gis/engine 发布成功"
+        
+        # 等待 CDN 传播
+        info "⏳ 等待 NPM CDN 传播（30秒）..."
+        sleep 30
+        
+        # 2. 发布 @xh-gis/widgets
+        info "📤 发布 @xh-gis/widgets@$WIDGETS_VERSION..."
+        cd packages/widgets
+        npm publish --tag $TAG
+        cd ../..
+        success "@xh-gis/widgets 发布成功"
+        
+        # 等待 CDN 传播
+        info "⏳ 等待 NPM CDN 传播（30秒）..."
+        sleep 30
+        
+        # 3. 发布 xh-gis
+        info "📤 发布 xh-gis@$ROOT_VERSION..."
+        npm publish --tag $TAG
+        success "xh-gis 发布成功"
+        
+        success "所有包发布完成！"
+    fi
 fi
 
 # 显示发布结果
@@ -254,24 +383,66 @@ echo ""
 success "🎉 发布流程完成！"
 echo ""
 info "📦 已发布的包:"
-echo "  - @xh-gis/engine@$ENGINE_VERSION"
-echo "  - @xh-gis/widgets@$WIDGETS_VERSION"
-echo "  - xh-gis@$ROOT_VERSION"
+if [ -n "$PACKAGE_NAME" ]; then
+    # 单包模式
+    echo "  - $FULL_PACKAGE_NAME@$PACKAGE_VERSION"
+else
+    # 统一模式
+    echo "  - @xh-gis/engine@$ENGINE_VERSION"
+    echo "  - @xh-gis/widgets@$WIDGETS_VERSION"
+    echo "  - xh-gis@$ROOT_VERSION"
+fi
 echo ""
 if [ "$TAG" != "latest" ]; then
     info "📋 发布标签: $TAG"
     echo ""
 fi
 info "🌐 查看发布状态:"
-echo "  - https://www.npmjs.com/package/@xh-gis/engine"
-echo "  - https://www.npmjs.com/package/@xh-gis/widgets"
-echo "  - https://www.npmjs.com/package/xh-gis"
+if [ -n "$PACKAGE_NAME" ]; then
+    # 单包模式
+    if [ "$PACKAGE_NAME" = "engine" ]; then
+        echo "  - https://www.npmjs.com/package/@xh-gis/engine"
+    elif [ "$PACKAGE_NAME" = "widgets" ]; then
+        echo "  - https://www.npmjs.com/package/@xh-gis/widgets"
+    else
+        echo "  - https://www.npmjs.com/package/xh-gis"
+    fi
+else
+    # 统一模式
+    echo "  - https://www.npmjs.com/package/@xh-gis/engine"
+    echo "  - https://www.npmjs.com/package/@xh-gis/widgets"
+    echo "  - https://www.npmjs.com/package/xh-gis"
+fi
 echo ""
 info "💡 安装命令:"
 if [ "$TAG" = "latest" ]; then
-    echo "  npm install xh-gis"
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式
+        if [ "$PACKAGE_NAME" = "engine" ]; then
+            echo "  npm install @xh-gis/engine"
+        elif [ "$PACKAGE_NAME" = "widgets" ]; then
+            echo "  npm install @xh-gis/widgets"
+        else
+            echo "  npm install xh-gis"
+        fi
+    else
+        # 统一模式
+        echo "  npm install xh-gis"
+    fi
 else
-    echo "  npm install xh-gis@$TAG"
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式
+        if [ "$PACKAGE_NAME" = "engine" ]; then
+            echo "  npm install @xh-gis/engine@$TAG"
+        elif [ "$PACKAGE_NAME" = "widgets" ]; then
+            echo "  npm install @xh-gis/widgets@$TAG"
+        else
+            echo "  npm install xh-gis@$TAG"
+        fi
+    else
+        # 统一模式
+        echo "  npm install xh-gis@$TAG"
+    fi
 fi
 echo ""
 success "✨ 发布成功！"
