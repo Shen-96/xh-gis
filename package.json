@@ -1,6 +1,6 @@
 {
     "name": "xh-gis",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Bundle package that installs @xh-gis/engine and @xh-gis/widgets",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -27,8 +27,8 @@
     "author": "Xiaohu.Shen",
     "license": "MIT",
     "dependencies": {
-        "@xh-gis/engine": "workspace:^1.0.1",
-        "@xh-gis/widgets": "workspace:^1.0.1"
+        "@xh-gis/engine": "workspace:^1.0.2",
+        "@xh-gis/widgets": "workspace:^1.0.2"
     },
     "devDependencies": {
         "terser": "^5.43.1",
