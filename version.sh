@@ -5,6 +5,10 @@
 
 set -e
 
+# 设置错误处理
+set -E
+trap 'error "脚本在第 $LINENO 行发生错误，退出码: $?"' ERR
+
 # 颜色输出
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -352,7 +356,7 @@ if [ "$DRY_RUN" = false ]; then
             info "自动确认版本更新..."
         else
             echo "确定要继续吗？ (y/n)"
-            # 在非交互式环境中，read 命令会阻塞，所以我们添加一个超时机制
+            # 在非交互式环境中，read 命令会阻塞，所以我们添加一个检测机制
             if [ -t 0 ]; then
                 # 如果是终端输入，等待用户输入
                 read -r response
