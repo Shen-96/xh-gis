@@ -298,13 +298,19 @@ update_version_constant() {
 }
 
 # 执行更新
+info "开始执行更新..."
 if [ -n "$PACKAGE_NAME" ]; then
     # 单包模式
+    info "执行单包模式更新..."
     update_version "$PACKAGE_PATH" "$FULL_PACKAGE_NAME"
+    info "update_version 执行完成"
     update_engine_dependencies
+    info "update_engine_dependencies 执行完成"
     update_version_constant
+    info "update_version_constant 执行完成"
 else
     # 统一模式
+    info "执行统一模式更新..."
     update_version "." "根包"
     update_version "packages/engine" "@xh-gis/engine"
     update_version "packages/widgets" "@xh-gis/widgets"
@@ -324,6 +330,7 @@ else
 fi
 echo ""
 
+info "检查是否需要提交..."
 if [ "$DRY_RUN" = false ]; then
     if [ "$NO_COMMIT" = false ]; then
         if [ -n "$PACKAGE_NAME" ]; then
@@ -387,3 +394,4 @@ else
     echo ""
     info "💡 模拟模式完成，没有实际修改文件"
 fi
+info "脚本执行完成"
