@@ -193,28 +193,35 @@ fi
 
 # 安装依赖
 info "📥 安装依赖..."
+info "执行 pnpm install..."
 pnpm install
+success "依赖安装完成"
 
 # 构建包
 if [ "$SKIP_BUILD" = false ]; then
     if [ -n "$PACKAGE_NAME" ]; then
         # 单包模式
         info "🔨 构建 $FULL_PACKAGE_NAME 包..."
+        info "进入目录: $PACKAGE_DIR"
         if [ "$PACKAGE_DIR" = "." ]; then
+            info "执行 pnpm run build:packages && pnpm run build"
             pnpm run build:packages
             pnpm run build
         else
+            info "执行 pnpm run build"
             cd "$PACKAGE_DIR"
             pnpm run build
             cd - > /dev/null
         fi
+        success "构建完成"
     else
         # 统一模式
         info "🔨 构建所有包..."
+        info "执行 pnpm run build:packages && pnpm run build"
         pnpm run build:packages
         pnpm run build
+        success "构建完成"
     fi
-    success "构建完成"
 else
     warn "跳过构建步骤"
 fi
