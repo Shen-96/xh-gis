@@ -10,11 +10,7 @@
         "build:dev": "tsc",
         "build:packages": "pnpm -r build",
         "prepublishOnly": "pnpm build:packages && pnpm build",
-        "publish:all": "pnpm -r publish",
-        "dev:sandcastle": "cd packages/sandcastle && pnpm dev",
-        "build:sandcastle": "cd packages/sandcastle && pnpm build",
-        "test:sandcastle": "cd packages/sandcastle && pnpm test",
-        "widgets:build": "cd packages/widgets && pnpm build"
+        "publish:all": "pnpm -r publish"
     },
     "keywords": [
         "gis",
