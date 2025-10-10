@@ -132,7 +132,9 @@ fi
 info "检查分支状态..."
 # 检查是否在主分支
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+info "当前分支: $CURRENT_BRANCH"
 if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+    info "不在主分支上"
     if [ "$AUTO_CONFIRM" = true ]; then
         warn "当前不在主分支 ($CURRENT_BRANCH)，但已启用自动确认，继续执行..."
     else
@@ -143,8 +145,11 @@ if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
             exit 0
         fi
     fi
+else
+    info "在主分支上，继续执行..."
 fi
 
+info "获取版本信息..."
 # 获取版本信息
 if [ -n "$PACKAGE_NAME" ]; then
     # 单包模式
