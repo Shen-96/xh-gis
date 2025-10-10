@@ -164,12 +164,13 @@ if [ "$DRY_RUN" = true ]; then
     warn "模拟模式：不会实际修改文件"
 fi
 
-# 检查工作目录是否干净（除非是模拟运行）
+# 检查工作目录是否干净（除非是模拟运行，排除 pnpm-lock.yaml 文件）
 if [ "$DRY_RUN" = false ] && [ "$NO_COMMIT" = false ]; then
-    if [[ -n $(git status --porcelain) ]]; then
+    UNCOMMITTED_FILES=$(git status --porcelain | grep -v "pnpm-lock.yaml")
+    if [[ -n "$UNCOMMITTED_FILES" ]]; then
         error "工作目录不干净，请先提交所有更改"
         echo "未提交的文件:"
-        git status --porcelain
+        echo "$UNCOMMITTED_FILES"
         exit 1
     fi
 fi

@@ -111,11 +111,12 @@ if [ "$DRY_RUN" = false ]; then
     success "NPM 用户: $(npm whoami)"
 fi
 
-# 检查工作目录是否干净
-if [[ -n $(git status --porcelain) ]]; then
+# 检查工作目录是否干净（排除 pnpm-lock.yaml 文件）
+UNCOMMITTED_FILES=$(git status --porcelain | grep -v "pnpm-lock.yaml")
+if [[ -n "$UNCOMMITTED_FILES" ]]; then
     error "工作目录不干净，请先提交所有更改"
     echo "未提交的文件:"
-    git status --porcelain
+    echo "$UNCOMMITTED_FILES"
     exit 1
 fi
 
