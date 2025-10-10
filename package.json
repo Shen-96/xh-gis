@@ -23,7 +23,7 @@
     "author": "Xiaohu.Shen",
     "license": "MIT",
     "dependencies": {
-        "@xh-gis/engine": "workspace:^1.0.1",
+        "@xh-gis/engine": "workspace:^1.0.2",
         "@xh-gis/widgets": "workspace:^1.0.1"
     },
     "devDependencies": {
