@@ -27,9 +27,10 @@ show_help() {
     echo "  $0 [选项] <包名> <版本号>"
     echo ""
     echo "选项:"
-    echo "  -h, --help     显示帮助信息"
-    echo "  -d, --dry-run  模拟运行，不实际修改文件"
-    echo "  --no-commit    不自动提交更改"
+    echo "  -h, --help        显示帮助信息"
+    echo "  -d, --dry-run     模拟运行，不实际修改文件"
+    echo "  --no-commit       不自动提交更改"
+    echo "  -y, --yes         自动确认所有提示"
     echo ""
     echo "包名 (用于单包更新):"
     echo "  engine    - @xh-gis/engine 包"
@@ -50,6 +51,7 @@ show_help() {
     echo "  $0 widgets patch           # 更新 widgets 包补丁版本"
     echo "  $0 root minor --dry-run    # 模拟更新根包次版本"
     echo "  $0 engine 1.0.1 --no-commit # 更新 engine 包但不自动提交"
+    echo "  $0 engine 1.0.1 -y         # 更新 engine 包并自动确认"
 }
 
 # 默认参数
@@ -57,6 +59,7 @@ DRY_RUN=false
 NO_COMMIT=false
 PACKAGE_NAME=""
 NEW_VERSION=""
+AUTO_CONFIRM=false
 
 # 解析命令行参数
 while [[ $# -gt 0 ]]; do
@@ -71,6 +74,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --no-commit)
             NO_COMMIT=true
+            shift
+            ;;
+        -y|--yes)
+            AUTO_CONFIRM=true
             shift
             ;;
         -*)
@@ -148,6 +155,21 @@ fi
 if [ "$DRY_RUN" = false ] && [[ "$NEW_VERSION" == "$CURRENT_VERSION" ]]; then
     error "新版本不能与当前版本相同"
     exit 1
+fi
+
+# 检查是否在主分支
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+    if [ "$AUTO_CONFIRM" = true ]; then
+        warn "当前不在主分支 ($CURRENT_BRANCH)，但已启用自动确认，继续执行..."
+    else
+        warn "当前不在主分支 ($CURRENT_BRANCH)，确定要继续吗？ (y/n)"
+        read -r response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            info "版本更新已取消"
+            exit 0
+        fi
+    fi
 fi
 
 if [ -n "$PACKAGE_NAME" ]; then
@@ -301,32 +323,35 @@ echo ""
 if [ "$DRY_RUN" = false ]; then
     if [ "$NO_COMMIT" = false ]; then
         if [ -n "$PACKAGE_NAME" ]; then
-            info "📝 提交版本更改..."
-            git add .
-            git commit -m "chore($PACKAGE_NAME): bump version to $NEW_VERSION
+            warn "即将更新 $FULL_PACKAGE_NAME 包版本到 $NEW_VERSION"
+        else
+            warn "即将更新所有包版本到 $NEW_VERSION"
+        fi
+        echo ""
+        
+        if [ "$AUTO_CONFIRM" = true ]; then
+            info "自动确认版本更新..."
+        else
+            echo "确定要继续吗？ (y/n)"
+            read -r response
+            if [[ ! "$response" =~ ^[Yy]$ ]]; then
+                info "版本更新已取消"
+                exit 0
+            fi
+        fi
+        
+        info "📝 提交版本更改..."
+        git add .
+        git commit -m "chore($PACKAGE_NAME): bump version to $NEW_VERSION
 
 - Update $FULL_PACKAGE_NAME to version $NEW_VERSION
 - Update workspace dependencies if needed
 - Update version constant if needed"
-            success "版本更改已提交"
-            echo ""
-            info "🏷️  创建标签: ${PACKAGE_NAME}-v$NEW_VERSION"
-            git tag "${PACKAGE_NAME}-v$NEW_VERSION"
-            success "标签已创建"
-        else
-            info "📝 提交版本更改..."
-            git add .
-            git commit -m "chore: bump version to $NEW_VERSION
-
-- Update all packages to version $NEW_VERSION
-- Update workspace dependencies  
-- Update version constant in index.ts"
-            success "版本更改已提交"
-            echo ""
-            info "🏷️  创建标签: v$NEW_VERSION"
-            git tag "v$NEW_VERSION"
-            success "标签已创建"
-        fi
+        success "版本更改已提交"
+        echo ""
+        info "🏷️  创建标签: ${PACKAGE_NAME}-v$NEW_VERSION"
+        git tag "${PACKAGE_NAME}-v$NEW_VERSION"
+        success "标签已创建"
     else
         warn "跳过自动提交，请手动提交更改"
     fi

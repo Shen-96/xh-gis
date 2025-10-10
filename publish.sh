@@ -27,10 +27,11 @@ show_help() {
     echo "  $0 [选项] <包名>"
     echo ""
     echo "选项:"
-    echo "  -h, --help     显示帮助信息"
-    echo "  -d, --dry-run  模拟运行，不实际发布"
-    echo "  -s, --skip-build 跳过构建步骤"
-    echo "  -t, --tag <tag> 指定发布标签 (默认: latest)"
+    echo "  -h, --help        显示帮助信息"
+    echo "  -d, --dry-run     模拟运行，不实际发布"
+    echo "  -s, --skip-build  跳过构建步骤"
+    echo "  -t, --tag <tag>   指定发布标签 (默认: latest)"
+    echo "  -y, --yes         自动确认所有提示"
     echo ""
     echo "包名:"
     echo "  engine    - @xh-gis/engine 包"
@@ -43,6 +44,7 @@ show_help() {
     echo "  $0 --tag beta         # 发布所有包的beta版本"
     echo "  $0 engine             # 发布 engine 包"
     echo "  $0 widgets --tag beta # 发布 widgets 包的beta版本"
+    echo "  $0 engine -y          # 发布 engine 包并自动确认"
 }
 
 # 默认参数
@@ -50,6 +52,7 @@ DRY_RUN=false
 SKIP_BUILD=false
 TAG="latest"
 PACKAGE_NAME=""
+AUTO_CONFIRM=false
 
 # 解析命令行参数
 while [[ $# -gt 0 ]]; do
@@ -69,6 +72,10 @@ while [[ $# -gt 0 ]]; do
         -t|--tag)
             TAG="$2"
             shift 2
+            ;;
+        -y|--yes)
+            AUTO_CONFIRM=true
+            shift
             ;;
         -*)
             error "未知选项: $1"
@@ -123,11 +130,15 @@ fi
 # 检查是否在主分支
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
-    warn "当前不在主分支 ($CURRENT_BRANCH)，确定要继续吗？ (y/n)"
-    read -r response
-    if [[ ! "$response" =~ ^[Yy]$ ]]; then
-        info "发布已取消"
-        exit 0
+    if [ "$AUTO_CONFIRM" = true ]; then
+        warn "当前不在主分支 ($CURRENT_BRANCH)，但已启用自动确认，继续执行..."
+    else
+        warn "当前不在主分支 ($CURRENT_BRANCH)，确定要继续吗？ (y/n)"
+        read -r response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            info "发布已取消"
+            exit 0
+        fi
     fi
 fi
 
@@ -252,11 +263,16 @@ if [ "$DRY_RUN" = false ]; then
         echo "  - xh-gis@$ROOT_VERSION"
     fi
     echo ""
-    echo "确定要继续吗？ (y/n)"
-    read -r response
-    if [[ ! "$response" =~ ^[Yy]$ ]]; then
-        info "发布已取消"
-        exit 0
+    
+    if [ "$AUTO_CONFIRM" = true ]; then
+        info "自动确认发布..."
+    else
+        echo "确定要继续吗？ (y/n)"
+        read -r response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            info "发布已取消"
+            exit 0
+        fi
     fi
 fi
 
