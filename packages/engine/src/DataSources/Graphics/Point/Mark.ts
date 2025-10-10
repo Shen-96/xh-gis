@@ -19,7 +19,7 @@ export class Mark extends AbstractPoint {
   
 
   constructor(core: AbstractCore, style?: MarkStyle) {
-    super({ xgCore: core, style });
+    super({ core, style });
 
     this.graphicType = GraphicType.POINT;
     this.graphicName = "点标牌";

@@ -46,7 +46,7 @@ import {
 } from "..";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";
-import { GeometryUtils } from "./GeometryUtils";
+import GeometryUtils from "./GeometryUtils";
 
 /// 天地图token列表
 const tdtTKList = [

@@ -10,7 +10,7 @@ import { Math as CesiumMath } from "cesium";
 import MathUtils from "./MathUtils";
 import { ProjectionPoint } from "../types";
 
-export class GeometryUtils {
+export default class GeometryUtils {
   static generateStraightArrow(
     start: ProjectionPoint,
     end: ProjectionPoint,

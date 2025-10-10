@@ -13,7 +13,7 @@ import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
 import { GeometryType, GraphicType } from "../../../enum";;
 import { GeometryStyleMap } from "../../../types";
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 
 export default class FreeSwallowTailArrow extends FreeFlatTailArrow {
   tailWidthFactor: number;

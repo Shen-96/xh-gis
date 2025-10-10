@@ -17,7 +17,7 @@ import {
   SymbolType,
 } from "../../../enum";
 import { GeometryStyleMap } from "../../../types";
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 import { ISymbol } from "../Abstract/ISymbol";
 
 export default abstract class BasePolylineArrow

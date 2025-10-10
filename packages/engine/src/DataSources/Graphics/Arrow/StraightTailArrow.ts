@@ -10,7 +10,7 @@ import {
   SymbolType,
 } from "../../../enum";
 import { GeometryStyleMap } from "../../../types";
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 
 export default class StraightTailArrow extends AbstractPolygon {
   graphicType: GraphicType;

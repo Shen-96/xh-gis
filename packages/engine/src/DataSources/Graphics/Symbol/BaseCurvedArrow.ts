@@ -13,17 +13,24 @@ import AbstractCore from "../../../Core/AbstractCore";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryType, GraphicType, SymbolType } from "../../../enum";
 import { GeometryStyleMap } from "../../../types";
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 import { ISymbol } from "../Abstract/ISymbol";
 
-const ArrowParams = {
-  [SymbolType.不标示突破地段的作战行动]: {
-    arrowAngle: Math.PI / 3,
-    arrowLengthFactor: 0.1,
-    maxArrowLength: 1500,
-    curveSmoothnessFactor: 0.3,
-  },
-};
+let arrowParams: Partial<Record<SymbolType, any>> | null = null;
+
+function getArrowParams() {
+  if (!arrowParams) {
+    arrowParams = {
+      [SymbolType.不标示突破地段的作战行动]: {
+        arrowAngle: Math.PI / 3,
+        arrowLengthFactor: 0.1,
+        maxArrowLength: 1500,
+        curveSmoothnessFactor: 0.3,
+      },
+    };
+  }
+  return arrowParams;
+}
 
 export default abstract class BaseCurvedArrow
   extends AbstractLine
@@ -76,7 +83,7 @@ export default abstract class BaseCurvedArrow
         pnt1,
         pnt2,
         // @ts-ignore
-        ArrowParams[this.symbolType]
+        getArrowParams()[this.symbolType]
       )
     );
   }
@@ -97,7 +104,7 @@ export default abstract class BaseCurvedArrow
       GeometryUtils.generateCurveArrow(
         projectionPoints,
         // @ts-ignore
-        ArrowParams[this.symbolType]
+        getArrowParams()[this.symbolType]
       )
     );
   }

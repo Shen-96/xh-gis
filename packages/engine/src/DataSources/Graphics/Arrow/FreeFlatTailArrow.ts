@@ -6,7 +6,7 @@ import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
 import { GeometryStyleMap, ProjectionPoint } from "../../../types";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 
 export default class FreeFlatTailArrow extends AbstractPolygon {
   graphicType: GraphicType;

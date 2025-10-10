@@ -24,13 +24,16 @@
   "author": "Xiaohu.Shen",
   "license": "MIT",
   "peerDependencies": {
+    "cesium": "1.108.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
-    "@xh-gis/engine": "workspace:^1.0.1"
+    "@xh-gis/engine": "workspace:^1.0.1",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.20",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "terser": "^5.43.1",

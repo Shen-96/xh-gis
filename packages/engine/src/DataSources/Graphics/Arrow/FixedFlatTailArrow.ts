@@ -8,7 +8,7 @@ import {
   Point3DegList,
 } from "../../../types";
 import { GeometryType, GraphicType } from "../../../enum";
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 
 export default class FixedFlatTailArrow extends FreeFlatTailArrow {
   graphicType: GraphicType;

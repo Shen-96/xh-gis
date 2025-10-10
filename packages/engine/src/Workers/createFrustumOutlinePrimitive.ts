@@ -7,20 +7,21 @@
  * @LastEditTime: 2025-03-25 09:10:37
  */
 import {
-  Math as CesiumMath,
-  Matrix4,
-  createGuid,
   Primitive,
-  Cartesian3,
+  Matrix4,
   GeometryInstance,
+  Cartesian3,
+  EllipsoidGeometry,
+  PerInstanceColorAppearance,
+  Math as CesiumMath,
   PerspectiveFrustum,
   Quaternion,
   FrustumOutlineGeometry,
-  PerInstanceColorAppearance,
   Color,
   ColorGeometryInstanceAttribute,
+  createGuid,
 } from "cesium";
-import { FrustumGraphicOptions } from "..";
+import type { FrustumGraphicOptions } from "../types";
 
 function createFrustumOutlinePrimitive(
   id = createGuid(),

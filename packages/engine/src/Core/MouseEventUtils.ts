@@ -8,12 +8,13 @@
  */
 
 import {
+  Viewer,
   defined,
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   Cartesian2,
 } from "cesium";
-import { ScreenWheelCallback, ScreenClickCallback } from "..";
+import type { ScreenWheelCallback, ScreenClickCallback } from "../types";
 
 /**
  * @descripttion: 监听管理器

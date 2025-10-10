@@ -34,118 +34,120 @@ export default abstract class AbstractPoint extends AbstractGraphic<GeometryType
   centerPoint?: Cartesian3;
 
   set style(val: MarkStyle) {
-    this.style = { ...defaultPointStyle, ...val };
+    this._style = { ...defaultPointStyle, ...val };
+
+    const style = this._style as MarkStyle;
 
     if (this.entity.point) {
-      if (val.pointStyle?.color) {
-        if (val.pointStyle?.color instanceof Color) {
+      if (style.pointStyle?.color) {
+        if (style.pointStyle?.color instanceof Color) {
           this.entity.point.color = new ColorMaterialProperty(
-            val.pointStyle?.color
+            style.pointStyle?.color
           );
         } else {
-          this.entity.point.color = val.pointStyle?.color;
+          this.entity.point.color = style.pointStyle?.color;
         }
       }
 
-      if (val.pointStyle?.outlineColor)
-        if (val.pointStyle?.outlineColor instanceof Color) {
+      if (style.pointStyle?.outlineColor)
+        if (style.pointStyle?.outlineColor instanceof Color) {
           this.entity.point.outlineColor = new ColorMaterialProperty(
-            val.pointStyle?.outlineColor
+            style.pointStyle?.outlineColor
           );
         } else {
-          this.entity.point.outlineColor = val.pointStyle?.outlineColor;
+          this.entity.point.outlineColor = style.pointStyle?.outlineColor;
         }
 
-      if (val.pointStyle?.outlineWidth)
-        if (typeof val.pointStyle?.outlineWidth === "number") {
+      if (style.pointStyle?.outlineWidth)
+        if (typeof style.pointStyle?.outlineWidth === "number") {
           this.entity.point.outlineWidth = new ConstantProperty(
-            val.pointStyle?.outlineWidth
+            style.pointStyle?.outlineWidth
           );
         } else {
-          this.entity.point.outlineWidth = val.pointStyle?.outlineWidth;
+          this.entity.point.outlineWidth = style.pointStyle?.outlineWidth;
         }
 
-      if (val.pointStyle?.pixelSize) {
-        if (typeof val.pointStyle?.pixelSize === "number") {
+      if (style.pointStyle?.pixelSize) {
+        if (typeof style.pointStyle?.pixelSize === "number") {
           this.entity.point.pixelSize = new ConstantProperty(
-            val.pointStyle?.pixelSize
+            style.pointStyle?.pixelSize
           );
         } else {
-          this.entity.point.pixelSize = val.pointStyle?.pixelSize;
+          this.entity.point.pixelSize = style.pointStyle?.pixelSize;
         }
       }
     }
 
     if (this.entity.billboard) {
-      if (val.billboardStyle?.image) {
+      if (style.billboardStyle?.image) {
         this.entity.billboard.image = new ConstantProperty(
-          val.billboardStyle?.image
+          style.billboardStyle?.image
         );
       }
 
-      if (val.billboardStyle?.scale) {
-        if (typeof val.billboardStyle?.scale === "number") {
+      if (style.billboardStyle?.scale) {
+        if (typeof style.billboardStyle?.scale === "number") {
           this.entity.billboard.scale = new ConstantProperty(
-            val.billboardStyle?.scale
+            style.billboardStyle?.scale
           );
         } else {
-          this.entity.billboard.scale = val.billboardStyle?.scale;
+          this.entity.billboard.scale = style.billboardStyle?.scale;
         }
       }
 
-      if (val.billboardStyle?.rotation) {
-        if (typeof val.billboardStyle?.rotation === "number") {
+      if (style.billboardStyle?.rotation) {
+        if (typeof style.billboardStyle?.rotation === "number") {
           this.entity.billboard.rotation = new ConstantProperty(
-            val.billboardStyle?.rotation
+            style.billboardStyle?.rotation
           );
         } else {
-          this.entity.billboard.rotation = val.billboardStyle?.rotation;
+          this.entity.billboard.rotation = style.billboardStyle?.rotation;
         }
       }
 
-      if (val.billboardStyle?.color) {
-        if (val.billboardStyle?.color instanceof Color) {
+      if (style.billboardStyle?.color) {
+        if (style.billboardStyle?.color instanceof Color) {
           this.entity.billboard.color = new ColorMaterialProperty(
-            val.billboardStyle?.color
+            style.billboardStyle?.color
           );
         } else {
-          this.entity.billboard.color = val.billboardStyle?.color;
+          this.entity.billboard.color = style.billboardStyle?.color;
         }
       }
 
-      if (val.billboardStyle?.sizeInMeters) {
+      if (style.billboardStyle?.sizeInMeters) {
         this.entity.billboard.sizeInMeters = new ConstantProperty(
-          val.billboardStyle?.sizeInMeters
+          style.billboardStyle?.sizeInMeters
         );
       }
 
-      if (val.billboardStyle?.alignedAxis) {
-        if (val.billboardStyle?.alignedAxis instanceof Cartesian3) {
+      if (style.billboardStyle?.alignedAxis) {
+        if (style.billboardStyle?.alignedAxis instanceof Cartesian3) {
           this.entity.billboard.alignedAxis = new ConstantProperty(
-            val.billboardStyle?.alignedAxis
+            style.billboardStyle?.alignedAxis
           );
         } else {
-          this.entity.billboard.alignedAxis = val.billboardStyle?.alignedAxis;
+          this.entity.billboard.alignedAxis = style.billboardStyle?.alignedAxis;
         }
       }
 
-      if (val.billboardStyle?.width) {
-        if (typeof val.billboardStyle?.width === "number") {
+      if (style.billboardStyle?.width) {
+        if (typeof style.billboardStyle?.width === "number") {
           this.entity.billboard.width = new ConstantProperty(
-            val.billboardStyle?.width
+            style.billboardStyle?.width
           );
         } else {
-          this.entity.billboard.width = val.billboardStyle?.width;
+          this.entity.billboard.width = style.billboardStyle?.width;
         }
       }
 
-      if (val.billboardStyle?.height) {
-        if (typeof val.billboardStyle?.height === "number") {
+      if (style.billboardStyle?.height) {
+        if (typeof style.billboardStyle?.height === "number") {
           this.entity.billboard.height = new ConstantProperty(
-            val.billboardStyle?.height
+            style.billboardStyle?.height
           );
         } else {
-          this.entity.billboard.height = val.billboardStyle?.height;
+          this.entity.billboard.height = style.billboardStyle?.height;
         }
       }
     }
@@ -159,8 +161,8 @@ export default abstract class AbstractPoint extends AbstractGraphic<GeometryType
     this.style = style ?? defaultPointStyle;
   }
 
-  constructor({ xgCore, style }: { xgCore: AbstractCore; style?: MarkStyle }) {
-    super(xgCore);
+  constructor({ core, style }: { core: AbstractCore; style?: MarkStyle }) {
+    super(core);
 
     this.minPointsForShape = 2;
     this.geometryType = GeometryType.POINT;
@@ -172,7 +174,8 @@ export default abstract class AbstractPoint extends AbstractGraphic<GeometryType
 
   protected init() {
     this.viewer.entities.add(this.entity);
-    this.core.graphicManager.add(this);
+    // 延迟到 beginDraw 时再注册到 GraphicManager
+    // this.core.graphicManager.add(this);
   }
 
   protected drawActive() {
@@ -208,6 +211,8 @@ export default abstract class AbstractPoint extends AbstractGraphic<GeometryType
       | undefined
   ): void {
     this.setState("drawing");
+    // 在开始绘制时注册到 GraphicManager
+    this.core.graphicManager.add(this);
 
     this.onLeftClick(callback);
   }

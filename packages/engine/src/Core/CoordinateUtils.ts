@@ -24,14 +24,17 @@ import {
   Rectangle,
   Quaternion,
 } from "cesium";
-import { CartographicDegreesValue, Geographic, MathUtils, Point } from "..";
-import {
+import Geographic from "./Geographic";
+import MathUtils from "./MathUtils";
+import type {
   PositionOptions,
   NearFarScalarValue,
   ColorOptions,
   ProjectionPoint,
+  Point,
   Point2Deg,
   Point3Deg,
+  CartographicDegreesValue,
   CartographicRectangleDegreesValue,
   Cartesian3Value,
   PositionListOptions,
@@ -39,7 +42,7 @@ import {
   RectangleCoordinatesOptions,
   AlignedAxisOptions,
   UnitQuaternionValue,
-} from "../index";
+} from "../types";
 
 const xPI = (Math.PI * 3000.0) / 180.0;
 const a = 6378245.0;

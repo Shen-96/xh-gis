@@ -4,13 +4,16 @@
  * @version: 1.0.0
  * @Date: 2024-09-14 15:21:25
  * @LastEditors: EV-申小虎
- * @LastEditTime: 2025-08-14 18:57:40
+ * @LastEditTime: 2025-10-09 17:35:57
  */
 
 import "../index.css";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { CoreType, XgEarth, XgMap } from "@xh-gis/engine";
 import { memo, PropsWithRef, useEffect, useRef } from "react";
+import Statusbar from "../Statusbar";
+import Timeline from "../Timeline";
+import Toolbar from "../Toolbox";
 
 type CoreTypeMap = {
   [CoreType.MAP]: XgMap;
@@ -19,12 +22,28 @@ type CoreTypeMap = {
 
 export type CoreProps<T extends CoreType> = PropsWithRef<{
   coreType: T;
+  /// 信息组件显隐
+  statusbar?: boolean;
+  /// 工具栏显隐
+  toolbar?: boolean;
+  /// 时间组件显隐
+  timeline?: boolean;
+  timelineProps?: {
+    systemTime?: boolean;
+    shouldAnimate?: boolean;
+  };
+  // /// 标绘组件显隐
+  // toolBox?: boolean;
   /// 初始化完成回调
   onInit: (core: CoreTypeMap[T]) => void;
 }>;
 
 const Core = <T extends CoreType>({
   coreType,
+  statusbar = true,
+  toolbar = true,
+  timeline = false,
+  timelineProps = {},
   onInit,
 }: CoreProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -66,6 +85,9 @@ const Core = <T extends CoreType>({
   return (
     <div className={`xh-gis-viewer ${coreType}`}>
       <div ref={containerRef} className={"xh-gis-viewer-scene"}></div>
+      {statusbar ? <Statusbar coreRef={xgCoreRef} /> : null}
+      {toolbar ? <Toolbar coreRef={xgCoreRef} /> : null}
+      {timeline ? <Timeline coreRef={xgCoreRef} {...timelineProps} /> : null}
       <div className={"xh-gis-popup-container"}></div>
     </div>
   );

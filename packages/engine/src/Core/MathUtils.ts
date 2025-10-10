@@ -6,7 +6,9 @@ import {
   Matrix3,
   Math as CesiumMath,
 } from "cesium";
-import { Geographic, Constant, Point, ProjectionPoint } from "..";
+import type { Point, ProjectionPoint } from "../types";
+import Geographic from "./Geographic";
+import Constant from "./Constant";
 import CoordinateUtils from "./CoordinateUtils";
 
 const xPI = (Math.PI * 3000.0) / 180.0;

@@ -28,22 +28,24 @@ import {
   PolylineOutlineMaterialProperty,
   VerticalOrigin,
 } from "cesium";
-import {
+import type {
   PolylineGraphicOptions,
   PolygonGraphicOptions,
   PointStyleOptions,
   LabelStyleOptions,
-  LabelStyleValueType,
   BillboardStyleOptions,
   PolygonStyleOptions,
   PolylineStyleOptions,
   PolylineMaterialOptions,
+} from "../types";
+import {
+  LabelStyleValueType,
   VerticalOriginValueType,
   HorizontalOriginValueType,
   ArcTypeValueType,
   MaterialType,
   HeightReferenceValueType,
-} from "..";
+} from "../enum";
 import CoordinateUtils from "./CoordinateUtils";
 import ConvectionPointMaterialProperty from "../DataSources/Materials/ConvectionPointMaterialProperty";
 import FlowLineMaterialProperty from "../DataSources/Materials/FlowLineMaterialProperty";

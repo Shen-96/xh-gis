@@ -28,29 +28,18 @@ import {
   PerspectiveOffCenterFrustum,
   ScreenSpaceEventHandler,
 } from "cesium";
-import {
-  CoreType,
-  EntityPropertyDict,
-  LayerManager,
-  MouseEventUtils,
-  ParticleManager,
-  PrivateEntityType,
-  RoamManager,
-  SceneListenerManager,
-  // SpatialAnalysis,
-  SpecialEffectManager,
-  GraphicManager,
-  TimeManager,
-  WeatherManager,
-  XgConfig,
-} from "../index";
-import GlobeBG from "../Assets/globe.jpg";
-import SkyBoxPX from "../Assets/SkyBox/skybox_px.jpg";
-import SkyBoxNX from "../Assets/SkyBox/skybox_nx.jpg";
-import SkyBoxPY from "../Assets/SkyBox/skybox_py.jpg";
-import SkyBoxNY from "../Assets/SkyBox/skybox_ny.jpg";
-import SkyBoxPZ from "../Assets/SkyBox/skybox_pz.jpg";
-import SkyBoxNZ from "../Assets/SkyBox/skybox_nz.jpg";
+// 直接导入具体模块，避免循环依赖
+import { CoreType, PrivateEntityType } from "../enum";
+import type { EntityPropertyDict, XgConfig } from "../types";
+import TimeManager from "./TimeManager";
+import LayerManager from "./LayerManager";
+import ParticleManager from "./ParticleManager";
+import RoamManager from "./RoamManager";
+import SceneListenerManager from "./SceneListenerManager";
+import WeatherManager from "./WeatherManager";
+import GraphicManager from "./GraphicManager";
+import SpecialEffectManager from "./SpecialEffectManager";
+import MouseEventUtils from "./MouseEventUtils";
 import AbstractPopup from "../DataSources/XgPopup/AbstractPopup";
 
 /// token
@@ -58,8 +47,14 @@ Ion.defaultAccessToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNTg2OTNhYi1hM2JmLTQyYTItOWE1NS0wMzNjMzAyZDI3NGYiLCJpZCI6MjU5MTAsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODY4MzI4NDV9.2DP9UQowHfxa656C1UZT7vVvMk39xJSPTL83-Ce-Ypg";
 // Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMTYxYjE3Zi0yM2ZjLTQzOTUtOTUyZS0wNGRlYTI0NzZkNWEiLCJpZCI6MjU5LCJpYXQiOjE2MjI1Nzc1NzF9.wBdlWsqCoHM9tpplqxAPCdQWsERtxJc65IFZRf4g0z4';
 
+// 异步获取资源URL的函数
+function getResourceUrl(path: string): string {
+  // 在运行时通过相对路径访问资源
+  return new URL(`../Assets/${path}`, import.meta.url).href;
+}
+
 const singleTileImageryProvider = new SingleTileImageryProvider({
-  url: GlobeBG,
+  url: getResourceUrl("globe.jpg"),
   tileWidth: 2048,
   tileHeight: 1024,
   rectangle: Rectangle.MAX_VALUE,
@@ -85,12 +80,12 @@ const viewerOptions: Viewer.ConstructorOptions = {
   /// 天空盒纹理
   skyBox: new SkyBox({
     sources: {
-      positiveX: SkyBoxPX,
-      negativeX: SkyBoxNX,
-      positiveY: SkyBoxPY,
-      negativeY: SkyBoxNY,
-      positiveZ: SkyBoxPZ,
-      negativeZ: SkyBoxNZ,
+      positiveX: getResourceUrl("SkyBox/skybox_px.jpg"),
+      negativeX: getResourceUrl("SkyBox/skybox_nx.jpg"),
+      positiveY: getResourceUrl("SkyBox/skybox_py.jpg"),
+      negativeY: getResourceUrl("SkyBox/skybox_ny.jpg"),
+      positiveZ: getResourceUrl("SkyBox/skybox_pz.jpg"),
+      negativeZ: getResourceUrl("SkyBox/skybox_nz.jpg"),
     },
     show: true,
   }),

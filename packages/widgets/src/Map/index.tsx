@@ -7,8 +7,6 @@
  * @LastEditTime: 2025-06-05 11:06:46
  */
 
-import "../index.css";
-import "cesium/Build/Cesium/Widgets/widgets.css";
 import { FC, memo } from "react";
 import { CoreType } from "@xh-gis/engine";
 import Core, { CoreProps } from "../Core";

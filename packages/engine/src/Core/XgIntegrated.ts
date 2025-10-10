@@ -7,7 +7,10 @@
  * @LastEditTime: 2025-08-14 18:36:58
  */
 import { Entity, JulianDate } from "cesium";
-import { EntityPropertyDict, XgEarth, XgMap, PrivateEntityType } from "..";
+import type { EntityPropertyDict } from "../types";
+import { PrivateEntityType } from "../enum";
+import XgEarth from "./XgEarth";
+import XgMap from "./XgMap";
 
 type Options = {
   map?: XgMap;

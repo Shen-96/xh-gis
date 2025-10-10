@@ -3,7 +3,7 @@ import AbstractCore from "../../../Core/AbstractCore";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryStyleMap, Point2Deg, Point3DegList } from "../../../types";
 import { GeometryType, GraphicType, SymbolType } from "../../../enum";
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 import AbstractPolygon from "../Abstract/AbstractPolygon";
 import { ISymbol } from "../Abstract/ISymbol";
 import { GeometryDrawEventCallbackMap } from "../types";

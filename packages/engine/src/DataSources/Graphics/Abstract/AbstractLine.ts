@@ -29,7 +29,7 @@ export default abstract class AbstractLine extends AbstractGraphic<GeometryType.
   geometryType: GeometryType.LINE;
 
   set style(val) {
-    Object.assign(val, this._style);
+    this._style = { ...defaultLineStyle, ...val };
 
     if (this.entity.polyline) {
       // if (val.material) {
@@ -83,7 +83,8 @@ export default abstract class AbstractLine extends AbstractGraphic<GeometryType.
       positions: new CallbackProperty(() => this.geometryPoints, false),
     });
     this.viewer.entities.add(this.entity);
-    this.core.graphicManager.add(this);
+    // 延迟到 beginDraw 时再注册到 GraphicManager
+    // this.core.graphicManager.add(this);
   }
 
   protected drawActive() {
@@ -112,6 +113,8 @@ export default abstract class AbstractLine extends AbstractGraphic<GeometryType.
       | undefined
   ): void {
     this.setState("drawing");
+    // 在开始绘制时注册到 GraphicManager
+    this.core.graphicManager.add(this);
 
     this.onLeftClick(callback);
   }

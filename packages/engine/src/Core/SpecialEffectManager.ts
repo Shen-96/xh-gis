@@ -6,11 +6,11 @@
  * @LastEditors: EV-申小虎
  * @LastEditTime: 2025-08-14 18:36:32
  */
-import {
-  LayerManager,
+import LayerManager from "./LayerManager";
+import type {
   XgConeFxGraphicOptions,
   XgEllipsoidFxGraphicOptions,
-} from "..";
+} from "../types";
 import {
   Clock,
   ConstantPositionProperty,
@@ -19,7 +19,7 @@ import {
   VelocityOrientationProperty,
 } from "cesium";
 import AbstractStereoSpecialEffect from "../DataSources/SpecialEffect/AbstractStereoSpecialEffect";
-import { SpecialEffectType } from "../index";
+import { SpecialEffectType } from "../enum";
 import AbstractSpecialEffect from "../DataSources/SpecialEffect/AbstractSpecialEffect";
 import XgConeFX from "../DataSources/SpecialEffect/XgConeFX";
 import XgEllipsoidFX from "../DataSources/SpecialEffect/XgEllipsoidFX";

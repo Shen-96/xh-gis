@@ -7,11 +7,11 @@
  * @LastEditTime: 2025-08-14 18:35:58
  */
 import {
-  Viewer,
-  Cartesian3,
+  ParticleSystem,
+  createGuid,
   defined,
   JulianDate,
-  ParticleSystem,
+  Cartesian3,
   Transforms,
   Matrix4,
   Cartesian2,
@@ -21,7 +21,9 @@ import {
   Color,
   CircleEmitter,
 } from "cesium";
-import { Particle, WeatherManager, ParticleType } from "..";
+import type { Particle } from "../types";
+import { ParticleType } from "../enum";
+import WeatherManager from "./WeatherManager";
 import FireImg from "../Assets/Particle/fire.png";
 import SmokeImg from "../Assets/Particle/smoke.png";
 import CircularImg from "../Assets/Particle/circular.jpg";

@@ -13,7 +13,7 @@ import AbstractCore from "../../../Core/AbstractCore";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryType, GraphicType } from "../../../enum";
 import { GeometryStyleMap } from "../../../types";
-import { GeometryUtils } from "../../../Core/GeometryUtils";
+import GeometryUtils from "../../../Core/GeometryUtils";
 
 export default class CurvedArrow extends AbstractLine {
   graphicType: GraphicType;

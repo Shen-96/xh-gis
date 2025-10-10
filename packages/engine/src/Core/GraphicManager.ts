@@ -7,13 +7,9 @@
  * @LastEditTime: 2025-08-18 17:27:22
  */
 import { createGuid } from "cesium";
-import {
-  CoordinateUtils,
-  GeometryType,
-  Point3Deg,
-  GraphicType,
-  SymbolType,
-} from "../index";
+import type { Point3Deg } from "../types";
+import { GeometryType, GraphicType, SymbolType } from "../enum";
+import CoordinateUtils from "./CoordinateUtils";
 import AbstractGraphic from "../DataSources/Graphics/Abstract/AbstractGraphic";
 import { GeometryDrawEventCallbackMap } from "../DataSources/Graphics/types";
 import AbstractCore from "./AbstractCore";

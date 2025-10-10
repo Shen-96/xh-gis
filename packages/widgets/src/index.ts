@@ -8,8 +8,12 @@
  */
 
 // 导出核心组件
-export { default as Map } from "./Map";
 export { default as Earth } from "./Earth";
+export { default as Map } from "./Map";
+export { default as StatusBar } from "./Statusbar";
+export { default as TimeLine } from "./Timeline";
+export { default as ToolBar } from "./Toolbox";
+export { PlottingToolbar, PlottingList } from "./GraphicsTools";
 
 // 导出类型
 export type { CoreProps } from "./Core";

@@ -8,12 +8,12 @@
  */
 
 import { Cartesian3, Color, Material, MaterialAppearance } from "cesium";
-import { GraphicOptions } from "..";
+import type { GraphicOptions } from "../types";
+import { MaterialType } from "../enum";
 import EllipsoidScanFS from "../Shaders/EllipsoidScanFS";
 import EllipsoidElectricFS from "../Shaders/EllipsoidElectricFS";
 import EllipsoidSpiralFS from "../Shaders/EllipsoidSpiralFS";
 import EllipsoidWaveFS from "../Shaders/EllipsoidWaveFS";
-import { MaterialType } from "..";
 
 export function createCustomMaterialAppearance(
   style: any,

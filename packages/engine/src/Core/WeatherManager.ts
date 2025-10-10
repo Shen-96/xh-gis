@@ -7,7 +7,7 @@
  * @LastEditTime: 2025-08-14 18:36:48
  */
 import { Cartesian3, Viewer } from "cesium";
-import { WindDirectionType } from "../index";
+import { WindDirectionType } from "../enum";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";
 

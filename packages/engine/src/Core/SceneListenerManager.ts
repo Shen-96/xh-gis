@@ -8,7 +8,7 @@
  */
 
 import { Scene, JulianDate } from "cesium";
-import { SceneListenerType } from "../index";
+import { SceneListenerType } from "../enum";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";
 

@@ -1,18 +1,16 @@
 import {
-  Math as CesiumMath,
+  Primitive,
   Cartesian3,
-  Color,
-  ColorGeometryInstanceAttribute,
   EllipsoidGeometry,
   GeometryInstance,
-  Matrix4,
   PerInstanceColorAppearance,
-  Primitive,
+  Matrix4,
+  Math as CesiumMath,
   Matrix3,
   HeadingPitchRoll,
   createGuid,
 } from "cesium";
-import { Attitude, SectorGraphicOptions } from "..";
+import type { Attitude, SectorGraphicOptions } from "../types";
 
 function computeModelMatrix(
   modelMatrix: Matrix4,

@@ -40,7 +40,7 @@ export default abstract class AbstractPolygon extends AbstractGraphic<GeometryTy
   readonly markCollection = new CustomDataSource("markCollection");
 
   set style(val) {
-    this.style = { ...defaultPolygonStyle, ...val };
+    this._style = { ...defaultPolygonStyle, ...val };
 
     // if (this.entity.polygon && val.material) {
     //   if (val.material instanceof Color) {
@@ -128,7 +128,8 @@ export default abstract class AbstractPolygon extends AbstractGraphic<GeometryTy
     });
     this.viewer.entities.add(this.outlineEntity);
     this.viewer.dataSources.add(this.markCollection);
-    this.core.graphicManager.add(this);
+    // 延迟到 beginDraw 时再注册到 GraphicManager
+    // this.core.graphicManager.add(this);
   }
 
   protected drawActive() {
@@ -172,6 +173,8 @@ export default abstract class AbstractPolygon extends AbstractGraphic<GeometryTy
     ) => void
   ): void {
     this.setState("drawing");
+    // 在开始绘制时注册到 GraphicManager
+    this.core.graphicManager.add(this);
 
     this.onLeftClick(callback);
   }
