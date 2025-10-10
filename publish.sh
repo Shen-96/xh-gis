@@ -110,6 +110,7 @@ if [ "$TAG" != "latest" ]; then
 fi
 
 # 检查是否已登录 npm
+info "检查 NPM 登录状态..."
 if [ "$DRY_RUN" = false ]; then
     if ! npm whoami &> /dev/null; then
         error "请先登录 npm: npm login"
@@ -118,6 +119,7 @@ if [ "$DRY_RUN" = false ]; then
     success "NPM 用户: $(npm whoami)"
 fi
 
+info "检查工作目录状态..."
 # 检查工作目录是否干净（排除 pnpm-lock.yaml 文件）
 UNCOMMITTED_FILES=$(git status --porcelain | grep -v "pnpm-lock.yaml")
 if [[ -n "$UNCOMMITTED_FILES" ]]; then
@@ -127,6 +129,7 @@ if [[ -n "$UNCOMMITTED_FILES" ]]; then
     exit 1
 fi
 
+info "检查分支状态..."
 # 检查是否在主分支
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
@@ -145,6 +148,7 @@ fi
 # 获取版本信息
 if [ -n "$PACKAGE_NAME" ]; then
     # 单包模式
+    info "正在获取单包版本信息..."
     if [ "$PACKAGE_NAME" = "engine" ]; then
         PACKAGE_VERSION=$(node -p "require('./packages/engine/package.json').version")
         FULL_PACKAGE_NAME="@xh-gis/engine"
@@ -163,6 +167,7 @@ if [ -n "$PACKAGE_NAME" ]; then
     echo "  - $FULL_PACKAGE_NAME@$PACKAGE_VERSION"
 else
     # 统一模式
+    info "正在获取统一版本信息..."
     ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
     WIDGETS_VERSION=$(node -p "require('./packages/widgets/package.json').version")
     ROOT_VERSION=$(node -p "require('./package.json').version")
