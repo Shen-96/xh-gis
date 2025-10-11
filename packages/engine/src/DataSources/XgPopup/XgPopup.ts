@@ -8,7 +8,8 @@
  */
 
 import { Cartesian2, Cartesian3, Cartographic, defined } from "cesium";
-import { CoordinateUtils, SceneListenerType } from "../../index";
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import { SceneListenerType } from "../../enum";
 import AbstractPopup, { AbstractPopupOptions } from "./AbstractPopup";
 import { createRoot } from "react-dom/client";
 

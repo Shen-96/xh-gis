@@ -22,15 +22,11 @@ import {
   CustomDataSource,
   ClockRange,
 } from "cesium";
-import {
-  MathUtils,
-  ParticleManager,
-  Animation,
-  AnimationGroup,
-  Particle,
-  RoamManager,
-  WeatherManager,
-} from "..";
+import MathUtils from "./MathUtils";
+import ParticleManager from "./ParticleManager";
+import RoamManager from "./RoamManager";
+import WeatherManager from "./WeatherManager";
+import { Animation, AnimationGroup, Particle } from "../types";
 import CoordinateUtils from "./CoordinateUtils";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";

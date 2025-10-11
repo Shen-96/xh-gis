@@ -17,7 +17,6 @@ import {
   Cartesian3,
 } from "cesium";
 import PolylineDashConvectionFS from "../../Shaders/PolylineDashConvectionFS";
-import { MaterialType } from "../../index";
 
 type Options = {
   color?: Color;
@@ -31,12 +30,12 @@ type Options = {
 };
 
 type CustomMaterial = {
-  type: MaterialType;
+  type: string;
   uniforms: Options;
 };
 
 const customMaterial: CustomMaterial = {
-  type: MaterialType.PolylineDashConvection,
+  type: "PolylineDashConvection",
   uniforms: {
     color: Color.WHITE,
     gapColor: Color.TRANSPARENT,

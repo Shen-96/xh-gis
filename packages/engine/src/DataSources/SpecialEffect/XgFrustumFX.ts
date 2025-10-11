@@ -15,13 +15,13 @@ import {
   Quaternion,
 } from "cesium";
 import {
-  CoordinateUtils,
   FrustumStyleOptions,
-  MathUtils,
   SpecialEffectOptions,
-  SpecialEffectType,
   XgFrustumFxStyleOptions,
-} from "../..";
+} from "../../types";
+import { SpecialEffectType } from "../../enum";
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import MathUtils from "../../Core/MathUtils";
 import createFrustumOutlinePrimitive from "../../Workers/createFrustumOutlinePrimitive";
 import createFrustumPrimitive from "../../Workers/createFrustumPrimitive";
 import AbstractStereoSpecialEffect from "./AbstractStereoSpecialEffect";

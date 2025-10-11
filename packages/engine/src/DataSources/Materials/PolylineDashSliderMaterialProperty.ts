@@ -17,7 +17,6 @@ import {
   Cartesian3,
 } from "cesium";
 import PolylineDashSliderFS from "../../Shaders/PolylineDashSliderFS";
-import { MaterialType } from "../../index";
 
 type Options = {
   color?: Color;
@@ -32,12 +31,12 @@ type Options = {
 };
 
 type CustomMaterial = {
-  type: MaterialType;
+  type: string;
   uniforms: Options;
 };
 
 const customMaterial: CustomMaterial = {
-  type: MaterialType.PolylineDashSlider,
+  type: "PolylineDashSlider",
   uniforms: {
     color: Color.WHITE,
     gapColor: Color.TRANSPARENT,

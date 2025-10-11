@@ -7,10 +7,11 @@
  * @LastEditTime: 2025-08-14 18:47:03
  */
 import { Cartesian2, Cartesian3, createGuid, SceneTransforms } from "cesium";
-import { CoordinateUtils, MathUtils, ProjectionPoint } from "../..";
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import MathUtils from "../../Core/MathUtils";
+import { ProjectionPoint, Point3Deg } from "../../types";
 import { ElementType, ReactElement } from "react";
 import { createRoot } from "react-dom/client";
-import { Point3Deg } from "../../index";
 import AbstractCore from "../../Core/AbstractCore";
 
 // export type PopupAnchor =

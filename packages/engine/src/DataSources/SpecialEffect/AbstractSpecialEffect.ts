@@ -16,14 +16,14 @@ import {
   TimeIntervalCollection,
   createGuid,
 } from "cesium";
-import {
-  CoordinateUtils,
-  MathUtils,
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import MathUtils from "../../Core/MathUtils";
+import type {
   SpecialEffectGraphicOptions,
   SpecialEffectOptions,
-  SpecialEffectType,
   XgFxStyleOptions,
-} from "../..";
+} from "../../types";
+import type { SpecialEffectType } from "../../enum";
 
 type Options<T = XgFxStyleOptions> = SpecialEffectOptions<T> & {
   type: SpecialEffectType;

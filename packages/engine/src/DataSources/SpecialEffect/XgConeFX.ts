@@ -16,12 +16,12 @@ import {
 } from "cesium";
 import {
   ConeStyleOptions,
-  CoordinateUtils,
-  MathUtils,
   SpecialEffectOptions,
-  SpecialEffectType,
   XgConeFxStyleOptions,
-} from "../..";
+} from "../../types";
+import { SpecialEffectType } from "../../enum";
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import MathUtils from "../../Core/MathUtils";
 import createCylinderOutlinePrimitive from "../../Workers/createCylinderOutlinePrimitive";
 import createCylinderPrimitive from "../../Workers/createCylinderPrimitive";
 import AbstractStereoSpecialEffect from "./AbstractStereoSpecialEffect";

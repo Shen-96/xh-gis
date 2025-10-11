@@ -10,7 +10,6 @@
 import { PointGraphics, BillboardGraphics } from "cesium";
 import { GeometryStyleMap, Point3Deg } from "../../types";
 import { GeometryType } from "../../enum";
-import AbstractGraphic from "./Abstract/AbstractGraphic";
 
 export type PointStyle = Pick<
   PointGraphics.ConstructorOptions,
@@ -75,18 +74,18 @@ export type FlashAnimationOpts<T extends GeometryType> = {
   endStyle?: GeometryStyleMap[T];
 };
 
-// 定义一个映射关系，将 geometryType 映射到对应的 GeometryDrawEventCallbackMap 类型
+// 将 GeometryDrawEventCallbackMap 的定义移到这里，但不引用 AbstractGraphic
 export type GeometryDrawEventCallbackMap = {
   [GeometryType.POINT]: (
     position: Point3Deg,
-    self: AbstractGraphic<GeometryType.POINT>
+    self: any // 使用 any 代替具体的 AbstractGraphic 类型，避免循环依赖
   ) => void;
   [GeometryType.LINE]: (
     positions: Point3Deg[],
-    self: AbstractGraphic<GeometryType.LINE>
+    self: any // 使用 any 代替具体的 AbstractGraphic 类型，避免循环依赖
   ) => void;
   [GeometryType.POLYGON]: (
     positions: Point3Deg[],
-    self: AbstractGraphic<GeometryType.POLYGON>
+    self: any // 使用 any 代替具体的 AbstractGraphic 类型，避免循环依赖
   ) => void;
 };

@@ -15,7 +15,6 @@ import {
   Material,
 } from "cesium";
 import FlowPointFS from "../../Shaders/FlowPointFS";
-import { MaterialType } from "../../index";
 
 type Options = {
   background: string;
@@ -25,12 +24,12 @@ type Options = {
 };
 
 type CustomMaterial = {
-  type: MaterialType;
+  type: string;
   uniforms: Options;
 };
 
 const customMaterial: CustomMaterial = {
-  type: MaterialType.FlowPoint,
+  type: "FlowPoint",
   uniforms: {
     point: "",
     background: "",

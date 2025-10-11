@@ -16,7 +16,6 @@ import {
   Cartesian2,
 } from "cesium";
 import FlowLineFS from "../../Shaders/FlowLineFS";
-import { MaterialType } from "../../index";
 
 type Options = {
   image: string;
@@ -25,12 +24,12 @@ type Options = {
 };
 
 type CustomMaterial = {
-  type: MaterialType;
+  type: string;
   uniforms: Options;
 };
 
 const customMaterial: CustomMaterial = {
-  type: MaterialType.FlowLine,
+  type: "FlowLine",
   uniforms: {
     image: "",
     speed: 1,

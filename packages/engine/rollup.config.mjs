@@ -11,7 +11,7 @@ import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import url from "@rollup/plugin-url";
-import terser from "@rollup/plugin-terser";
+import copy from "rollup-plugin-copy";
 
 export default {
   input: "src/index.ts", // TypeScript 入口文件
@@ -21,6 +21,7 @@ export default {
     preserveModules: true, // 可选，保留原始模块结构
     preserveModulesRoot: "src", // 可选，保持 src 目录结构
   },
+  external: ["lodash"], // 将 lodash 标记为外部依赖
   plugins: [
     resolve(), // 解析 node_modules 中的包（如 cesium）
     commonjs(), // 将 CommonJS 转为 ES Module（比如 Cesium）
@@ -31,20 +32,25 @@ export default {
       include: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.svg"],
       emitFiles: true, // 必须！让图片输出到 dist 目录
     }),
-    // 压缩和去注释
-    terser({
-      compress: {
-        drop_console: false, // 保留 console，如需去掉可设为 true
-        drop_debugger: true, // 去掉 debugger
-        pure_funcs: [], // 可以指定纯函数进行优化
-      },
-      format: {
-        comments: false, // 去掉所有注释
-        beautify: false, // 不美化，保持压缩
-      },
-      mangle: {
-        reserved: ['Cesium'], // 保留 Cesium 相关变量名不被混淆
-      },
+    copy({
+      targets: [
+        { src: "src/Assets/**/*", dest: "dist/Assets" }
+      ]
     }),
+    // 暂时禁用压缩和去注释，避免变量名混淆导致的问题
+    // terser({
+    //   compress: {
+    //     drop_console: false, // 保留 console，如需去掉可设为 true
+    //     drop_debugger: true, // 去掉 debugger
+    //     pure_funcs: [], // 可以指定纯函数进行优化
+    //   },
+    //   format: {
+    //     comments: false, // 去掉所有注释
+    //     beautify: false, // 不美化，保持压缩
+    //   },
+    //   mangle: {
+    //     reserved: ['Cesium', 'core', 'style', 'cartesian', 'callback', 'positions', 'self', 't', 'e', 'n', 'r', 'i', 'o', 's', 'a', 'c', 'u', 'l', 'd', 'p', 'h', 'm', 'g', 'f', 'v', 'w', 'y', 'b', 'S', 'P', 'M', 'D', 'R', 'A', 'E', 'T', 'O', 'I', 'N', 'L', 'C', 'U', 'F', 'G', 'H', 'J', 'K', 'Q', 'V', 'W', 'X', 'Y', 'Z'], // 保留更多变量名不被混淆
+    //   },
+    // }),
   ],
 };

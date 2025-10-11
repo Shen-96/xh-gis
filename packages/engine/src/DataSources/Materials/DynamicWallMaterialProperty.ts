@@ -17,7 +17,6 @@ import {
 } from "cesium";
 import DynamicWallFS from "../../Shaders/DynamicWallFS";
 import wall from "../../Assets/Textures/wall.png";
-import { MaterialType } from "../../index";
 
 type Options = {
   color?: Color;
@@ -25,14 +24,14 @@ type Options = {
 };
 
 type CustomMaterial = {
-  type: MaterialType;
+  type: string;
   uniforms: Options & {
     image: string;
   };
 };
 
 const customMaterial: CustomMaterial = {
-  type: MaterialType.DynamicWall,
+  type: "DynamicWall",
   uniforms: {
     color: new Color(1, 1, 1, 1),
     image: wall,

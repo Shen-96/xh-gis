@@ -9,16 +9,16 @@
 
 import { Property, Quaternion, VelocityOrientationProperty } from "cesium";
 import {
-  Attitude,
   ConeStyleOptions,
-  CoordinateUtils,
   EllipsoidStyleOptions,
   FrustumStyleOptions,
-  MathUtils,
   SpecialEffectOptions,
   SpecialEffectStereoStyleOptions,
-  SpecialEffectType,
-} from "../..";
+  Attitude,
+} from "../../types";
+import { SpecialEffectType } from "../../enum";
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import MathUtils from "../../Core/MathUtils";
 import AbstractSpecialEffect from "./AbstractSpecialEffect";
 
 type StereoStyleOptions =

@@ -34,16 +34,15 @@ import {
 } from "cesium";
 import {
   BasemapConfig,
-  CoordinateUtils,
-  GraphicManager,
-  GraphicType,
-  GraphicUtils,
   Layer,
   LayerConfig,
   LayerItem,
-  LayerType,
-  MathUtils,
-} from "..";
+} from "../types";
+import { GraphicType, LayerType } from "../enum";
+import CoordinateUtils from "./CoordinateUtils";
+import GraphicManager from "./GraphicManager";
+import GraphicUtils from "./GraphicUtils";
+import MathUtils from "./MathUtils";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";
 import GeometryUtils from "./GeometryUtils";

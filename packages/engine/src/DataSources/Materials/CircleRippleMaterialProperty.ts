@@ -15,7 +15,6 @@ import {
   Color,
   MaterialProperty,
 } from "cesium";
-import { MaterialType } from "../../index";
 import CircleRippleFS from "../../Shaders/CircleRippleFS";
 
 type Options = {
@@ -26,12 +25,12 @@ type Options = {
 };
 
 type CustomMaterial = {
-  type: MaterialType;
+  type: string;
   uniforms: Options;
 };
 
 const customMaterial: CustomMaterial = {
-  type: MaterialType.CircleRipple,
+  type: "CircleRipple",
   uniforms: {
     color: new Color(1, 1, 1, 1),
     speed: 1,

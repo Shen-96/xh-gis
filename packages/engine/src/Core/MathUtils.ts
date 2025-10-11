@@ -5,11 +5,11 @@ import {
   Matrix4,
   Matrix3,
   Math as CesiumMath,
+  Cartographic,
 } from "cesium";
 import type { Point, ProjectionPoint } from "../types";
 import Geographic from "./Geographic";
 import Constant from "./Constant";
-import CoordinateUtils from "./CoordinateUtils";
 
 const xPI = (Math.PI * 3000.0) / 180.0;
 const a = 6378245.0;
@@ -824,8 +824,10 @@ class MathUtils {
    */
   static getHeading(posA: Geographic, posB: Geographic) {
     //地理坐标A,B
-    const p0 = CoordinateUtils.gcsToCartesian3(posA),
-      p1 = CoordinateUtils.gcsToCartesian3(posB);
+    const cartographicA = Cartographic.fromDegrees(posA.longitude, posA.latitude, posA.altitude);
+    const cartographicB = Cartographic.fromDegrees(posB.longitude, posB.latitude, posB.altitude);
+    const p0 = Cartographic.toCartesian(cartographicA),
+      p1 = Cartographic.toCartesian(cartographicB);
     if (!defined(p0) && defined(p1)) return undefined;
     //计算p0位置的enu位置矩阵的旋转部分
     const defrotmat = Matrix4.fromRotationTranslation(

@@ -15,7 +15,6 @@ import {
   Material,
 } from "cesium";
 import FlowPointFS from "../../Shaders/PolylineDashSliderFS";
-import { MaterialType } from "../../index";
 
 type Options = {
   background: string;
@@ -24,12 +23,12 @@ type Options = {
 };
 
 type CustomMaterial = {
-  type: MaterialType;
+  type: string;
   uniforms: Options;
 };
 
 const customMaterial: CustomMaterial = {
-  type: MaterialType.ConvectionPoint,
+  type: "ConvectionPoint",
   uniforms: {
     point: "",
     background: "",

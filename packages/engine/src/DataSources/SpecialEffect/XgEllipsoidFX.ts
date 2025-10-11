@@ -16,13 +16,13 @@ import {
   defined,
 } from "cesium";
 import {
-  CoordinateUtils,
   EllipsoidStyleOptions,
-  MathUtils,
   SpecialEffectOptions,
-  SpecialEffectType,
   XgEllipsoidFxStyleOptions,
-} from "../..";
+} from "../../types";
+import { SpecialEffectType } from "../../enum";
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import MathUtils from "../../Core/MathUtils";
 import createEllipsoidPrimitive from "../../Workers/createEllipsoidPrimitive";
 import createEllipsoidOutlinePrimitive from "../../Workers/createEllipsoidOutlinePrimitive";
 import AbstractStereoSpecialEffect from "./AbstractStereoSpecialEffect";

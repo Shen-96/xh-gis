@@ -47,14 +47,18 @@ Ion.defaultAccessToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNTg2OTNhYi1hM2JmLTQyYTItOWE1NS0wMzNjMzAyZDI3NGYiLCJpZCI6MjU5MTAsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODY4MzI4NDV9.2DP9UQowHfxa656C1UZT7vVvMk39xJSPTL83-Ce-Ypg";
 // Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMTYxYjE3Zi0yM2ZjLTQzOTUtOTUyZS0wNGRlYTI0NzZkNWEiLCJpZCI6MjU5LCJpYXQiOjE2MjI1Nzc1NzF9.wBdlWsqCoHM9tpplqxAPCdQWsERtxJc65IFZRf4g0z4';
 
-// 异步获取资源URL的函数
+// 根据环境动态获取资源URL的函数
 function getResourceUrl(path: string): string {
-  // 在运行时通过相对路径访问资源
+  // 在开发环境中，尝试从public目录访问资源
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return `/${path}`;
+  }
+  // 在生产环境中，使用相对路径
   return new URL(`../Assets/${path}`, import.meta.url).href;
 }
 
 const singleTileImageryProvider = new SingleTileImageryProvider({
-  url: getResourceUrl("globe.jpg"),
+  url: getResourceUrl("Assets/globe.jpg"),
   tileWidth: 2048,
   tileHeight: 1024,
   rectangle: Rectangle.MAX_VALUE,
@@ -80,12 +84,12 @@ const viewerOptions: Viewer.ConstructorOptions = {
   /// 天空盒纹理
   skyBox: new SkyBox({
     sources: {
-      positiveX: getResourceUrl("SkyBox/skybox_px.jpg"),
-      negativeX: getResourceUrl("SkyBox/skybox_nx.jpg"),
-      positiveY: getResourceUrl("SkyBox/skybox_py.jpg"),
-      negativeY: getResourceUrl("SkyBox/skybox_ny.jpg"),
-      positiveZ: getResourceUrl("SkyBox/skybox_pz.jpg"),
-      negativeZ: getResourceUrl("SkyBox/skybox_nz.jpg"),
+      positiveX: getResourceUrl("Assets/SkyBox/skybox_px.jpg"),
+      negativeX: getResourceUrl("Assets/SkyBox/skybox_nx.jpg"),
+      positiveY: getResourceUrl("Assets/SkyBox/skybox_py.jpg"),
+      negativeY: getResourceUrl("Assets/SkyBox/skybox_ny.jpg"),
+      positiveZ: getResourceUrl("Assets/SkyBox/skybox_pz.jpg"),
+      negativeZ: getResourceUrl("Assets/SkyBox/skybox_nz.jpg"),
     },
     show: true,
   }),

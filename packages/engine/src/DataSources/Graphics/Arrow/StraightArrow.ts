@@ -12,7 +12,7 @@ import AbstractCore from "../../../Core/AbstractCore";
 import AbstractLine from "../Abstract/AbstractLine";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
-import { GeometryType, GraphicType } from "../../../enum";;
+import { GeometryType, GraphicType } from "../../../enum";
 import { GeometryStyleMap } from "../../../types";
 import GeometryUtils from "../../../Core/GeometryUtils";
 

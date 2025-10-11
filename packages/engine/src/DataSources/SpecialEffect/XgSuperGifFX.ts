@@ -17,13 +17,13 @@ import {
 } from "cesium";
 import {
   HorizontalOriginValueType,
-  CoordinateUtils,
-  GraphicUtils,
   SpecialEffectOptions,
-  SpecialEffectType,
   VerticalOriginValueType,
   XgSuperGifFxStyleOptions,
-} from "../..";
+} from "../../types";
+import { SpecialEffectType } from "../../enum";
+import CoordinateUtils from "../../Core/CoordinateUtils";
+import GraphicUtils from "../../Core/GraphicUtils";
 import AbstractSpecialEffect from "./AbstractSpecialEffect";
 // import SuperGif from "libgif";
 import { cloneDeep } from "lodash";

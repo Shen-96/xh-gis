@@ -16,7 +16,11 @@ export default defineConfig({
     port: 3000,
     open: true,
     host: true,
+    fs: {
+      allow: ['..']
+    }
   },
+  assetsInclude: ['**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg'],
   build: {
     outDir: "dist",
     sourcemap: true,

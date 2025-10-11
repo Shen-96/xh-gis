@@ -30,7 +30,23 @@ import MouseEventUtils from "../../../Core/MouseEventUtils";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { defaultControlPointStyle } from "../styles";
 import { CoreType, GeometryType, GraphicType } from "../../../enum";
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+
+// 定义具体的 GeometryDrawEventCallbackMap 类型，引用 AbstractGraphic 类自身
+interface ConcreteGeometryDrawEventCallbackMap extends GeometryDrawEventCallbackMap {
+  [GeometryType.POINT]: (
+    position: Point3Deg,
+    self: AbstractGraphic<GeometryType.POINT>
+  ) => void;
+  [GeometryType.LINE]: (
+    positions: Point3Deg[],
+    self: AbstractGraphic<GeometryType.LINE>
+  ) => void;
+  [GeometryType.POLYGON]: (
+    positions: Point3Deg[],
+    self: AbstractGraphic<GeometryType.POLYGON>
+  ) => void;
+}
 
 export default abstract class AbstractGraphic<T extends GeometryType> {
   protected readonly core: AbstractCore<CoreType>;
@@ -204,7 +220,7 @@ export default abstract class AbstractGraphic<T extends GeometryType> {
    * a click will add points for geometric shapes. During editing, selecting a drawn shape puts it in an
    *  editable state. Clicking on empty space sets it to a static state.
    */
-  protected onLeftClick(callback?: GeometryDrawEventCallbackMap[T]) {
+  protected onLeftClick(callback?: ConcreteGeometryDrawEventCallbackMap[T]) {
     MouseEventUtils.setLeftClickListener(this.eventHandler, (res) => {
       if (res.screenPosition == undefined) return;
 
@@ -291,7 +307,7 @@ export default abstract class AbstractGraphic<T extends GeometryType> {
     });
   }
 
-  onLeftDoubleClick(callback?: GeometryDrawEventCallbackMap[T]) {
+  onLeftDoubleClick(callback?: ConcreteGeometryDrawEventCallbackMap[T]) {
     MouseEventUtils.setLeftDoubleClickListener(this.eventHandler, () => {
       if (this.state === "drawing") {
         this.finishDrawing(callback);
@@ -307,10 +323,10 @@ export default abstract class AbstractGraphic<T extends GeometryType> {
     return distance > 10;
   }
 
-  abstract beginDraw(callback?: GeometryDrawEventCallbackMap[T]): void;
+  abstract beginDraw(callback?: ConcreteGeometryDrawEventCallbackMap[T]): void;
 
   protected abstract finishDrawing(
-    callback?: GeometryDrawEventCallbackMap[T]
+    callback?: ConcreteGeometryDrawEventCallbackMap[T]
   ): void;
 
   protected removeLeftClickListener() {
@@ -338,7 +354,7 @@ export default abstract class AbstractGraphic<T extends GeometryType> {
    */
   protected addControlPoints() {
     this.controlPointEntities = [
-      ...this.points.entries().map(([id, position]) => {
+      ...Array.from(this.points.entries()).map(([id, position]) => {
         return this.viewer.entities.add({
           id,
           position,
@@ -971,7 +987,7 @@ export default abstract class AbstractGraphic<T extends GeometryType> {
   //Abstract method that must be implemented by subclasses.
   protected abstract addPoint(
     cartesian: Cartesian3,
-    callback?: GeometryDrawEventCallbackMap[T]
+    callback?: ConcreteGeometryDrawEventCallbackMap[T]
   ): void;
 
   //Abstract method that must be implemented by subclasses.
