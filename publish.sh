@@ -301,26 +301,51 @@ if [ -n "$PACKAGE_NAME" ]; then
     # 单包模式
     if [ "$PACKAGE_NAME" = "widgets" ]; then
         # 为 widgets 包准备发布版本
+        info "转换 widgets 包的 workspace 依赖..."
         cp packages/widgets/package.json packages/widgets/package.json.backup
+        info "转换前 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json.backup)"
         sed "s/\"@xh-gis\/engine\": \"workspace:\^$PACKAGE_VERSION\"/\"@xh-gis\/engine\": \"^$PACKAGE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
+        info "转换后 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json)"
     elif [ "$PACKAGE_NAME" = "root" ]; then
         # 获取其他包的版本
         ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
         WIDGETS_VERSION=$(node -p "require('./packages/widgets/package.json').version")
         
+        info "转换根包的 workspace 依赖..."
+        info "ENGINE_VERSION: $ENGINE_VERSION"
+        info "WIDGETS_VERSION: $WIDGETS_VERSION"
+        
         # 为根包准备发布版本
         cp package.json package.json.backup
+        info "转换前根包依赖:"
+        grep -A 3 '"dependencies"' package.json.backup
+        
         sed -e "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:\^$WIDGETS_VERSION\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+        
+        info "转换后根包依赖:"
+        grep -A 3 '"dependencies"' package.json
     fi
 else
     # 统一模式
+    info "转换统一模式的 workspace 依赖..."
+    info "ENGINE_VERSION: $ENGINE_VERSION"
+    info "WIDGETS_VERSION: $WIDGETS_VERSION"
+    
     # 为 widgets 包准备发布版本
     cp packages/widgets/package.json packages/widgets/package.json.backup
+    info "转换前 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json.backup)"
     sed "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
+    info "转换后 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json)"
 
     # 为根包准备发布版本
     cp package.json package.json.backup
+    info "转换前根包依赖:"
+    grep -A 3 '"dependencies"' package.json.backup
+    
     sed -e "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:\^$WIDGETS_VERSION\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+    
+    info "转换后根包依赖:"
+    grep -A 3 '"dependencies"' package.json
 fi
 
 # 定义清理函数
@@ -329,16 +354,20 @@ cleanup() {
     if [ -n "$PACKAGE_NAME" ]; then
         # 单包模式
         if [ "$PACKAGE_NAME" = "widgets" ] && [ -f "packages/widgets/package.json.backup" ]; then
+            info "恢复 widgets package.json"
             mv packages/widgets/package.json.backup packages/widgets/package.json
         elif [ "$PACKAGE_NAME" = "root" ] && [ -f "package.json.backup" ]; then
+            info "恢复根包 package.json"
             mv package.json.backup package.json
         fi
     else
         # 统一模式
         if [ -f "package.json.backup" ]; then
+            info "恢复根包 package.json"
             mv package.json.backup package.json
         fi
         if [ -f "packages/widgets/package.json.backup" ]; then
+            info "恢复 widgets package.json"
             mv packages/widgets/package.json.backup packages/widgets/package.json
         fi
     fi
