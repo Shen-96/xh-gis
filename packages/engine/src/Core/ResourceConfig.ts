@@ -170,7 +170,7 @@ class ResourceManager {
     
     if (isDevelopment) {
       // 开发环境：从根路径或配置的基础路径访问资源
-      const basePath = this.config.basePath || '';
+      const basePath = this.config.basePath || '/xh-gis/Assets';
       const cleanPath = path.startsWith('Assets/') ? path : `Assets/${path}`;
       return basePath ? `${basePath}/${cleanPath}` : `/${cleanPath}`;
     }

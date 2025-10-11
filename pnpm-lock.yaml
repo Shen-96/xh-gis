@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@xh-gis/engine':
-        specifier: workspace:^1.0.7
-        version: link:packages/engine
+        specifier: ^1.0.8
+        version: 1.0.8(cesium@1.108.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@xh-gis/widgets':
-        specifier: workspace:^1.0.1
-        version: link:packages/widgets
+        specifier: ^1.0.1
+        version: 1.0.1(cesium@1.108.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       terser:
         specifier: ^5.43.1
@@ -159,7 +159,7 @@ importers:
   packages/widgets:
     dependencies:
       '@xh-gis/engine':
-        specifier: workspace:^1.0.7
+        specifier: workspace:^1.0.8
         version: link:../engine
       cesium:
         specifier: 1.108.0
@@ -1347,6 +1347,20 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.1.0-beta.0
+
+  '@xh-gis/engine@1.0.8':
+    resolution: {integrity: sha512-ITWGS+Kl0bq9ZUiY+7FvHHHkHOghq3ijmXKShdVQcg53/xNOmJ1m8YW2Gf9MVl4S6iFxvumtxRazpI4iWWFHcA==}
+    peerDependencies:
+      cesium: 1.108.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
+
+  '@xh-gis/widgets@1.0.1':
+    resolution: {integrity: sha512-xdffH+KpxzuefnV6vCv3jksqxAqkbeetuZPK1CBPx1UwnuDtMxU2VbgM3Elwz826yZo8bDVKc5/EelclApIx7g==}
+    peerDependencies:
+      cesium: 1.108.0
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   '@zip.js/zip.js@2.4.26':
     resolution: {integrity: sha512-I9HBO3BHIxEMQmltmHM3iqUW6IHqi3gsL9wTSXvHTRpOrA6q2OxtR58EDSaOGjHhDVJ+wIOAxZyKq2x00AVmqw==}
@@ -4779,6 +4793,20 @@ snapshots:
       vite: 4.5.14(@types/node@20.19.20)(terser@5.43.1)
     transitivePeerDependencies:
       - supports-color
+
+  '@xh-gis/engine@1.0.8(cesium@1.108.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+    dependencies:
+      cesium: 1.108.0
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+
+  '@xh-gis/widgets@1.0.1(cesium@1.108.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+    dependencies:
+      '@xh-gis/engine': 1.0.8(cesium@1.108.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      cesium: 1.108.0
+      lodash: 4.17.21
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   '@zip.js/zip.js@2.4.26': {}
 
