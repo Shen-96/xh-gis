@@ -1,6 +1,6 @@
 {
     "name": "xh-gis",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Bundle package that installs @xh-gis/engine and @xh-gis/widgets",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -8,7 +8,7 @@
     "scripts": {
         "build": "tsc && node compress.mjs",
         "build:dev": "tsc",
-        "build:packages": "pnpm -r build",
+        "build:packages": "pnpm -r --filter='!xh-gis-sandcastle' build",
         "prepublishOnly": "pnpm build:packages && pnpm build",
         "publish:all": "pnpm -r publish"
     },
