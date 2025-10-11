@@ -6,8 +6,8 @@
     "types": "./dist/index.d.ts",
     "module": "./dist/index.js",
     "scripts": {
-        "build": "tsc && node compress.mjs",
-        "build:dev": "tsc",
+        "build": "tsc && node copy-assets.mjs && node compress.mjs",
+        "build:dev": "tsc && node copy-assets.mjs",
         "build:packages": "pnpm -r --filter='!xh-gis-sandcastle' build",
         "prepublishOnly": "pnpm build:packages && pnpm build",
         "publish:all": "pnpm -r publish"
