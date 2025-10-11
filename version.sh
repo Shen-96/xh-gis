@@ -293,6 +293,58 @@ update_engine_dependencies() {
     rm -f package.json.bak
 }
 
+# 更新依赖版本函数（仅在单包模式且更新 widgets 包时执行）
+update_widgets_dependencies() {
+    # 只在单包模式且更新 widgets 包时执行
+    if [ -z "$PACKAGE_NAME" ] || [ "$PACKAGE_NAME" != "widgets" ]; then
+        return
+    fi
+    
+    if [ "$DRY_RUN" = true ]; then
+        info "[模拟] 更新依赖版本"
+        return
+    fi
+    
+    info "🔗 更新依赖版本..."
+    
+    # 更新根包对 widgets 的依赖
+    sed -i.bak "s/\"@xh-gis\/widgets\": \"workspace:[^\"]*\"/\"@xh-gis\/widgets\": \"workspace:^$NEW_VERSION\"/g" package.json
+    rm -f package.json.bak
+}
+
+# 自动更新根包版本函数（当子包更新时）
+update_root_version_for_subpackage() {
+    # 只在单包模式且更新子包时执行
+    if [ -z "$PACKAGE_NAME" ] || [ "$PACKAGE_NAME" = "root" ]; then
+        return
+    fi
+    
+    if [ "$DRY_RUN" = true ]; then
+        info "[模拟] 自动更新根包版本"
+        return
+    fi
+    
+    info "📦 自动更新根包版本..."
+    
+    # 获取当前根包版本
+    ROOT_CURRENT_VERSION=$(node -p "require('./package.json').version")
+    
+    # 计算新的根包版本（补丁版本递增）
+    ROOT_NEW_VERSION=$(echo $ROOT_CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+    
+    info "根包当前版本: $ROOT_CURRENT_VERSION"
+    info "根包目标版本: $ROOT_NEW_VERSION"
+    
+    # 更新根包版本
+    npm version $ROOT_NEW_VERSION --no-git-tag-version > /dev/null
+    
+    # 更新版本常量
+    sed -i.bak "s/export const version = \"[^\"]*\"/export const version = \"$ROOT_NEW_VERSION\"/g" index.ts
+    rm -f index.ts.bak
+    
+    info "根包版本已更新到 $ROOT_NEW_VERSION"
+}
+
 # 更新版本常量函数（仅在统一模式或更新根包时执行）
 update_version_constant() {
     # 在统一模式或更新根包时更新版本常量
@@ -319,6 +371,10 @@ if [ -n "$PACKAGE_NAME" ]; then
     info "update_version 执行完成"
     update_engine_dependencies
     info "update_engine_dependencies 执行完成"
+    update_widgets_dependencies
+    info "update_widgets_dependencies 执行完成"
+    update_root_version_for_subpackage
+    info "update_root_version_for_subpackage 执行完成"
     update_version_constant
     info "update_version_constant 执行完成"
 else
@@ -374,15 +430,38 @@ if [ "$DRY_RUN" = false ]; then
         
         info "📝 提交版本更改..."
         git add .
-        git commit -m "chore($PACKAGE_NAME): bump version to $NEW_VERSION
+        
+        # 根据是否更新了根包版本来生成不同的提交信息
+        if [ -n "$PACKAGE_NAME" ] && [ "$PACKAGE_NAME" != "root" ]; then
+            # 子包更新，同时更新了根包
+            ROOT_CURRENT_VERSION=$(node -p "require('./package.json').version")
+            git commit -m "chore($PACKAGE_NAME): bump version to $NEW_VERSION
+
+- Update $FULL_PACKAGE_NAME to version $NEW_VERSION
+- Auto-update xh-gis root package to version $ROOT_CURRENT_VERSION
+- Update workspace dependencies if needed
+- Update version constant if needed"
+        else
+            # 仅根包更新或统一模式
+            git commit -m "chore($PACKAGE_NAME): bump version to $NEW_VERSION
 
 - Update $FULL_PACKAGE_NAME to version $NEW_VERSION
 - Update workspace dependencies if needed
 - Update version constant if needed"
+        fi
+        
         success "版本更改已提交"
         echo ""
         info "🏷️  创建标签: ${PACKAGE_NAME}-v$NEW_VERSION"
         git tag "${PACKAGE_NAME}-v$NEW_VERSION"
+        
+        # 如果是子包更新，还需要为根包创建标签
+        if [ -n "$PACKAGE_NAME" ] && [ "$PACKAGE_NAME" != "root" ]; then
+            ROOT_CURRENT_VERSION=$(node -p "require('./package.json').version")
+            info "🏷️  创建根包标签: root-v$ROOT_CURRENT_VERSION"
+            git tag "root-v$ROOT_CURRENT_VERSION"
+        fi
+        
         success "标签已创建"
     else
         warn "跳过自动提交，请手动提交更改"

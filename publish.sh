@@ -356,6 +356,10 @@ if [ "$DRY_RUN" = true ]; then
             echo "  npm publish --tag $TAG"
         else
             echo "  cd $PACKAGE_DIR && npm publish --tag $TAG"
+            # 如果是子包，也会发布根包
+            if [ "$PACKAGE_NAME" != "root" ]; then
+                echo "  npm publish --tag $TAG  # 自动发布根包"
+            fi
         fi
     else
         # 统一模式
@@ -378,6 +382,22 @@ else
         fi
         
         success "$FULL_PACKAGE_NAME 发布成功"
+        
+        # 如果是子包发布，自动发布根包
+        if [ "$PACKAGE_NAME" != "root" ]; then
+            info "📤 自动发布根包..."
+            
+            # 等待 CDN 传播
+            info "⏳ 等待 NPM CDN 传播（30秒）..."
+            sleep 30
+            
+            # 获取根包版本
+            ROOT_VERSION=$(node -p "require('./package.json').version")
+            
+            info "📤 发布 xh-gis@$ROOT_VERSION..."
+            npm publish --tag $TAG
+            success "xh-gis 发布成功"
+        fi
     else
         # 统一模式
         info "📤 开始发布包..."
@@ -421,6 +441,11 @@ info "📦 已发布的包:"
 if [ -n "$PACKAGE_NAME" ]; then
     # 单包模式
     echo "  - $FULL_PACKAGE_NAME@$PACKAGE_VERSION"
+    # 如果是子包发布，也显示根包
+    if [ "$PACKAGE_NAME" != "root" ]; then
+        ROOT_VERSION=$(node -p "require('./package.json').version")
+        echo "  - xh-gis@$ROOT_VERSION"
+    fi
 else
     # 统一模式
     echo "  - @xh-gis/engine@$ENGINE_VERSION"
@@ -437,8 +462,10 @@ if [ -n "$PACKAGE_NAME" ]; then
     # 单包模式
     if [ "$PACKAGE_NAME" = "engine" ]; then
         echo "  - https://www.npmjs.com/package/@xh-gis/engine"
+        echo "  - https://www.npmjs.com/package/xh-gis"
     elif [ "$PACKAGE_NAME" = "widgets" ]; then
         echo "  - https://www.npmjs.com/package/@xh-gis/widgets"
+        echo "  - https://www.npmjs.com/package/xh-gis"
     else
         echo "  - https://www.npmjs.com/package/xh-gis"
     fi
