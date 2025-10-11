@@ -538,5 +538,7 @@ fi
 echo ""
 success "✨ 发布成功！"
 
-# 发布成功后手动清理
-cleanup
+# 发布成功后手动清理（dry-run 模式不清理）
+if [ "$DRY_RUN" != true ]; then
+    cleanup
+fi
