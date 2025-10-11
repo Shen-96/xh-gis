@@ -1,6 +1,6 @@
 {
     "name": "xh-gis",
-    "version": "1.0.6",
+    "version": "1.0.3",
     "description": "Bundle package that installs @xh-gis/engine and @xh-gis/widgets",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
