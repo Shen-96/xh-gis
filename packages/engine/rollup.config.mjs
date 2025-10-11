@@ -26,15 +26,10 @@ export default {
     resolve(), // 解析 node_modules 中的包（如 cesium）
     commonjs(), // 将 CommonJS 转为 ES Module（比如 Cesium）
     typescript(), // 编译 TypeScript
-    url({
-      // 处理图片等静态资源
-      limit: 8192, // 小于 8KB 的图片转为 base64（可选）
-      include: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.svg"],
-      emitFiles: true, // 必须！让图片输出到 dist 目录
-    }),
+    // 只使用 copy 插件来处理 Assets 文件夹，保持目录结构
     copy({
       targets: [
-        { src: "src/Assets/**/*", dest: "dist/Assets" }
+        { src: "src/Assets", dest: "dist" }
       ]
     }),
     // 暂时禁用压缩和去注释，避免变量名混淆导致的问题

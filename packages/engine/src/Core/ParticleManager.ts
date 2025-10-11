@@ -24,9 +24,8 @@ import {
 import type { Particle } from "../types";
 import { ParticleType } from "../enum";
 import WeatherManager from "./WeatherManager";
-import FireImg from "../Assets/Particle/fire.png";
-import SmokeImg from "../Assets/Particle/smoke.png";
-import CircularImg from "../Assets/Particle/circular.jpg";
+// 使用资源路径字符串而不是直接导入二进制文件
+import { getResourceUrl } from "./ResourceConfig";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";
 
@@ -146,7 +145,7 @@ class ParticleManager extends AbstractManager {
           particle = new ParticleSystem({
             // loop: true,
             // image: getImage(),//粒子图像
-            image: FireImg,
+            image: getResourceUrl("Particle/fire.png"),
             // startColor: new Cesium.Color(1, 0, 0).withAlpha(.7),//开始颜色
             // endColor: new Cesium.Color(1, 1, 0).withAlpha(.5),//结束时的颜色
             // scale: 20,
@@ -191,7 +190,7 @@ class ParticleManager extends AbstractManager {
           particle = new ParticleSystem({
             // loop: true,
             // image: getImage(),//粒子图像
-            image: SmokeImg,
+            image: getResourceUrl("Particle/smoke.png"),
             startColor: new Color(1, 1, 1).withAlpha(0.6), //开始颜色
             endColor: new Color(0, 0, 0).withAlpha(0.3), //结束时的颜色
             // scale: 20,
@@ -240,7 +239,7 @@ class ParticleManager extends AbstractManager {
           particle = new ParticleSystem({
             // loop: true,
             // image: getImage(),//粒子图像
-            image: CircularImg,
+            image: getResourceUrl("Particle/circular.jpg"),
             startColor: Color.fromCssColorString("rgba(131, 217, 236, 0.17)"), //开始颜色
             endColor: Color.fromCssColorString("rgba(131, 217, 236, 0.07)"), //结束时的颜色
             // scale: 20,
@@ -281,7 +280,7 @@ class ParticleManager extends AbstractManager {
         case ParticleType.BLAST:
           particle = new ParticleSystem({
             loop: false,
-            image: FireImg,
+            image: getResourceUrl("Particle/fire.png"),
             sizeInMeters: true,
             minimumImageSize: new Cartesian2(
               0.525695254208858,
