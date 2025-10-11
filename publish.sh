@@ -373,8 +373,8 @@ cleanup() {
     fi
 }
 
-# 设置清理陷阱
-trap cleanup EXIT
+# 设置清理陷阱 - 仅在错误时清理
+trap 'if [ $? -ne 0 ]; then cleanup; fi' EXIT
 
 if [ "$DRY_RUN" = true ]; then
     warn "模拟模式：跳过实际发布"
@@ -537,3 +537,6 @@ else
 fi
 echo ""
 success "✨ 发布成功！"
+
+# 发布成功后手动清理
+cleanup
