@@ -1,11 +1,25 @@
 import React, { useCallback, useState } from 'react';
 import { Earth } from '@xh-gis/widgets';
-import { XgEarth } from '@xh-gis/engine';
+import { XgEarth, setResourceConfig } from '@xh-gis/engine';
 import styles from './BasicMapExample.module.css';
 
 const BasicMapExample: React.FC = () => {
   const [earthInstance, setEarthInstance] = useState<XgEarth | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+
+  // 配置资源加载 - 在开发环境中使用 Vite 的静态资源路径
+  React.useEffect(() => {
+    // 在开发环境中，Vite 会提供静态资源服务
+    const isDev = window.location.hostname === 'localhost';
+    setResourceConfig({
+      isDevelopment: isDev,
+      basePath: '/Assets'
+    });
+    console.log('资源配置已设置:', {
+      isDevelopment: isDev,
+      basePath: '/Assets'
+    });
+  }, []);
 
   const handleEarthInit = useCallback((earth: XgEarth) => {
     console.log('XH-GIS Earth initialized:', earth);

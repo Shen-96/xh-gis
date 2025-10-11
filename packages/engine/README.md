@@ -16,6 +16,109 @@ npm install cesium@1.108.0
 npm install @xh-gis/engine
 ```
 
+## 静态资源配置
+
+从 v2.0 开始，xh-gis 引擎提供了灵活的静态资源配置系统，支持多种部署场景。
+
+### 快速配置
+
+```typescript
+import { setResourceConfig } from '@xh-gis/engine';
+
+// Next.js 项目配置
+setResourceConfig({
+  isDevelopment: process.env.NODE_ENV === 'development',
+  basePath: '/Assets'  // 对应 public/Assets 目录
+});
+
+// 或使用 CDN
+setResourceConfig({
+  urlResolver: (resourcePath) => {
+    return `https://cdn.jsdelivr.net/npm/@xh-gis/engine@latest/dist/Assets/${resourcePath}`;
+  }
+});
+```
+
+### Next.js 集成
+
+**推荐方案：使用 CDN（无需拷贝资源）**
+
+```typescript
+import { useEffect } from 'react';
+import { setResourceConfig } from '@xh-gis/engine';
+
+export default function MapComponent() {
+  useEffect(() => {
+    setResourceConfig({
+      urlResolver: (resourcePath) => {
+        return `https://cdn.jsdelivr.net/npm/@xh-gis/engine@latest/dist/Assets/${resourcePath}`;
+      }
+    });
+  }, []);
+  
+  // 你的地图组件...
+}
+```
+
+**本地资源方案：**
+
+1. 将资源放置在 `public/Assets/` 目录下
+2. 配置资源路径：
+
+```typescript
+setResourceConfig({
+  isDevelopment: process.env.NODE_ENV === 'development',
+  basePath: '/Assets'
+});
+```
+
+### 高级配置
+
+```typescript
+// 自定义路径映射
+setResourceConfig({
+  isDevelopment: true,
+  basePath: '/static',
+  pathMapping: {
+    'SkyBox/': 'textures/skybox/',
+    'globe.jpg': 'images/earth.jpg'
+  }
+});
+
+// 自定义 URL 解析器
+setResourceConfig({
+  urlResolver: (resourcePath, config) => {
+    if (resourcePath.startsWith('SkyBox/')) {
+      return `/cdn/skybox/${resourcePath.substring(7)}`;
+    }
+    return `/assets/${resourcePath}`;
+  }
+});
+```
+
+### API 参考
+
+#### `setResourceConfig(config: ResourceConfig)`
+设置全局资源配置。
+
+#### `getResourceUrl(resourcePath: string): string`
+获取资源的完整 URL。
+
+#### `getResourceConfig(): ResourceConfig`
+获取当前的资源配置。
+
+#### `ResourceConfig` 接口
+```typescript
+interface ResourceConfig {
+  basePath?: string;           // 基础路径
+  isDevelopment?: boolean;     // 是否为开发环境
+  pathMapping?: Record<string, string>; // 路径映射
+  urlResolver?: (resourcePath: string, config: ResourceConfig) => string; // 自定义解析器
+}
+```
+
+> 💡 **提示**: 详细的 Next.js 集成指南请参考项目根目录的 `NEXTJS_INTEGRATION_GUIDE.md` 文件。
+
 ## 🚀 使用
 
 ### 创建三维地球

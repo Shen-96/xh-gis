@@ -32,6 +32,9 @@ import XgMap from "./Core/XgMap";
 // import XgIntegrated from "./Core/XgIntegrated";
 import CoordinateUtils from "./Core/CoordinateUtils";
 import MouseEventUtils from "./Core/MouseEventUtils";
+import { setResourceConfig, getResourceUrl, getResourceConfig, resourceManager, ResourcePreloader, resourcePreloader } from "./Core/ResourceConfig";
+import type { ResourceConfig } from "./Core/ResourceConfig";
+import { ResourceManager } from "./Core/AbstractCore";
 
 export {
   RoamManager,
@@ -57,7 +60,16 @@ export {
   Constant,
   // SpatialAnalysis,
   SpecialEffectManager,
+  setResourceConfig,
+  getResourceUrl,
+  getResourceConfig,
+  resourceManager,
+  ResourceManager,
+  ResourcePreloader,
+  resourcePreloader,
 };
+
+export type { ResourceConfig };
 
 declare global {
   type PartialDeep<T> = {

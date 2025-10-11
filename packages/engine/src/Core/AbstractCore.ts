@@ -41,28 +41,80 @@ import GraphicManager from "./GraphicManager";
 import SpecialEffectManager from "./SpecialEffectManager";
 import MouseEventUtils from "./MouseEventUtils";
 import AbstractPopup from "../DataSources/XgPopup/AbstractPopup";
+import { getResourceUrl } from "./ResourceConfig";
 
 /// token
 Ion.defaultAccessToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNTg2OTNhYi1hM2JmLTQyYTItOWE1NS0wMzNjMzAyZDI3NGYiLCJpZCI6MjU5MTAsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODY4MzI4NDV9.2DP9UQowHfxa656C1UZT7vVvMk39xJSPTL83-Ce-Ypg";
 // Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMTYxYjE3Zi0yM2ZjLTQzOTUtOTUyZS0wNGRlYTI0NzZkNWEiLCJpZCI6MjU5LCJpYXQiOjE2MjI1Nzc1NzF9.wBdlWsqCoHM9tpplqxAPCdQWsERtxJc65IFZRf4g0z4';
 
-// 根据环境动态获取资源URL的函数
-function getResourceUrl(path: string): string {
-  // 在开发环境中，尝试从public目录访问资源
-  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-    return `/${path}`;
+/**
+ * 静态资源路径常量
+ * 集中管理所有静态资源路径，便于维护和配置
+ */
+const RESOURCE_PATHS = {
+  /** 地球纹理 */
+  GLOBE_TEXTURE: "globe.jpg",
+  /** 天空盒纹理 */
+  SKYBOX: {
+    POSITIVE_X: "SkyBox/skybox_px.jpg",
+    NEGATIVE_X: "SkyBox/skybox_nx.jpg",
+    POSITIVE_Y: "SkyBox/skybox_py.jpg",
+    NEGATIVE_Y: "SkyBox/skybox_ny.jpg",
+    POSITIVE_Z: "SkyBox/skybox_pz.jpg",
+    NEGATIVE_Z: "SkyBox/skybox_nz.jpg",
+  },
+} as const;
+
+/**
+ * 资源管理工具类
+ * 提供静态资源的统一管理和访问接口
+ */
+export class ResourceManager {
+  /**
+   * 获取所有资源路径常量
+   */
+  static get PATHS() {
+    return RESOURCE_PATHS;
   }
-  // 在生产环境中，使用相对路径
-  return new URL(`../Assets/${path}`, import.meta.url).href;
+
+  /**
+   * 创建天空盒配置
+   * @returns SkyBox 配置对象
+   */
+  static createSkyBoxConfig() {
+    return {
+      sources: {
+        positiveX: getResourceUrl(RESOURCE_PATHS.SKYBOX.POSITIVE_X),
+        negativeX: getResourceUrl(RESOURCE_PATHS.SKYBOX.NEGATIVE_X),
+        positiveY: getResourceUrl(RESOURCE_PATHS.SKYBOX.POSITIVE_Y),
+        negativeY: getResourceUrl(RESOURCE_PATHS.SKYBOX.NEGATIVE_Y),
+        positiveZ: getResourceUrl(RESOURCE_PATHS.SKYBOX.POSITIVE_Z),
+        negativeZ: getResourceUrl(RESOURCE_PATHS.SKYBOX.NEGATIVE_Z),
+      },
+      show: true,
+    };
+  }
+
+  /**
+   * 创建单瓦片影像提供者
+   * @returns SingleTileImageryProvider 实例
+   */
+  static createGlobeImageryProvider(): SingleTileImageryProvider {
+    return new SingleTileImageryProvider({
+      url: getResourceUrl(RESOURCE_PATHS.GLOBE_TEXTURE),
+      tileWidth: 2048,
+      tileHeight: 1024,
+      rectangle: Rectangle.MAX_VALUE,
+    });
+  }
 }
 
-const singleTileImageryProvider = new SingleTileImageryProvider({
-  url: getResourceUrl("Assets/globe.jpg"),
-  tileWidth: 2048,
-  tileHeight: 1024,
-  rectangle: Rectangle.MAX_VALUE,
-});
+/**
+ * 创建单瓦片影像提供者
+ * 使用统一的资源配置系统
+ */
+const singleTileImageryProvider = ResourceManager.createGlobeImageryProvider();
 
 const viewerOptions: Viewer.ConstructorOptions = {
   animation: false, /// 是否创建动画小器件，左下角仪表，默认为true
@@ -82,17 +134,7 @@ const viewerOptions: Viewer.ConstructorOptions = {
   // shouldAnimate: true, /// 是否开始时间动画，默认为true
   //   showRenderLoopErrors: true, /// 如果为true，如果出现渲染循环错误，此小部件将自动向用户显示包含错误的HTML面板
   /// 天空盒纹理
-  skyBox: new SkyBox({
-    sources: {
-      positiveX: getResourceUrl("Assets/SkyBox/skybox_px.jpg"),
-      negativeX: getResourceUrl("Assets/SkyBox/skybox_nx.jpg"),
-      positiveY: getResourceUrl("Assets/SkyBox/skybox_py.jpg"),
-      negativeY: getResourceUrl("Assets/SkyBox/skybox_ny.jpg"),
-      positiveZ: getResourceUrl("Assets/SkyBox/skybox_pz.jpg"),
-      negativeZ: getResourceUrl("Assets/SkyBox/skybox_nz.jpg"),
-    },
-    show: true,
-  }),
+  skyBox: new SkyBox(ResourceManager.createSkyBoxConfig()),
   skyAtmosphere: new SkyAtmosphere(), /// 大气层
   // automaticallyTrackDataSourceClocks: true, /// 自动追踪最近添加的数据源的时钟设置，默认为true
   // useDefaultRenderLoop: false,/// 默认为true，如果不需要控制渲染循环，则设为false
