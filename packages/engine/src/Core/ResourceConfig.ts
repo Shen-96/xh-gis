@@ -169,9 +169,11 @@ class ResourceManager {
     }
     
     if (isDevelopment) {
-      // 开发环境：从根路径或配置的基础路径访问资源
-      const basePath = this.config.basePath || '/xh-gis/Assets';
-      const cleanPath = path.startsWith('Assets/') ? path : `Assets/${path}`;
+      // 开发环境：优先使用配置的基础路径；未配置时默认 '/xh-gis'
+      const basePath = (this.config.basePath && this.config.basePath !== '') ? this.config.basePath : '/xh-gis';
+      // 如果 basePath 已经以 /Assets 结尾，则不再重复添加 Assets 前缀
+      const needsAssetsPrefix = !path.startsWith('Assets/') && !basePath.endsWith('/Assets');
+      const cleanPath = needsAssetsPrefix ? `Assets/${path}` : path;
       return basePath ? `${basePath}/${cleanPath}` : `/${cleanPath}`;
     }
     
