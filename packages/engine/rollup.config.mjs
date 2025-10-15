@@ -21,7 +21,13 @@ export default {
     preserveModules: true, // 可选，保留原始模块结构
     preserveModulesRoot: "src", // 可选，保持 src 目录结构
   },
-  external: ["lodash"], // 将 lodash 标记为外部依赖
+  external: [
+    "lodash",
+    "react",
+    "react-dom",
+    "react-dom/client",
+    "cesium"
+  ], // 将常见外部包标记为 external，避免被打入产物
   plugins: [
     resolve(), // 解析 node_modules 中的包（如 cesium）
     commonjs(), // 将 CommonJS 转为 ES Module（比如 Cesium）

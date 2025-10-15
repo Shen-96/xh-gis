@@ -11,7 +11,7 @@ import { Cartesian2, Cartesian3, Cartographic, defined } from "cesium";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import { SceneListenerType } from "../../enum";
 import AbstractPopup, { AbstractPopupOptions } from "./AbstractPopup";
-import { createRoot } from "react-dom/client";
+// 移除静态引入 react-dom/client，改为在需要时动态导入
 
 export type XgPopupOptions = AbstractPopupOptions;
 
@@ -24,19 +24,29 @@ export class XgPopup extends AbstractPopup {
     const popDiv = document.getElementById(this.guid);
     if (!popDiv) return;
 
+    // 若之前渲染过 React 内容，更新前先卸载
+    this.reactRoot?.unmount?.();
+    this.reactRoot = undefined;
+
     /// 标牌内容
     /// 若element的类型为string，则直接赋值给innerHTML
     if (typeof this.element === "string") popDiv.innerHTML = this.element;
     /// 若element的类型为Element，则添加到div中
     else if (this.element instanceof HTMLElement) {
-      popDiv.innerHTML = "";
-      popDiv.remove();
-      popDiv.appendChild(this.element);
+      // 不移除自身节点，直接替换子节点，避免节点抖动
+      popDiv.replaceChildren(this.element);
     } else if (this.isReactElement(this.element)) {
       popDiv.innerHTML = "";
-      popDiv.remove();
-      const root = createRoot(popDiv);
-      root.render(this.element);
+      // 仅在需要时动态导入 react-dom/client，避免将 React 打进核心包
+      import("react-dom/client")
+        .then((mod) => {
+          const root = mod.createRoot(popDiv);
+          root.render(this.element as any);
+          this.reactRoot = root;
+        })
+        .catch(() => {
+          // 动态导入失败时，不阻断；可选择输出告警或降级
+        });
     }
   }
 
@@ -79,8 +89,15 @@ export class XgPopup extends AbstractPopup {
     else if (this.element instanceof HTMLElement)
       popDiv.appendChild(this.element);
     else if (this.isReactElement(this.element)) {
-      const root = createRoot(popDiv);
-      root.render(this.element);
+      import("react-dom/client")
+        .then((mod) => {
+          const root = mod.createRoot(popDiv);
+          root.render(this.element as any);
+          this.reactRoot = root;
+        })
+        .catch(() => {
+          // 动态导入失败时，不阻断；可选择输出告警或降级
+        });
     }
 
     /// 向popupContainer添加元素
@@ -278,6 +295,10 @@ export class XgPopup extends AbstractPopup {
     // this.xgCore.sceneListenerManager.removeById(this.guid);
     cancelAnimationFrame(this.animationId);
     this.animationId = -1;
+
+    // 卸载可能存在的 React 根
+    this.reactRoot?.unmount?.();
+    this.reactRoot = undefined;
 
     /// 找到div并移除
     const popDiv = document.getElementById(this.guid);

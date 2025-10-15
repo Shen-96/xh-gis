@@ -10,8 +10,7 @@ import { Cartesian2, Cartesian3, createGuid, SceneTransforms } from "cesium";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import MathUtils from "../../Core/MathUtils";
 import { ProjectionPoint, Point3Deg } from "../../types";
-import { ElementType, ReactElement } from "react";
-import { createRoot } from "react-dom/client";
+import type { ElementType, ReactElement } from "react";
 import AbstractCore from "../../Core/AbstractCore";
 
 // export type PopupAnchor =
@@ -71,6 +70,8 @@ export default abstract class AbstractPopup<T extends ElementType = any> {
   /// 鼠标移动的偏移量
   protected mouseMoveOffset: [number, number] = [0, 0];
   protected animationId = -1;
+  /// React 根节点（仅在传入 ReactElement 时按需创建）
+  protected reactRoot?: any;
 
   constructor(options: AbstractPopupOptions) {
     this.xgCore = options.xgCore;
@@ -172,13 +173,8 @@ export default abstract class AbstractPopup<T extends ElementType = any> {
 
   // 定义一个类型守卫函数，用于检查参数是否为React.ReactElement
   protected isReactElement(element: any): element is ReactElement {
-    return (
-      element &&
-      typeof element === "object" &&
-      /// TODO: ReactElement的类型定义，内置元素如div，element.type是div
-      // typeof element.type === "function" &&
-      typeof element.props === "object"
-    );
+    const REACT_ELEMENT = Symbol.for("react.element");
+    return !!element && typeof element === "object" && (element as any).$$typeof === REACT_ELEMENT;
   }
 
   protected abstract updateElement(): void;
