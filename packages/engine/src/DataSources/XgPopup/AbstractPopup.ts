@@ -177,6 +177,17 @@ export default abstract class AbstractPopup<T extends ElementType = any> {
     return !!element && typeof element === "object" && (element as any).$$typeof === REACT_ELEMENT;
   }
 
+  // 检查是否为 ReactElement 数组（例如 Fragment 或返回数组的情况）
+  protected isReactElementsArray(element: any): element is ReactElement[] {
+    const REACT_ELEMENT = Symbol.for("react.element");
+    return (
+      Array.isArray(element) &&
+      element.every(
+        (el) => !!el && typeof el === "object" && (el as any).$$typeof === REACT_ELEMENT
+      )
+    );
+  }
+
   protected abstract updateElement(): void;
 
   protected updateIcon(): void {

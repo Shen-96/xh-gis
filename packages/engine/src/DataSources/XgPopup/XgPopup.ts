@@ -7,11 +7,9 @@
  * @LastEditTime: 2025-08-14 18:47:14
  */
 
-import { Cartesian2, Cartesian3, Cartographic, defined } from "cesium";
+import { Cartesian2, Cartesian3, Cartographic } from "cesium";
 import CoordinateUtils from "../../Core/CoordinateUtils";
-import { SceneListenerType } from "../../enum";
 import AbstractPopup, { AbstractPopupOptions } from "./AbstractPopup";
-// 移除静态引入 react-dom/client，改为在需要时动态导入
 
 export type XgPopupOptions = AbstractPopupOptions;
 
@@ -35,17 +33,22 @@ export class XgPopup extends AbstractPopup {
     else if (this.element instanceof HTMLElement) {
       // 不移除自身节点，直接替换子节点，避免节点抖动
       popDiv.replaceChildren(this.element);
-    } else if (this.isReactElement(this.element)) {
+    } else if (this.isReactElement(this.element) || this.isReactElementsArray(this.element)) {
       popDiv.innerHTML = "";
       // 仅在需要时动态导入 react-dom/client，避免将 React 打进核心包
       import("react-dom/client")
         .then((mod) => {
           const root = mod.createRoot(popDiv);
-          root.render(this.element as any);
+          try {
+            root.render(this.element as any);
+          } catch (err) {
+            console.error("XgPopup React render error:", err);
+          }
           this.reactRoot = root;
         })
         .catch(() => {
           // 动态导入失败时，不阻断；可选择输出告警或降级
+          console.warn("Failed to import react-dom/client");
         });
     }
   }
@@ -88,15 +91,19 @@ export class XgPopup extends AbstractPopup {
     /// 若element的类型为Element，则添加到div中
     else if (this.element instanceof HTMLElement)
       popDiv.appendChild(this.element);
-    else if (this.isReactElement(this.element)) {
+    else if (this.isReactElement(this.element) || this.isReactElementsArray(this.element)) {
       import("react-dom/client")
         .then((mod) => {
           const root = mod.createRoot(popDiv);
-          root.render(this.element as any);
+          try {
+            root.render(this.element as any);
+          } catch (err) {
+            console.error("XgPopup React render error:", err);
+          }
           this.reactRoot = root;
         })
         .catch(() => {
-          // 动态导入失败时，不阻断；可选择输出告警或降级
+          console.warn("Failed to import react-dom/client");
         });
     }
 
