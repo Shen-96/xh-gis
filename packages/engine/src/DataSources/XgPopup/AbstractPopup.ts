@@ -39,7 +39,7 @@ export type AbstractPopupOptions<T extends ElementType = any> = {
   show?: boolean;
   icon?: string;
   iconSize?: [number, number];
-  element?: ReactElement<T> | HTMLElement | string;
+  element?: ReactElement<T> | ReactElement<T>[] | HTMLElement | string;
   /// 锚点位置
   // anchor?: PopupAnchor;
   position: Point3Deg;
@@ -56,7 +56,7 @@ export default abstract class AbstractPopup<T extends ElementType = any> {
   #show: boolean;
   #icon?: string;
   #iconSize: [number, number] = [0, 0];
-  #element?: ReactElement<T> | HTMLElement | string;
+  #element?: ReactElement<T> | ReactElement<T>[] | HTMLElement | string;
   /// 锚点位置
   // #anchor: PopupAnchor;
   #position: Point3Deg;
@@ -137,11 +137,11 @@ export default abstract class AbstractPopup<T extends ElementType = any> {
     this.updateIcon();
   }
 
-  get element(): ReactElement<T> | HTMLElement | string | undefined {
+  get element(): ReactElement<T> | ReactElement<T>[] | HTMLElement | string | undefined {
     return this.#element;
   }
 
-  set element(element: ReactElement<T> | HTMLElement | string | undefined) {
+  set element(element: ReactElement<T> | ReactElement<T>[] | HTMLElement | string | undefined) {
     this.#element = element;
     this.updateElement();
   }

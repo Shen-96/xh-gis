@@ -14,6 +14,9 @@ import AbstractPopup, { AbstractPopupOptions } from "./AbstractPopup";
 export type XgPopupOptions = AbstractPopupOptions;
 
 export class XgPopup extends AbstractPopup {
+  private windowMouseMoveHandler?: (e: MouseEvent) => void;
+  private windowMouseUpHandler?: (e: MouseEvent) => void;
+
   constructor(options: XgPopupOptions) {
     super(options);
   }
@@ -170,18 +173,32 @@ export class XgPopup extends AbstractPopup {
       }
     });
 
-    window.addEventListener("mousemove", (e) => {
+    this.windowMouseMoveHandler = (e: MouseEvent) => {
       if (this.isMouseDown) {
-        const { clientX, clientY } = e as MouseEvent;
-
+        const { clientX, clientY } = e;
         this.mouseMoveOffset = [
-          /// 计算鼠标在x轴上的偏移量
           clientX - this.mouseDownScreenPosition.x,
-          /// 计算鼠标在y轴上的偏移量
           clientY - this.mouseDownScreenPosition.y,
         ];
       }
-    });
+    };
+    window.addEventListener("mousemove", this.windowMouseMoveHandler);
+
+    this.windowMouseUpHandler = () => {
+      if (this.isMouseDown) {
+        this.isMouseDown = false;
+        this.mouseDownScreenPosition = Cartesian2.ZERO;
+        this.offset = [
+          this.offset[0] + this.mouseMoveOffset[0],
+          this.offset[1] + this.mouseMoveOffset[1],
+        ];
+        this.mouseMoveOffset = [0, 0];
+
+        const popDivEl = document.getElementById(this.guid);
+        popDivEl && (popDivEl.style.zIndex = "2");
+      }
+    };
+    window.addEventListener("mouseup", this.windowMouseUpHandler);
 
     const renderFrame = () => {
       const popDiv = document.getElementById(this.guid),
@@ -193,7 +210,7 @@ export class XgPopup extends AbstractPopup {
         this.car3Position
       );
 
-      if (!isPointOnBackside) {
+      if (!isPointOnBackside && this.show) {
         const popLeftTopPosition = this.calulatePopLeftTopPosition();
         /// 修改元素位置
         if (popDiv && linkDiv) {
@@ -300,8 +317,20 @@ export class XgPopup extends AbstractPopup {
     /// TODO: 实现 XgPopup 的销毁逻辑
     /// 先销毁监听事件
     // this.xgCore.sceneListenerManager.removeById(this.guid);
-    cancelAnimationFrame(this.animationId);
-    this.animationId = -1;
+    if (this.animationId !== -1) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = -1;
+    }
+
+    // 移除 window 事件监听
+    if (this.windowMouseMoveHandler) {
+      window.removeEventListener("mousemove", this.windowMouseMoveHandler);
+      this.windowMouseMoveHandler = undefined;
+    }
+    if (this.windowMouseUpHandler) {
+      window.removeEventListener("mouseup", this.windowMouseUpHandler);
+      this.windowMouseUpHandler = undefined;
+    }
 
     // 卸载可能存在的 React 根
     this.reactRoot?.unmount?.();

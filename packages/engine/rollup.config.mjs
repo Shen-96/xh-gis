@@ -10,7 +10,6 @@
 import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import url from "@rollup/plugin-url";
 import copy from "rollup-plugin-copy";
 
 export default {
@@ -21,22 +20,14 @@ export default {
     preserveModules: true, // 可选，保留原始模块结构
     preserveModulesRoot: "src", // 可选，保持 src 目录结构
   },
-  external: [
-    "lodash",
-    "react",
-    "react-dom",
-    "react-dom/client",
-    "cesium"
-  ], // 将常见外部包标记为 external，避免被打入产物
+  external: ["lodash", "react", "react-dom", "react-dom/client", "cesium"], // 将常见外部包标记为 external，避免被打入产物
   plugins: [
     resolve(), // 解析 node_modules 中的包（如 cesium）
     commonjs(), // 将 CommonJS 转为 ES Module（比如 Cesium）
     typescript(), // 编译 TypeScript
     // 只使用 copy 插件来处理 Assets 文件夹，保持目录结构
     copy({
-      targets: [
-        { src: "src/Assets", dest: "dist" }
-      ]
+      targets: [{ src: "src/Assets", dest: "dist" }],
     }),
     // 暂时禁用压缩和去注释，避免变量名混淆导致的问题
     // terser({
