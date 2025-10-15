@@ -1,6 +1,6 @@
 {
     "name": "@xh-gis/engine",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "description": "XH GIS Engine - 核心功能模块",
     "main": "./dist/index.js",
     "module": "./dist/index.js",
