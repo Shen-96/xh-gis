@@ -147,47 +147,16 @@ class ResourceManager {
    * 默认URL解析器
    */
   private defaultUrlResolver(path: string): string {
-    // 检查是否在浏览器环境中
-    if (typeof window === 'undefined') {
-      // Node.js 环境
-      if (this.config.basePath) {
-        return `${this.config.basePath}/${path}`;
-      }
-      return path;
-    }
+    // 始终优先使用已配置的基础路径；未配置时默认使用 '/xh-gis/Assets'
+    const configuredBase = this.config.basePath;
+    const basePathRaw = (configuredBase && configuredBase !== '') ? configuredBase : '/xh-gis/Assets';
+    const basePath = basePathRaw.replace(/\/$/, '');
 
-    // 浏览器环境
-    const { hostname, port } = window.location;
-    
-    // 检查是否为开发环境
-    let isDevelopment = this.config.isDevelopment;
-    if (isDevelopment === undefined) {
-      // 自动检测开发环境
-      const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-      const isDevelopmentPort = ['3000', '3001', '4000', '5000', '5173', '8000', '8080', '9000'].includes(port);
-      isDevelopment = isLocalhost && (isDevelopmentPort || port !== '');
-    }
-    
-    if (isDevelopment) {
-      // 开发环境：优先使用配置的基础路径；未配置时默认 '/xh-gis'
-      const basePath = (this.config.basePath && this.config.basePath !== '') ? this.config.basePath : '/xh-gis';
-      // 如果 basePath 已经以 /Assets 结尾，则不再重复添加 Assets 前缀
-      const needsAssetsPrefix = !path.startsWith('Assets/') && !basePath.endsWith('/Assets');
-      const cleanPath = needsAssetsPrefix ? `Assets/${path}` : path;
-      return basePath ? `${basePath}/${cleanPath}` : `/${cleanPath}`;
-    }
-    
-    // 生产环境：使用 import.meta.url 构建相对路径
-    try {
-      const cleanPath = path.startsWith('Assets/') ? path.substring(7) : path;
-      return new URL(`../Assets/${cleanPath}`, import.meta.url).href;
-    } catch (error) {
-      // 如果 import.meta.url 不可用，回退到相对路径
-      console.warn('Failed to resolve resource URL using import.meta.url, falling back to relative path:', error);
-      const basePath = this.config.basePath || '.';
-      const cleanPath = path.startsWith('Assets/') ? path : `Assets/${path}`;
-      return `${basePath}/${cleanPath}`;
-    }
+    // 如果 basePath 不以 /Assets 结尾，且传入路径未包含 Assets/ 前缀，则自动补齐
+    const needsAssetsPrefix = !basePath.endsWith('/Assets') && !path.startsWith('Assets/');
+    const cleanPath = needsAssetsPrefix ? `Assets/${path}` : path;
+
+    return `${basePath}/${cleanPath}`;
   }
 
   /**

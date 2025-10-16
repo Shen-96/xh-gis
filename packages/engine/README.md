@@ -20,6 +20,15 @@ npm install @xh-gis/engine
 
 从 v2.0 开始，xh-gis 引擎提供了灵活的静态资源配置系统，支持多种部署场景。
 
+### 默认行为（零配置）
+
+不做任何配置时，引擎会将所有资源解析到 `'/xh-gis/Assets'` 路径下：
+
+- 将引擎的静态资源拷贝到 `public/xh-gis/Assets`（推荐约定）
+- 运行时 `getResourceUrl('SkyBox/skybox_px.jpg')` 将输出 `'/xh-gis/Assets/SkyBox/skybox_px.jpg'`
+
+这样在开发与生产环境中均通过 HTTP 访问，避免浏览器阻止的 `file://` 路径。
+
 ### 快速配置
 
 ```typescript
@@ -28,7 +37,7 @@ import { setResourceConfig } from '@xh-gis/engine';
 // Next.js 项目配置
 setResourceConfig({
   isDevelopment: process.env.NODE_ENV === 'development',
-  basePath: '/Assets'  // 对应 public/Assets 目录
+  basePath: '/xh-gis/Assets'  // 对应 public/xh-gis/Assets 目录
 });
 
 // 或使用 CDN
@@ -68,7 +77,7 @@ export default function MapComponent() {
 ```typescript
 setResourceConfig({
   isDevelopment: process.env.NODE_ENV === 'development',
-  basePath: '/Assets'
+  basePath: '/xh-gis/Assets'
 });
 ```
 
