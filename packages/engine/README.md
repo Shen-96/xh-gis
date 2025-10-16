@@ -69,10 +69,10 @@ export default function MapComponent() {
 }
 ```
 
-**本地资源方案：**
+**本地资源方案（统一推荐路径）：**
 
-1. 将资源放置在 `public/Assets/` 目录下
-2. 配置资源路径：
+1. 将资源放置在 `public/xh-gis/Assets/` 目录下
+2. 可选：在代码中配置（多数场景不需要调用）
 
 ```typescript
 setResourceConfig({

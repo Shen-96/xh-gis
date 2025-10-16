@@ -233,6 +233,24 @@ module.exports = {
 - [Widgets 组件文档](./packages/widgets/README.md)
 - [完整 API 参考](./docs/api.md)
 
+## 🗂️ 静态资源配置与验证
+
+为保证开发与生产环境都通过 HTTP 稳定访问，引擎默认将资源解析到 `'/xh-gis/Assets'`：
+
+- 将 `node_modules/@xh-gis/engine/dist/Assets` 拷贝到应用的 `public/xh-gis/Assets`
+- 不需要在代码里调用 `setResourceConfig`
+- 若部署于子路径（如 `'/app'`），在构建工具中注入 `XH_GIS_BASE_URL='/app/xh-gis/Assets'`
+
+验证方法：
+
+```ts
+import { getResourceUrl } from '@xh-gis/engine';
+console.log(getResourceUrl('SkyBox/tycho2t3_80_px.jpg'));
+// 期望输出：/xh-gis/Assets/SkyBox/tycho2t3_80_px.jpg
+```
+
+在浏览器 Network 面板中确认请求为 HTTP（非 `file://`），状态为 200。
+
 ## 🤝 贡献
 
 欢迎提交 Issues 和 Pull Requests！

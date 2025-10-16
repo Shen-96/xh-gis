@@ -114,6 +114,16 @@ earth.graphicManager.setDrawEventHandler('point', (result) => {
 - **React**: ^18.3.1（使用 widgets 包时）
 - **TypeScript**: ^5.0.0
 
+## 🗂️ 静态资源路径约定
+
+- 统一基础路径：`/xh-gis/Assets`
+- 放置方式：将 `node_modules/@xh-gis/engine/dist/Assets` 拷贝到应用的 `public/xh-gis/Assets`
+- 零代码改动：无需在业务代码中调用 `setResourceConfig`，引擎默认解析到上述路径
+- 子路径部署：如应用部署在 `'/app'`，在构建工具中注入 `XH_GIS_BASE_URL='/app/xh-gis/Assets'`
+- 验证方式：
+  - `console.log(getResourceUrl('SkyBox/tycho2t3_80_px.jpg')) // => '/xh-gis/Assets/SkyBox/tycho2t3_80_px.jpg'`
+  - 浏览器 Network 中应看到 HTTP 请求（非 `file://`），返回 200
+
 ## 📖 文档
 
 详细文档请访问：[XH-GIS 文档](https://github.com/Shen-96/xh-gis#readme)

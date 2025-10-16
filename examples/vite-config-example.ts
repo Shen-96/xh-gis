@@ -12,13 +12,13 @@ import react from '@vitejs/plugin-react'; // 或者 vue()
 import { xhgis } from 'vite-plugin-xhgis';
 
 export default defineConfig({
-  plugins: [
+ plugins: [
     react(), // 或者 vue() 等其他框架插件
     
-    // XH-GIS 插件 - 零配置使用
+    // XH-GIS 插件 - 零配置使用（统一基础路径 '/xh-gis/Assets'）
     xhgis({
       // 可选配置项
-      baseUrl: '/xh-gis/Assets',     // XH-GIS 资源基础路径
+      baseUrl: '/xh-gis/Assets',     // XH-GIS 资源基础路径，推荐将资源拷贝到 public/xh-gis/Assets
       devMode: true,                 // 开发模式
       debug: false,                  // 调试模式
     }),
@@ -42,12 +42,12 @@ export default defineConfig({
  * 
  * 1. 开发模式：
  *    - 插件会自动从 node_modules 服务 XH-GIS 资源
- *    - 无需手动配置 setResourceConfig
+ *    - 无需手动配置 setResourceConfig（资源统一位于 /xh-gis/Assets）
  *    - XH-GIS 会自动检测 XH_GIS_BASE_URL 环境变量
  * 
  * 2. 生产构建：
  *    - 插件会注入 XH_GIS_BASE_URL 全局变量
- *    - 需要确保生产环境中 XH-GIS 资源可访问
+ *    - 需要确保生产环境中 XH-GIS 资源可访问（如 public/xh-gis/Assets 或 CDN）
  *    - 可以通过 CDN 或静态文件服务器提供资源
  * 
  * 3. 在组件中使用：
