@@ -124,10 +124,16 @@ info "检查工作目录状态..."
 # 使用 || true 确保即使 grep 没有匹配也不会导致脚本退出
 UNCOMMITTED_FILES=$(git status --porcelain | grep -v "pnpm-lock.yaml" || true)
 if [[ -n "$UNCOMMITTED_FILES" ]]; then
-    error "工作目录不干净，请先提交所有更改"
-    echo "未提交的文件:"
-    echo "$UNCOMMITTED_FILES"
-    exit 1
+    if [ "$DRY_RUN" = true ]; then
+        warn "工作目录不干净（dry-run 继续执行）"
+        echo "未提交的文件:"
+        echo "$UNCOMMITTED_FILES"
+    else
+        error "工作目录不干净，请先提交所有更改"
+        echo "未提交的文件:"
+        echo "$UNCOMMITTED_FILES"
+        exit 1
+    fi
 fi
 
 info "检查分支状态..."
@@ -183,11 +189,10 @@ else
     echo "  - @xh-gis/widgets@$WIDGETS_VERSION"
     echo "  - xh-gis@$ROOT_VERSION"
 
-    # 检查版本一致性
+    # 提示版本不一致但不中止
     if [ "$ENGINE_VERSION" != "$WIDGETS_VERSION" ] || [ "$ENGINE_VERSION" != "$ROOT_VERSION" ]; then
-        error "包版本不一致，请先运行版本管理脚本统一版本"
-        echo "运行: ./version.sh <版本号>"
-        exit 1
+        warn "包版本不一致：允许子包独立增量发布，继续执行"
+        info "如需统一版本，可运行: ./version.sh <版本号>"
     fi
 fi
 
@@ -303,9 +308,32 @@ if [ -n "$PACKAGE_NAME" ]; then
         # 为 widgets 包准备发布版本
         info "转换 widgets 包的 workspace 依赖..."
         cp packages/widgets/package.json packages/widgets/package.json.backup
-        info "转换前 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json.backup)"
-        sed "s/\"@xh-gis\/engine\": \"workspace:\^$PACKAGE_VERSION\"/\"@xh-gis\/engine\": \"^$PACKAGE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
-        info "转换后 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json)"
+        ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
+        WIDGETS_VERSION=$(node -p "require('./packages/widgets/package.json').version")
+        info "ENGINE_VERSION: $ENGINE_VERSION"
+        info "转换前 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json.backup || true)"
+        sed -E "s/\"@xh-gis\/engine\": \"workspace:\^[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g; s/\"@xh-gis\/engine\": \"\^[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g; s/\"@xh-gis\/engine\": \"[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
+        info "转换后 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json || true)"
+        
+        # 同步转换根包依赖，便于随后自动发布根包
+        info "转换根包的依赖以匹配当前子包版本..."
+        cp package.json package.json.backup
+        info "转换前根包依赖:"
+        grep -A 3 '"dependencies"' package.json.backup
+        sed -E -e "s/\"@xh-gis\/engine\": \"[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"[^\"]*\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+        info "转换后根包依赖:"
+        grep -A 3 '"dependencies"' package.json
+    elif [ "$PACKAGE_NAME" = "engine" ]; then
+        # 仅发布 engine 时，同步转换根包依赖
+        ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
+        WIDGETS_VERSION=$(node -p "require('./packages/widgets/package.json').version")
+        info "转换根包的依赖以匹配当前子包版本..."
+        cp package.json package.json.backup
+        info "转换前根包依赖:"
+        grep -A 3 '"dependencies"' package.json.backup
+        sed -E -e "s/\"@xh-gis\/engine\": \"[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"[^\"]*\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+        info "转换后根包依赖:"
+        grep -A 3 '"dependencies"' package.json
     elif [ "$PACKAGE_NAME" = "root" ]; then
         # 获取其他包的版本
         ENGINE_VERSION=$(node -p "require('./packages/engine/package.json').version")
@@ -351,29 +379,17 @@ fi
 # 定义清理函数
 cleanup() {
     info "🔄 恢复原始文件..."
-    if [ -n "$PACKAGE_NAME" ]; then
-        # 单包模式
-        if [ "$PACKAGE_NAME" = "widgets" ] && [ -f "packages/widgets/package.json.backup" ]; then
-            info "恢复 widgets package.json"
-            mv packages/widgets/package.json.backup packages/widgets/package.json
-        elif [ "$PACKAGE_NAME" = "root" ] && [ -f "package.json.backup" ]; then
-            info "恢复根包 package.json"
-            mv package.json.backup package.json
-        fi
-    else
-        # 统一模式
-        if [ -f "package.json.backup" ]; then
-            info "恢复根包 package.json"
-            mv package.json.backup package.json
-        fi
-        if [ -f "packages/widgets/package.json.backup" ]; then
-            info "恢复 widgets package.json"
-            mv packages/widgets/package.json.backup packages/widgets/package.json
-        fi
+    if [ -f "package.json.backup" ]; then
+        info "恢复根包 package.json"
+        mv package.json.backup package.json
+    fi
+    if [ -f "packages/widgets/package.json.backup" ]; then
+        info "恢复 widgets package.json"
+        mv packages/widgets/package.json.backup packages/widgets/package.json
     fi
 }
 
-# 设置清理陷阱 - 仅在错误时清理
+# 设置清理陷阱 - 错误时清理
 trap 'if [ $? -ne 0 ]; then cleanup; fi' EXIT
 
 if [ "$DRY_RUN" = true ]; then
@@ -538,7 +554,5 @@ fi
 echo ""
 success "✨ 发布成功！"
 
-# 发布成功后手动清理（dry-run 模式不清理）
-if [ "$DRY_RUN" != true ]; then
-    cleanup
-fi
+# 统一在结束时清理临时文件（包括 dry-run）
+cleanup
