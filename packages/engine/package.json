@@ -32,6 +32,7 @@
         "@rollup/plugin-terser": "^0.4.4",
         "@rollup/plugin-typescript": "^12.1.4",
         "@rollup/plugin-url": "^8.0.2",
+        "@types/d3-contour": "^3.0.6",
         "@types/react": "^18.3.18",
         "@types/react-dom": "^18.3.5",
         "rollup": "^4.46.3",
@@ -55,5 +56,8 @@
     "homepage": "https://github.com/Shen-96/xh-gis#readme",
     "bugs": {
         "url": "https://github.com/Shen-96/xh-gis/issues"
+    },
+    "dependencies": {
+        "d3-contour": "^4.0.2"
     }
 }

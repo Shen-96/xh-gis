@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound';
 import BasicMapExample from './examples/basic/BasicMapExample';
 import DrawingExample from './examples/basic/DrawingExample';
 import WidgetsExample from './examples/basic/WidgetsExample';
+import HeatmapExample from './examples/basic/HeatmapExample';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
         <Route path="/examples/basic/map" element={<BasicMapExample />} />
         <Route path="/examples/basic/drawing" element={<DrawingExample />} />
         <Route path="/examples/basic/widgets" element={<WidgetsExample />} />
+        <Route path="/examples/basic/heatmap/*" element={<HeatmapExample />} />
         
         {/* 404页面 */}
         <Route path="*" element={<NotFound />} />

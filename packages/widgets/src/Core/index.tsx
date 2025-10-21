@@ -10,7 +10,7 @@
 import "../index.css";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { CoreType, XgEarth, XgMap } from "@xh-gis/engine";
-import { memo, PropsWithRef, useEffect, useRef } from "react";
+import { memo, PropsWithRef, useEffect, useRef, useState } from "react";
 import Statusbar from "../Statusbar";
 import Timeline from "../Timeline";
 import Toolbar from "../Toolbox";
@@ -48,6 +48,7 @@ const Core = <T extends CoreType>({
 }: CoreProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const xgCoreRef = useRef<CoreTypeMap[T] | null>(null);
+  const [fatalError, setFatalError] = useState<Error | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -56,18 +57,26 @@ const Core = <T extends CoreType>({
     console.time(`${coreType} 实例化耗时`);
     let xgCore: CoreTypeMap[T];
 
-    /// 实例化webgl对象
-    if (coreType === CoreType.MAP) {
-      //@ts-ignore
-      xgCore = xgCoreRef.current = new XgMap(containerRef.current);
-
-      window.xgMap = xgCore;
-    } else {
-      //@ts-ignore
-      xgCore = xgCoreRef.current = new XgEarth(containerRef.current);
-
-      window.xgEarth = xgCore;
+    try {
+      /// 实例化webgl对象
+      if (coreType === CoreType.MAP) {
+        //@ts-ignore
+        xgCore = xgCoreRef.current = new XgMap(containerRef.current);
+        // @ts-ignore
+        window.xgMap = xgCore;
+      } else {
+        //@ts-ignore
+        xgCore = xgCoreRef.current = new XgEarth(containerRef.current);
+        // @ts-ignore
+        window.xgEarth = xgCore;
+      }
+    } catch (e: any) {
+      console.timeEnd(`${coreType} 实例化耗时`);
+      console.error("[Core] Viewer init failed:", e);
+      setFatalError(e instanceof Error ? e : new Error(String(e)));
+      return;
     }
+
     console.timeEnd(`${coreType} 实例化耗时`);
 
     console.log(
@@ -85,6 +94,26 @@ const Core = <T extends CoreType>({
   return (
     <div className={`xh-gis-viewer ${coreType}`}>
       <div ref={containerRef} className={"xh-gis-viewer-scene"}></div>
+      {fatalError ? (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            right: 0,
+            padding: "10px",
+            background: "#b0002020",
+            color: "#d00",
+            backdropFilter: "blur(2px)",
+          }}
+        >
+          <strong>初始化失败：</strong> {fatalError.message}
+          <div style={{ marginTop: 6 }}>
+            请检查静态资源路径配置（如 <code>XH_GIS_BASE_URL</code>），并确保
+            <code>/Assets</code> 可访问。
+          </div>
+        </div>
+      ) : null}
       {statusbar ? <Statusbar coreRef={xgCoreRef} /> : null}
       {toolbar ? <Toolbar coreRef={xgCoreRef} /> : null}
       {timeline ? <Timeline coreRef={xgCoreRef} {...timelineProps} /> : null}

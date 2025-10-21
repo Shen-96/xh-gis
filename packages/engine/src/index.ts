@@ -35,6 +35,9 @@ import MouseEventUtils from "./Core/MouseEventUtils";
 import { setResourceConfig, getResourceUrl, getResourceConfig, resourceManager, ResourcePreloader, resourcePreloader } from "./Core/ResourceConfig";
 import type { ResourceConfig } from "./Core/ResourceConfig";
 import { ResourceManager } from "./Core/AbstractCore";
+import HeatmapManager from "./Core/HeatmapManager";
+// Heatmap exports now come from DataSources
+// export * from "./Core/Heatmap";
 
 export {
   RoamManager,
@@ -67,6 +70,7 @@ export {
   ResourceManager,
   ResourcePreloader,
   resourcePreloader,
+  HeatmapManager,
 };
 
 export type { ResourceConfig };

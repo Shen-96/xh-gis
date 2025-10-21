@@ -40,6 +40,15 @@ const ExamplesList: React.FC = () => {
       path: '/examples/basic/widgets',
       difficulty: 'beginner',
       tags: ['组件', 'UI', 'React']
+    },
+    {
+      id: 'heatmap',
+      title: '热度图',
+      description: '演示基于 Cesium 的热度图渲染与等值线',
+      category: 'basic',
+      path: '/examples/basic/heatmap',
+      difficulty: 'beginner',
+      tags: ['热力图', '分析', 'Cesium']
     }
   ];
 

@@ -42,7 +42,7 @@ import SpecialEffectManager from "./SpecialEffectManager";
 import MouseEventUtils from "./MouseEventUtils";
 import AbstractPopup from "../DataSources/XgPopup/AbstractPopup";
 import { getResourceUrl } from "./ResourceConfig";
-
+import HeatmapManager from "./HeatmapManager";
 /// token
 Ion.defaultAccessToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNTg2OTNhYi1hM2JmLTQyYTItOWE1NS0wMzNjMzAyZDI3NGYiLCJpZCI6MjU5MTAsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODY4MzI4NDV9.2DP9UQowHfxa656C1UZT7vVvMk39xJSPTL83-Ce-Ypg";
@@ -111,60 +111,48 @@ export class ResourceManager {
 }
 
 /**
- * 创建单瓦片影像提供者
- * 使用统一的资源配置系统
+ * 动态构建 Viewer 初始化参数
+ * 延迟到实例化时读取资源配置，避免模块加载时的路径不一致
  */
-const singleTileImageryProvider = ResourceManager.createGlobeImageryProvider();
+function buildViewerOptions(): Viewer.ConstructorOptions {
+  // 创建当前资源配置下的单瓦片影像提供者
+  const singleTileImageryProvider = ResourceManager.createGlobeImageryProvider();
 
-const viewerOptions: Viewer.ConstructorOptions = {
-  animation: false, /// 是否创建动画小器件，左下角仪表，默认为true
-  baseLayerPicker: false, /// 是否显示图层选择器，默认为true
-  fullscreenButton: false, /// 是否显示全屏按钮，默认为true
-  // vrButton: true, /// 是否显示VR按钮，默认false
-  geocoder: false, /// 是否显示geocoder小器件，右上角查询按钮，默认为true
-  homeButton: false, /// 是否显示Home按钮，默认为true
-  infoBox: false, /// 是否显示信息框，默认为true
-  sceneModePicker: false, /// 是否显示3D/2D选择器，默认为true
-  // selectionIndicator: false, /// 是否显示选取指示器组件，默认为true
-  timeline: false, /// 是否显示时间轴，默认为true
-  navigationHelpButton: false, /// 是否显示右上角的帮助按钮，默认为true
-  navigationInstructionsInitiallyVisible: false, /// 是否导航说明初始可见，默认为true
-  // scene3DOnly: true, /// 如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源，默认false
-  // sceneMode: SceneMode.SCENE3D,
-  // shouldAnimate: true, /// 是否开始时间动画，默认为true
-  //   showRenderLoopErrors: true, /// 如果为true，如果出现渲染循环错误，此小部件将自动向用户显示包含错误的HTML面板
-  /// 天空盒纹理
-  skyBox: new SkyBox(ResourceManager.createSkyBoxConfig()),
-  skyAtmosphere: new SkyAtmosphere(), /// 大气层
-  // automaticallyTrackDataSourceClocks: true, /// 自动追踪最近添加的数据源的时钟设置，默认为true
-  // useDefaultRenderLoop: false,/// 默认为true，如果不需要控制渲染循环，则设为false
-  // requestRenderMode: false, /// 减少Cesium渲染新帧的总时间并减少Cesium在应用程序中的总体CPU使用率，默认为false
-  // maximumRenderTimeChange: 2, /// 如果场景中的元素没有随仿真时间变化，请考虑将设置maximumRenderTimeChange为较高的值，例如Infinity，默认为0.0
-  // contextOptions: {
-  //     requestWebgl2: true, /// 使用webgl2.0
-  // },
-  // msaaSamples: 4, /// 使用msaa采样算法，提高渲染效果，需要更高性能
-  // terrainProvider: Cesium.createWorldTerrain(),
-  baseLayer: ImageryLayer.fromProviderAsync(
-    Promise.resolve(singleTileImageryProvider),
-    {
-      rectangle: Rectangle.MAX_VALUE,
-    }
-  ),
-  contextOptions: {
-    requestWebgl1: true,
-    webgl: {
-      alpha: true,
-      depth: false,
-      stencil: true,
-      antialias: true,
-      premultipliedAlpha: true,
-      preserveDrawingBuffer: true,
-      failIfMajorPerformanceCaveat: true,
+  return {
+    animation: false,
+    baseLayerPicker: false,
+    fullscreenButton: false,
+    geocoder: false,
+    homeButton: false,
+    infoBox: false,
+    sceneModePicker: false,
+    timeline: false,
+    navigationHelpButton: false,
+    navigationInstructionsInitiallyVisible: false,
+    // skyBox 和 baseLayer 依赖资源配置，必须在实例化时构建
+    skyBox: new SkyBox(ResourceManager.createSkyBoxConfig()),
+    skyAtmosphere: new SkyAtmosphere(),
+    baseLayer: ImageryLayer.fromProviderAsync(
+      Promise.resolve(singleTileImageryProvider),
+      {
+        rectangle: Rectangle.MAX_VALUE,
+      }
+    ),
+    contextOptions: {
+      requestWebgl1: true,
+      webgl: {
+        alpha: true,
+        depth: false,
+        stencil: true,
+        antialias: true,
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: true,
+        failIfMajorPerformanceCaveat: true,
+      },
+      allowTextureFilterAnisotropic: true,
     },
-    allowTextureFilterAnisotropic: true,
-  },
-};
+  };
+}
 
 /// 设置初始化视框
 Camera.DEFAULT_VIEW_RECTANGLE = Rectangle.fromDegrees(30, -20, 180, 70);
@@ -200,6 +188,8 @@ export default abstract class AbstractCore<T extends CoreType = any> {
   // readonly animationManager: PartialPrivate<AnimationManager>;
   /// 绘画管理器
   readonly graphicManager: PartialPrivate<GraphicManager>;
+  /// 热度图管理器
+  readonly heatmapManager: PartialPrivate<HeatmapManager>;
   /// 空间分析
   // readonly spatialAnalysis: PartialPrivate<SpatialAnalysis>;
   /// 特效管理器
@@ -225,6 +215,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
     this.sceneListenerManager = new SceneListenerManager(this);
     // this.animationManager = new AnimationManager(this.viewer, this.roamManager, this.particleManager, this.weatherManager); /// 动画管理器
     this.graphicManager = new GraphicManager(this); /// 绘图管理器
+    this.heatmapManager = new HeatmapManager(this); /// 热度图管理器
     // this.spatialAnalysis = new SpatialAnalysis(this); /// 空间分析
     this.specialEffectManager = new SpecialEffectManager(this); /// 特效管理器
   }
@@ -239,7 +230,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
     container: Element | string,
     options?: Viewer.ConstructorOptions
   ): Viewer {
-    const mergeOptions = { ...viewerOptions, ...options };
+    const mergeOptions = { ...buildViewerOptions(), ...options };
 
     const viewer = new Viewer(container, mergeOptions);
 

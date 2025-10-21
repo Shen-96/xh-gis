@@ -1,10 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import cesium from "vite-plugin-cesium";
+import { xhgis } from "vite-plugin-xhgis";
 import { resolve } from "path";
 
 export default defineConfig({
-  plugins: [cesium(), react()],
+  plugins: [
+    cesium(),
+    react(),
+    xhgis(),
+  ],
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
@@ -13,14 +18,14 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 3001,
     open: true,
     host: true,
     fs: {
-      allow: ['..']
-    }
+      allow: [".."],
+    },
   },
-  assetsInclude: ['**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg'],
+  assetsInclude: ["**/*.jpg", "**/*.png", "**/*.gif", "**/*.svg"],
   build: {
     outDir: "dist",
     sourcemap: true,
@@ -28,7 +33,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "index.html"),
       },
-      external: ['lodash'],
+      external: ["lodash"],
     },
   },
 });
