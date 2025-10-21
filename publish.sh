@@ -342,7 +342,7 @@ else
     info "转换前根包依赖:"
     grep -A 3 '"dependencies"' package.json.backup
     
-    sed -e "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:\^$WIDGETS_VERSION\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
+    sed -E -e "s/\"@xh-gis\/engine\": \"[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"[^\"]*\"/\"@xh-gis\/widgets\": \"^$WIDGETS_VERSION\"/g" package.json.backup > package.json
     
     info "转换后根包依赖:"
     grep -A 3 '"dependencies"' package.json
