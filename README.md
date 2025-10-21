@@ -77,6 +77,106 @@ earth.graphicManager.setDrawEventHandler('point', (result) => {
 });
 ```
 
+#### 🔥 热力图使用
+
+热力图通过 `HeatmapManager`/`HeatmapLayer` 提供，支持三种渲染方式：`imagery`（单瓦片影像，推荐）、`entity`、`primitive`。可选显示等值线（基于 `d3-contour`）。
+
+- 核心 API
+  - `heatmapManager.add(id, options)` 创建热力图
+  - `heatmapManager.update(id, { heatmap, dataRange, radius, contour })` 更新配置
+  - `heatmapManager.getById(id)` 获取实例
+  - `heatmapManager.clearAll()` 清空
+
+示例（仅使用引擎）：
+
+```typescript
+import { XgEarth, HeatmapOption } from 'xh-gis';
+
+const earth = new XgEarth('cesiumContainer');
+
+// 随机生成点（经纬度 + value）
+const points: Array<{ x: number; y: number; value?: number }> = [];
+for (let i = 0; i < 1000; i++) {
+  const x = 115 + Math.random() * 3; // 经度
+  const y = 39 + Math.random() * 2;  // 纬度
+  const value = Math.round(Math.random() * 100);
+  points.push({ x, y, value });
+}
+
+const options: HeatmapOption = {
+  renderType: 'imagery',
+  points,
+  heatmapOptions: {
+    radius: 30,
+    maxOpacity: 0.8,
+    minOpacity: 0.2,
+    blur: 0.85,
+    gradient: {
+      0.25: 'rgb(0,0,255)',
+      0.55: 'rgb(0,255,0)',
+      0.85: 'yellow',
+      1.0: 'rgb(255,0,0)'
+    }
+  },
+  heatmapDataOptions: { min: 0, max: 100 },
+  zoomToLayer: true,
+  contourLineOption: { show: true, contourCount: 8, width: 2, color: '#ff0000' }
+};
+
+const id = 'demo-heatmap';
+earth.heatmapManager.add(id, options);
+
+// 动态更新
+earth.heatmapManager.update(id, {
+  radius: 50,
+  heatmap: { opacity: 0.7 },
+  dataRange: { min: 0, max: 120 },
+  contour: { show: true, contourCount: 10 }
+});
+
+// 清空
+earth.heatmapManager.clearAll();
+```
+
+示例（与 React 组件结合）：
+
+```tsx
+import React from 'react';
+import { Earth } from 'xh-gis';
+import type { XgEarth, HeatmapOption } from 'xh-gis';
+
+export default function App() {
+  const handleInit = (inst: XgEarth) => {
+    const points = Array.from({ length: 500 }, () => ({
+      x: 116 + Math.random() * 2,
+      y: 39 + Math.random(),
+      value: Math.round(Math.random() * 100)
+    }));
+
+    const options: HeatmapOption = {
+      renderType: 'imagery',
+      points,
+      heatmapOptions: { radius: 30 },
+      heatmapDataOptions: { min: 0, max: 100 },
+      zoomToLayer: true
+    };
+
+    const id = 'demo-heatmap';
+    if (!inst.heatmapManager.isExists(id)) {
+      inst.heatmapManager.add(id, options);
+    }
+  };
+
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <Earth onInit={handleInit} />
+    </div>
+  );
+}
+```
+
+提示：热力图无需额外静态资源；若需要统一静态资源路径，请参考下文“静态资源路径约定”。
+
 ## 🌟 主要功能
 
 ### 🗺️ 地理可视化
