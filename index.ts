@@ -14,4 +14,4 @@ export * from "@xh-gis/engine";
 export * from "@xh-gis/widgets";
 
 // 提供版本信息
-export const version = "1.0.13";
+export const version = "1.0.14";
