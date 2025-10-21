@@ -40,6 +40,11 @@ export interface ContourLineOption {
   contourCount?: number;
   width?: number;
   color?: string;
+  thresholdMode?: "equalInterval" | "quantile" | "custom";
+  epsilonLowRatio?: number; // 低端偏移比例 (0-0.2)，默认 0.01
+  epsilonHighRatio?: number; // 高端偏移比例 (0-0.2)，默认 0.01
+  smooth?: boolean; // 是否平滑 d3-contour
+  customThresholds?: number[]; // 自定义阈值（alpha 值 0-255）
 }
 
 export interface BaseHeatmapConfiguration {
@@ -494,39 +499,98 @@ export class HeatmapLayer {
       for (let i = 0; i < imgData.data.length; i += 4) {
         data.push(imgData.data[i + 3]);
       }
+      const alphaMin = data.length ? Min(data) : 0;
+      const alphaMax = data.length ? Max(data) : 255;
+      if (alphaMax <= alphaMin) {
+        return;
+      }
+      const contourCount = this.contourLineOption?.contourCount ?? 5;
+      const rangeAlpha = alphaMax - alphaMin;
+      const epsLowRatio = Math.max(0, Math.min(0.2, this.contourLineOption?.epsilonLowRatio ?? 0.01));
+      const epsHighRatio = Math.max(0, Math.min(0.2, this.contourLineOption?.epsilonHighRatio ?? 0.01));
+      let epsilonLow = Math.max(1, Math.round(rangeAlpha * epsLowRatio));
+      let epsilonHigh = Math.max(1, Math.round(rangeAlpha * epsHighRatio));
+      if (epsilonLow + epsilonHigh >= rangeAlpha) {
+        const reduce = Math.max(0, rangeAlpha - 2);
+        const scale = reduce > 0 ? reduce / (epsilonLow + epsilonHigh) : 0;
+        epsilonLow = Math.max(1, Math.floor(epsilonLow * scale));
+        epsilonHigh = Math.max(1, Math.floor(epsilonHigh * scale));
+      }
+      const lowClip = Math.min(alphaMax - 1, alphaMin + epsilonLow);
+      const highClip = Math.max(alphaMin + 1, Math.min(alphaMax - 1, alphaMax - epsilonHigh));
+      const thresholds: number[] = [];
+      const mode = this.contourLineOption?.thresholdMode ?? "equalInterval";
+      if (contourCount > 0 && rangeAlpha > 0 && lowClip < highClip) {
+        if (mode === "custom" && Array.isArray(this.contourLineOption?.customThresholds)) {
+          const raw = (this.contourLineOption!.customThresholds || []).slice().sort((a, b) => a - b);
+          for (const t of raw) {
+            const v = Math.max(lowClip, Math.min(highClip, t));
+            if (!thresholds.length || Math.abs(thresholds[thresholds.length - 1] - v) > 1e-6) thresholds.push(v);
+          }
+          if (!thresholds.length || thresholds[thresholds.length - 1] < highClip - 1e-6) thresholds.push(highClip);
+        } else if (mode === "quantile") {
+          const bins = new Array(256).fill(0);
+          for (let i = 0; i < data.length; i++) bins[data[i]]++;
+          let trimmedTotal = 0;
+          for (let a = lowClip; a <= highClip; a++) trimmedTotal += bins[a];
+          const steps = Math.max(1, contourCount);
+          const stepSize = trimmedTotal / steps;
+          let cumulative = 0;
+          let targetIdx = 1;
+          for (let a = lowClip; a <= highClip && targetIdx < steps; a++) {
+            cumulative += bins[a];
+            while (targetIdx < steps && cumulative >= stepSize * targetIdx) {
+              thresholds.push(a);
+              targetIdx++;
+            }
+          }
+          if (!thresholds.length || thresholds[thresholds.length - 1] < highClip - 1e-6) thresholds.push(highClip);
+        } else {
+          const stepsCount = Math.max(0, contourCount - 1);
+          const effectiveRange = Math.max(0, highClip - lowClip);
+          if (stepsCount > 0 && effectiveRange > 0) {
+            const step = effectiveRange / stepsCount;
+            for (let i = 0; i < stepsCount; i++) thresholds.push(lowClip + step * i);
+            if (!thresholds.length || thresholds[thresholds.length - 1] < highClip - 1e-6) thresholds.push(highClip);
+          } else {
+            thresholds.push(lowClip);
+            if (lowClip < highClip) thresholds.push(highClip);
+          }
+        }
+      }
       const _contours = contours()
         .size([width, height])
-        .thresholds(this.contourLineOption?.contourCount || 5)(data);
-
+        .smooth(!!this.contourLineOption?.smooth)
+        .thresholds(thresholds)(data);
       const that = this;
       const palette = this.heatmap.getColorPalette();
       _contours.forEach((contour: ContourMultiPolygon) => {
-        const threshold = (contour as any).value as number;
-        const min = this.heatmapDataOptions?.min || 0;
-        const max = this.heatmapDataOptions?.max || 1;
-        const intensity = (threshold - min) / (max - min);
-        const colorIndex = Math.floor(intensity * 255);
-        const color = new Color(
-          palette[colorIndex * 4] / 255,
-          palette[colorIndex * 4 + 1] / 255,
-          palette[colorIndex * 4 + 2] / 255
-        );
+        const thresholdAlpha = (contour as any).value as number;
+        const intensity = Math.max(0, Math.min(1, thresholdAlpha / 255));
+        const colorIndex = Math.round(intensity * 255);
         contour.coordinates.forEach((polygon: number[][][]) => {
           polygon.forEach((ring: number[][]) => {
+            const wDen = Math.max(width - 1, 1);
+            const hDen = Math.max(height - 1, 1);
             const positions = ring.map((p: number[]) => {
               const lon =
-                that.bounds[0] +
-                (p[0] / width) * (that.bounds[2] - that.bounds[0]);
+                that.bounds[0] + (p[0] / wDen) * (that.bounds[2] - that.bounds[0]);
               const lat =
-                that.bounds[3] -
-                (p[1] / height) * (that.bounds[3] - that.bounds[1]);
+                that.bounds[3] - (p[1] / hDen) * (that.bounds[3] - that.bounds[1]);
               return Cartesian3.fromDegrees(lon, lat);
             });
+            const idx = colorIndex * 4;
+            const r = palette[idx] / 255;
+            const g = palette[idx + 1] / 255;
+            const b = palette[idx + 2] / 255;
+            const a = palette[idx + 3] / 255;
+            const boostedA = Math.min(1, Math.max(0.4, a * 1.5));
+            const colorWithAlpha = new Color(r, g, b, boostedA);
             const entity = this.viewer.entities.add({
               polyline: {
                 positions: positions,
-                width: this.contourLineOption?.width || 1,
-                material: color,
+                width: this.contourLineOption?.width || 2,
+                material: colorWithAlpha,
               },
             });
             this.contourLineEntities.push(entity);
