@@ -333,9 +333,9 @@ else
     
     # 为 widgets 包准备发布版本
     cp packages/widgets/package.json packages/widgets/package.json.backup
-    info "转换前 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json.backup)"
-    sed "s/\"@xh-gis\/engine\": \"workspace:\^$ENGINE_VERSION\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
-    info "转换后 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json)"
+    info "转换前 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json.backup || true)"
+    sed -E "s/\"@xh-gis\/engine\": \"workspace:\^[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g; s/\"@xh-gis\/engine\": \"\^[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g; s/\"@xh-gis\/engine\": \"[^\"]*\"/\"@xh-gis\/engine\": \"^$ENGINE_VERSION\"/g" packages/widgets/package.json.backup > packages/widgets/package.json
+    info "转换后 widgets 依赖: $(grep '@xh-gis/engine' packages/widgets/package.json || true)"
 
     # 为根包准备发布版本
     cp package.json package.json.backup
