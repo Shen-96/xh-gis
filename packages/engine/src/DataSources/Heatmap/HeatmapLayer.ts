@@ -504,7 +504,10 @@ export class HeatmapLayer {
       if (alphaMax <= alphaMin) {
         return;
       }
-      const contourCount = this.contourLineOption?.contourCount ?? 5;
+      const gradientStops = this.heatmapOptions?.gradient ? Object.keys(this.heatmapOptions.gradient).length : 5;
+       const contourCount = typeof this.contourLineOption?.contourCount === "number"
+         ? (this.contourLineOption!.contourCount as number)
+         : Math.max(1, gradientStops);
       const rangeAlpha = alphaMax - alphaMin;
       const epsLowRatio = Math.max(0, Math.min(0.2, this.contourLineOption?.epsilonLowRatio ?? 0.01));
       const epsHighRatio = Math.max(0, Math.min(0.2, this.contourLineOption?.epsilonHighRatio ?? 0.01));
@@ -595,7 +598,7 @@ export class HeatmapLayer {
              const entity = this.viewer.entities.add({
                polyline: {
                  positions: positions,
-                 width: this.contourLineOption?.width || 2,
+                 width: typeof this.contourLineOption?.width === "number" ? this.contourLineOption!.width! : 1,
                  material: colorWithAlpha,
                },
              });
