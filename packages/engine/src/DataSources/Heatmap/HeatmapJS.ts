@@ -55,15 +55,13 @@ const DefaultConfig: {
 };
 
 class Coordinator {
-  private cStore: Record<string, Array<(data: any) => void>> = {};
-  on(evtName: string, callback: (data: any) => void): void {
-    if (!this.cStore[evtName]) this.cStore[evtName] = [];
-    this.cStore[evtName].push(callback);
+  private handlers: Record<string, Function[]> = {};
+  on(event: string, handler: Function) {
+    this.handlers[event] = this.handlers[event] || [];
+    this.handlers[event].push(handler);
   }
-  emit(evtName: string, data: any): void {
-    const list = this.cStore[evtName];
-    if (!list) return;
-    for (let i = 0; i < list.length; i++) list[i](data);
+  emit(event: string, data: any) {
+    (this.handlers[event] || []).forEach((h) => h(data));
   }
 }
 
@@ -209,8 +207,9 @@ class Canvas2dRenderer {
   }
 
   updateConfig(config: HeatmapConfiguration): void {
-    if (config.gradient) this._palette = this._getColorPalette(config);
-    this._setStyles(config);
+    this.config = { ...this.config, ...config };
+    if (config.gradient) this._palette = this._getColorPalette(this.config);
+    this._setStyles(this.config);
   }
 
   private _setStyles(config: HeatmapConfiguration): void {
@@ -220,13 +219,6 @@ class Canvas2dRenderer {
     this._maxOpacity = Math.round((config.maxOpacity != null ? config.maxOpacity : DefaultConfig.defaultMaxOpacity) * 255);
     this._minOpacity = Math.round((config.minOpacity != null ? config.minOpacity : DefaultConfig.defaultMinOpacity) * 255);
     this._useGradientOpacity = !!config.useGradientOpacity;
-  }
-
-  setDimensions(width: number, height: number): void {
-    this._width = width;
-    this._height = height;
-    this.canvas.width = this.shadowCanvas.width = width;
-    this.canvas.height = this.shadowCanvas.height = height;
   }
 
   renderPartial(payload: RenderAllPayload): void {
@@ -255,7 +247,7 @@ class Canvas2dRenderer {
       const point = data[i];
       const x = point.x;
       const y = point.y;
-      const radius = point.radius || DefaultConfig.defaultRadius;
+      const radius = point.radius ?? (this.config.radius ?? DefaultConfig.defaultRadius);
       const value = Math.min(typeof point.value === "number" ? point.value : 1, max);
       const rectX = x - radius;
       const rectY = y - radius;
@@ -270,44 +262,48 @@ class Canvas2dRenderer {
   }
 
   private _colorize(): void {
-    let x = this._renderBoundaries[0];
-    let y = this._renderBoundaries[1];
-    let width = this._renderBoundaries[2] - x;
-    let height = this._renderBoundaries[3] - y;
-    const maxWidth = this._width;
-    const maxHeight = this._height;
-
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    if (x + width > maxWidth) width = maxWidth - x;
-    if (y + height > maxHeight) height = maxHeight - y;
-
-    const img = this.shadowCtx.getImageData(x, y, width, height);
-    const imgData = img.data;
-    const len = imgData.length;
+    const boundaries = this._renderBoundaries;
+    const startX = Math.max(0, boundaries[0]);
+    const startY = Math.max(0, boundaries[1]);
+    const endX = Math.min(this._width - 1, boundaries[2]);
+    const endY = Math.min(this._height - 1, boundaries[3]);
+    const image = this.shadowCtx.getImageData(startX, startY, endX - startX, endY - startY);
+    const imageData = image.data;
     const palette = this._palette;
     const opacity = this._opacity;
     const maxOpacity = this._maxOpacity;
     const minOpacity = this._minOpacity;
     const useGradientOpacity = this._useGradientOpacity;
 
-    for (let i = 3; i < len; i += 4) {
-      const alpha = imgData[i];
+    // colorize alpha values
+    for (let i = 3; i < imageData.length; i += 4) {
+      const alpha = imageData[i];
       const offset = alpha * 4;
-      if (!offset) continue;
-      let finalAlpha = alpha;
-      if (opacity > 0) finalAlpha = opacity;
-      else {
-        if (alpha < maxOpacity) finalAlpha = alpha < minOpacity ? minOpacity : alpha;
-        else finalAlpha = maxOpacity;
+      imageData[i - 3] = palette[offset];
+      imageData[i - 2] = palette[offset + 1];
+      imageData[i - 1] = palette[offset + 2];
+
+      if (opacity > 0) {
+        imageData[i] = opacity;
+      } else {
+        if (alpha < minOpacity) {
+          imageData[i] = 0;
+        } else if (alpha > maxOpacity) {
+          imageData[i] = maxOpacity;
+        } else {
+          imageData[i] = alpha;
+        }
       }
-      imgData[i - 3] = palette[offset];
-      imgData[i - 2] = palette[offset + 1];
-      imgData[i - 1] = palette[offset + 2];
-      imgData[i] = useGradientOpacity ? palette[offset + 3] : finalAlpha;
     }
-    this.ctx.putImageData(img, x, y);
-    this._renderBoundaries = [10000, 10000, 0, 0];
+
+    this.ctx.putImageData(image, startX, startY);
+  }
+
+  setDimensions(width: number, height: number): void {
+    this._width = width;
+    this._height = height;
+    this.canvas.width = this.shadowCanvas.width = width;
+    this.canvas.height = this.shadowCanvas.height = height;
   }
 
   getValueAt(point: { x: number; y: number }): number {
@@ -346,13 +342,13 @@ class Heatmap {
     this._store.setCoordinator(this._coordinator);
   }
 
-  addData(points: HeatmapPoint | HeatmapPoint[]): this {
-    this._store.addData(points);
+  addData(point: HeatmapPoint | HeatmapPoint[]): this {
+    this._store.addData(point);
     return this;
   }
 
-  removeData(..._args: any[]): this {
-    // not used in our engine; keep API for compatibility
+  removeData(point: HeatmapPoint | HeatmapPoint[]): this {
+    // no-op in lightweight impl
     return this;
   }
 
@@ -405,16 +401,11 @@ class Heatmap {
   }
 }
 
-const heatmapFactory = {
+export default {
   create(config: HeatmapConfiguration) {
     const h = new Heatmap(config);
-    // provide compatibility: CesiumHeatmap expects _renderer field
+    // 兼容旧接口：暴露 _renderer 供上层读取 shadowCanvas
     (h as any)._renderer = (h as any)._rendererInstance;
     return h as any;
   },
-  register(_pluginKey: string, _plugin: any) {
-    // plugin system not implemented in TS port
-  },
 };
-
-export default heatmapFactory;
