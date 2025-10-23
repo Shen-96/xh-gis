@@ -159,3 +159,57 @@ pnpm test:coverage
 ## 📄 许可证
 
 MIT License - 详见 [LICENSE](../../LICENSE) 文件。
+
+
+## 🔥 热度图示例
+
+Sandcastle 提供了基础热度图示例，演示 `@xh-gis/engine` 的 `HeatmapLayer` 以及等值线能力：
+
+- 路径：`/examples/basic/heatmap`
+- 主要功能：
+  - 基于 Canvas 的热度图渲染（imagery 模式）
+  - 等值线叠加（d3-contour），支持平滑显示
+  - 统一颜色覆盖（例如白色 `#fff`）
+  - 等值线分层数量默认与热度图梯度停靠数一致
+  - 默认线宽为 `1`
+
+### 示例代码片段
+
+```tsx
+import { XgEarth } from "@xh-gis/engine";
+
+const points = /* 随机或业务数据 */[];
+
+const options = {
+  renderType: "imagery",
+  points,
+  heatmapOptions: {
+    radius: 30,
+    gradient: {
+      0.25: "rgb(0,0,255)",
+      0.55: "rgb(0,255,0)",
+      0.85: "yellow",
+      1.0: "rgb(255,0,0)",
+    },
+  },
+  heatmapDataOptions: { min: 0, max: 100 },
+  zoomToLayer: true,
+  contourLineOption: {
+    show: true,
+    color: "#fff",         // 统一白色等值线，增强可见性
+    thresholdMode: "equalInterval", // 或 "quantile" | "custom"
+    smooth: true,
+  },
+};
+
+// 通过 HeatmapManager 管理实例
+const id = "demo-heatmap";
+if (!earth.heatmapManager.isExists(id)) {
+  earth.heatmapManager.add(id, options);
+}
+```
+
+### 提示
+- 如果需要更均衡的视觉分层，可选择 `thresholdMode = "quantile"`。
+- 业务需要固定阈值时，使用 `customThresholds` 并将 `thresholdMode` 设为 `custom`。
+- 默认透明度增强下限为 `0.4`，在浅色背景上可以更好地识别线条。

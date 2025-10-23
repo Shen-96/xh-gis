@@ -275,3 +275,94 @@ popup.destroy();
 ## 📄 许可证
 
 MIT License
+
+## Heatmap 与等值线
+
+XH-GIS Engine 提供 `HeatmapLayer` 支持基于 Canvas 的热度图渲染，并可叠加等值线（使用 d3-contour）。
+
+### 快速使用
+
+```typescript
+import { Viewer } from "cesium";
+import { HeatmapLayer, HeatmapOption } from "@xh-gis/engine";
+
+const viewer = new Viewer("container");
+
+const points = [
+  { x: 116.1, y: 39.9, value: 50 },
+  { x: 116.3, y: 40.1, value: 80 },
+];
+
+const options: HeatmapOption = {
+  renderType: "imagery",
+  points,
+  heatmapOptions: {
+    radius: 30,
+    maxOpacity: 0.8,
+    minOpacity: 0.2,
+    gradient: {
+      0.25: "rgb(0,0,255)",
+      0.55: "rgb(0,255,0)",
+      0.85: "yellow",
+      1.0: "rgb(255,0,0)",
+    },
+  },
+  heatmapDataOptions: { min: 0, max: 100 },
+  zoomToLayer: true,
+  contourLineOption: {
+    show: true,
+    // 默认：等值线数量与热度图梯度停靠数一致
+    // 默认：线宽 1，颜色随色带，可用 color 覆盖
+    color: "#fff",
+    thresholdMode: "equalInterval", // 或 "quantile" | "custom"
+    smooth: true,
+    // 自定义阈值（alpha 值 0-255），仅在 thresholdMode = "custom" 时使用
+    // customThresholds: [64, 128, 192],
+  },
+};
+
+const layer = new HeatmapLayer(viewer, options);
+```
+
+### 等值线选项（ContourLineOption）
+- `show`：是否显示等值线
+- `contourCount`：分层数量（默认与热度图梯度停靠数一致；无梯度时为 5）
+- `width`：线宽（默认 1）
+- `color`：等值线统一颜色（默认随热度图色带；设置后覆盖）
+- `thresholdMode`：阈值生成模式
+  - `equalInterval`：等距分段（包含最高阈值）
+  - `quantile`：分位数分段（基于 256-bin 直方图，面积更均衡）
+  - `custom`：自定义阈值（使用 `customThresholds` 数组）
+- `epsilonLowRatio` / `epsilonHighRatio`：低/高端裁剪比例（0-0.2，默认 0.01）
+- `smooth`：平滑曲线（d3-contour），默认 `false`
+- `customThresholds`：自定义阈值（alpha 0-255，仅在 `custom` 模式生效）
+
+### 默认行为与可视性
+- 等值线透明度基于色带 alpha 计算，并进行增强：最低不低于 `0.4`，上限 `1`，并有适度增益，提升白色线等在浅色底上的可见性。
+- 始终包含最高阈值，保证红色高值区域的边界可见。
+- 默认分层数量与热度图梯度停靠数一致，确保视觉层级与色带一致。
+
+### 动态更新
+```typescript
+// 更新热度图配置（半径、透明度、梯度等）
+layer.updateHeatmap({ radius: 40, maxOpacity: 0.9 });
+
+// 更新半径（同步刷新）
+layer.updateRadius(50);
+
+// 更新等值线配置（支持增量覆盖）
+layer.updateContourLineOption({
+  thresholdMode: "quantile",
+  contourCount: 7,
+  color: "#fff",
+});
+
+// 移除图层
+layer.remove();
+```
+
+### 适用建议
+- 一般场景：`thresholdMode = equalInterval`，默认分层与线宽即可。
+- 数据分布不均：使用 `quantile` 改善视觉均衡。
+- 业务特定阈值：使用 `custom` 并提供 `customThresholds`。
+- 线条对比度不足：设置统一 `color`（如 `#fff`），保持可见性增强逻辑。
