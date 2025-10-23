@@ -55,8 +55,9 @@ const HeatmapExample: React.FC = () => {
         zoomToLayer: true,
         contourLineOption: {
           show: true,
-          color: "#fff",
+          color: "rgba(255,255,255,0.5)",
           smooth: true,
+          width: 3,
         },
       };
 
