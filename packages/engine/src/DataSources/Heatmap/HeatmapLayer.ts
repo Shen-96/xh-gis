@@ -583,25 +583,25 @@ export class HeatmapLayer {
               return Cartesian3.fromDegrees(lon, lat);
             });
             const idx = colorIndex * 4;
-             const a = palette[idx + 3] / 255;
-             const boostedA = Math.min(1, Math.max(0.4, a * 1.5));
-             let colorWithAlpha: Color;
-             if (this.contourLineOption?.color) {
-               const base = Color.fromCssColorString(this.contourLineOption.color) || Color.WHITE;
-               colorWithAlpha = new Color(base.red, base.green, base.blue, boostedA);
-             } else {
-               const r = palette[idx] / 255;
-               const g = palette[idx + 1] / 255;
-               const b = palette[idx + 2] / 255;
-               colorWithAlpha = new Color(r, g, b, boostedA);
-             }
-             const entity = this.viewer.entities.add({
-               polyline: {
-                 positions: positions,
-                 width: typeof this.contourLineOption?.width === "number" ? this.contourLineOption!.width! : 1,
-                 material: colorWithAlpha,
-               },
-             });
+            const a = palette[idx + 3] / 255;
+            const boostedA = Math.min(1, Math.max(0.4, a * 1.5));
+            let colorWithAlpha: Color;
+            if (this.contourLineOption?.color) {
+              // 完全采用用户指定颜色（包含其原始 alpha），不做透明度增强
+              colorWithAlpha = Color.fromCssColorString(this.contourLineOption.color) || Color.WHITE;
+            } else {
+              const r = palette[idx] / 255;
+              const g = palette[idx + 1] / 255;
+              const b = palette[idx + 2] / 255;
+              colorWithAlpha = new Color(r, g, b, boostedA);
+            }
+            const entity = this.viewer.entities.add({
+              polyline: {
+                positions: positions,
+                width: typeof this.contourLineOption?.width === "number" ? this.contourLineOption!.width! : 1,
+                material: colorWithAlpha,
+              },
+            });
             this.contourLineEntities.push(entity);
           });
         });
