@@ -168,7 +168,7 @@ importers:
   packages/widgets:
     dependencies:
       '@xh-gis/engine':
-        specifier: workspace:^1.0.13
+        specifier: workspace:^1.0.14
         version: link:../engine
       cesium:
         specifier: 1.108.0

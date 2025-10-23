@@ -1,27 +1,29 @@
-import React, { useCallback, useState } from 'react';
-import { Earth, ToolBar } from '@xh-gis/widgets';
-import { XgEarth, HeatmapManager, HeatmapOption } from '@xh-gis/engine';
-import styles from './HeatmapExample.module.css';
+import React, { useCallback, useState } from "react";
+import { Earth, ToolBar } from "@xh-gis/widgets";
+import { XgEarth, HeatmapManager, HeatmapOption } from "@xh-gis/engine";
+import styles from "./HeatmapExample.module.css";
 
 const HeatmapExample: React.FC = () => {
   const [earth, setEarth] = useState<XgEarth | null>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading"
+  );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleInit = useCallback((instance: XgEarth) => {
     setEarth(instance);
-    setStatus('ready');
+    setStatus("ready");
 
     try {
       const Cesium: any = (window as any).Cesium;
       const { Cartesian3 } = Cesium || {};
       if (Cartesian3) {
         instance.viewer.scene.camera.setView({
-          destination: Cartesian3.fromDegrees(116.4074, 39.9042, 5000000)
+          destination: Cartesian3.fromDegrees(116.4074, 39.9042, 5000000),
         });
       }
     } catch (e) {
-      console.warn('[HeatmapExample] camera setView failed:', e);
+      console.warn("[HeatmapExample] camera setView failed:", e);
     }
 
     try {
@@ -29,13 +31,13 @@ const HeatmapExample: React.FC = () => {
       const points: Array<{ x: number; y: number; value?: number }> = [];
       for (let i = 0; i < 1000; i++) {
         const x = 115 + Math.random() * 3; // 经度
-        const y = 39 + Math.random() * 2;  // 纬度
+        const y = 39 + Math.random() * 2; // 纬度
         const value = Math.round(Math.random() * 100);
         points.push({ x, y, value });
       }
 
       const options: HeatmapOption = {
-        renderType: 'imagery',
+        renderType: "imagery",
         points,
         heatmapOptions: {
           radius: 30,
@@ -43,32 +45,36 @@ const HeatmapExample: React.FC = () => {
           minOpacity: 0.2,
           blur: 0.85,
           gradient: {
-            0.25: 'rgb(0,0,255)',
-            0.55: 'rgb(0,255,0)',
-            0.85: 'yellow',
-            1.0: 'rgb(255,0,0)'
-          }
+            0.25: "rgb(0,0,255)",
+            0.55: "rgb(0,255,0)",
+            0.85: "yellow",
+            1.0: "rgb(255,0,0)",
+          },
         },
         heatmapDataOptions: { min: 0, max: 100 },
         zoomToLayer: true,
-        contourLineOption: { show: true, contourCount: 8, width: 2, color: '#ff0000' }
+        contourLineOption: {
+          show: true,
+          color: "#fff",
+          smooth: true,
+        },
       };
 
       // 创建热度图
-      const id = 'demo-heatmap';
+      const id = "demo-heatmap";
       if (!instance.heatmapManager.isExists(id)) {
         instance.heatmapManager.add(id, options);
       }
     } catch (e: any) {
-      console.error('[HeatmapExample] heatmapManager.add failed:', e);
-      setStatus('error');
+      console.error("[HeatmapExample] heatmapManager.add failed:", e);
+      setStatus("error");
       setErrorMsg(e?.message || String(e));
     }
   }, []);
 
   const handleUpdateRadius = useCallback(() => {
     if (!earth) return;
-    const id = 'demo-heatmap';
+    const id = "demo-heatmap";
     const inst = earth.heatmapManager.getById(id);
     if (!inst) return;
 
@@ -85,12 +91,12 @@ const HeatmapExample: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.canvas}>
         <Earth onInit={handleInit} />
-        {status === 'ready' && earth && (
+        {status === "ready" && earth && (
           <ToolBar coreRef={{ current: earth } as any} />
         )}
-        {status === 'error' && (
+        {status === "error" && (
           <div className={styles.errorTip}>
-            <strong>发生错误：</strong> {errorMsg || '未知错误'}
+            <strong>发生错误：</strong> {errorMsg || "未知错误"}
           </div>
         )}
       </div>
@@ -99,8 +105,12 @@ const HeatmapExample: React.FC = () => {
         <h2>🔥 热度图示例</h2>
         <p>演示 HeatmapLayer 在不同渲染方式下的效果（默认 imagery）。</p>
         <div className={styles.actions}>
-          <button className={styles.actionButton} onClick={handleUpdateRadius}>随机调整半径</button>
-          <button className={styles.actionButton} onClick={handleClear}>清空热度图</button>
+          <button className={styles.actionButton} onClick={handleUpdateRadius}>
+            随机调整半径
+          </button>
+          <button className={styles.actionButton} onClick={handleClear}>
+            清空热度图
+          </button>
         </div>
         <div className={styles.tips}>
           <div>• 使用 HeatmapManager 统一管理实例</div>
