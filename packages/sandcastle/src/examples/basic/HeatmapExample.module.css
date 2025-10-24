@@ -1,7 +1,89 @@
-.container{display:flex;}
-.canvas{flex:1;position:relative;height:600px;}
-.sidePanel{width:360px;padding:16px;border-left:1px solid #e5e7eb;background:#fafafa;overflow:auto}
-.actions{display:flex;gap:8px;margin:12px 0}
-.actionButton{padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer}
-.tips{font-size:12px;color:#666;display:flex;flex-direction:column;gap:6px}
-.errorTip{position:absolute;left:12px;top:12px;z-index:10;padding:8px 12px;background:#b0002020;color:#d00;border:1px solid #b0002040;border-radius:6px}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.compareGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.radiusDisplay {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  background: #fff3cd;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.canvas {
+  height: 360px;
+}
+
+.controls {
+  padding: 10px 12px;
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.numberInput {
+  width: 80px;
+  padding: 4px 6px;
+}
+
+.errorTip {
+  margin: 8px 12px;
+  padding: 8px 10px;
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+}
+
+.tips {
+  border: 1px dashed #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #374151;
+}

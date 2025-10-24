@@ -40,7 +40,7 @@ export interface ContourLineOption {
   contourCount?: number;
   width?: number;
   color?: string;
-  thresholdMode?: "equalInterval" | "quantile" | "custom";
+  thresholdMode?: "equalInterval" | "quantile" | "custom" | "paletteStops";
   epsilonLowRatio?: number; // 低端偏移比例 (0-0.2)，默认 0.01
   epsilonHighRatio?: number; // 高端偏移比例 (0-0.2)，默认 0.01
   smooth?: boolean; // 是否平滑 d3-contour
@@ -109,6 +109,8 @@ export interface BaseHeatmapConfiguration {
    * extrema (the maximum and minimum of the currently displayed viewport)
    */
   useLocalExtrema?: boolean | undefined;
+  /** 选择核算法："radialGradient" 使用现有径向渐变，"gaussian" 使用严格高斯线性累加 */
+  kernelMode?: "radialGradient" | "gaussian";
 }
 export interface HeatmapPoint {
   x: number;
@@ -236,6 +238,75 @@ export class HeatmapLayer {
 
       // 初始化配置与半径
       this.heatmapOptions = { ..._options };
+      // Silverman/Scott 自动半径（像素坐标），当未提供全局 radius 时启用
+      if (typeof this.heatmapOptions.radius !== "number") {
+        const n = datas.length;
+        let computedRadius = 40;
+        if (n > 0) {
+          let sumX = 0,
+            sumY = 0;
+          for (let i = 0; i < n; i++) {
+            sumX += (datas[i] as any).x;
+            sumY += (datas[i] as any).y;
+          }
+          const meanX = sumX / n;
+          const meanY = sumY / n;
+          let varX = 0,
+            varY = 0;
+          for (let i = 0; i < n; i++) {
+            const dx = (datas[i] as any).x - meanX;
+            const dy = (datas[i] as any).y - meanY;
+            varX += dx * dx;
+            varY += dy * dy;
+          }
+          varX /= Math.max(1, n - 1);
+          varY /= Math.max(1, n - 1);
+          const sigma = Math.sqrt((varX + varY) / 2);
+          // 使用截尾方差提高鲁棒性，降低异常值对半径的影响
+          const xs: number[] = datas.map((d: any) => d.x);
+          const ys: number[] = datas.map((d: any) => d.y);
+          const sortedX = xs.slice().sort((a, b) => a - b);
+          const sortedY = ys.slice().sort((a, b) => a - b);
+          const lowIdx = Math.floor(n * 0.02);
+          const highIdx = Math.max(lowIdx + 1, Math.ceil(n * 0.98));
+          const trimmedX = sortedX.slice(lowIdx, highIdx);
+          const trimmedY = sortedY.slice(lowIdx, highIdx);
+          const tMeanX = trimmedX.reduce((s, v) => s + v, 0) / trimmedX.length;
+          const tMeanY = trimmedY.reduce((s, v) => s + v, 0) / trimmedY.length;
+          const tVarX =
+            trimmedX.reduce((s, v) => {
+              const dx = v - tMeanX;
+              return s + dx * dx;
+            }, 0) / Math.max(1, trimmedX.length - 1);
+          const tVarY =
+            trimmedY.reduce((s, v) => {
+              const dy = v - tMeanY;
+              return s + dy * dy;
+            }, 0) / Math.max(1, trimmedY.length - 1);
+          const sigmaRobust = Math.sqrt((tVarX + tVarY) / 2);
+          const hRaw =
+            Math.pow(n, -1 / 6) * (sigmaRobust > 0 ? sigmaRobust : sigma);
+          // 视觉校准系数：我们的渲染核非严格高斯，适当缩放半径
+          const calibration = 0.65;
+          const blur =
+            typeof this.heatmapOptions.blur === "number"
+              ? this.heatmapOptions.blur!
+              : 0.85;
+          const blurAdjust = 1 - 0.2 * Math.max(0, Math.min(1, blur));
+          const hAdjusted = hRaw * calibration * blurAdjust;
+          const minClamp = 8;
+          const maxClamp = Math.max(
+            8,
+            Math.floor(Math.min(width, height) * 0.3)
+          );
+          computedRadius = Math.max(minClamp, Math.min(hAdjusted, maxClamp));
+        }
+        this.heatmapOptions.radius = computedRadius;
+      }
+      this.initRadius =
+        typeof this.heatmapOptions.radius === "number"
+          ? this.heatmapOptions.radius
+          : this.initRadius;
       if (typeof this.heatmapOptions.radius === "number") {
         this.initRadius = this.heatmapOptions.radius;
       }
@@ -400,8 +471,14 @@ export class HeatmapLayer {
       const renderer = (this.heatmap as any)._renderer;
       const canvas: HTMLCanvasElement | undefined = renderer?.canvas;
       const rect = this.element?.getBoundingClientRect();
-      const tileWidth = Math.max(1, Math.floor((canvas?.width ?? rect?.width ?? 256)));
-      const tileHeight = Math.max(1, Math.floor((canvas?.height ?? rect?.height ?? 256)));
+      const tileWidth = Math.max(
+        1,
+        Math.floor(canvas?.width ?? rect?.width ?? 256)
+      );
+      const tileHeight = Math.max(
+        1,
+        Math.floor(canvas?.height ?? rect?.height ?? 256)
+      );
       this.provider = this.viewer.imageryLayers.addImageryProvider(
         new SingleTileImageryProvider({
           url: url,
@@ -473,7 +550,10 @@ export class HeatmapLayer {
         if (Math.abs(h - this.lastCameraHeight) > distance) {
           this.lastCameraHeight = h;
           // 规范化高度到 [0,1]
-          const t = Math.max(0, Math.min(1, (h - minHeight) / (maxHeight - minHeight)));
+          const t = Math.max(
+            0,
+            Math.min(1, (h - minHeight) / (maxHeight - minHeight))
+          );
           // 在 [initRadius, maxRadius] 区间线性插值
           const interp = this.initRadius + (maxRadius - this.initRadius) * t;
           const radius = Math.max(1, Math.floor(interp));
@@ -504,13 +584,22 @@ export class HeatmapLayer {
       if (alphaMax <= alphaMin) {
         return;
       }
-      const gradientStops = this.heatmapOptions?.gradient ? Object.keys(this.heatmapOptions.gradient).length : 5;
-       const contourCount = typeof this.contourLineOption?.contourCount === "number"
-         ? (this.contourLineOption!.contourCount as number)
-         : Math.max(1, gradientStops);
+      const gradientStops = this.heatmapOptions?.gradient
+        ? Object.keys(this.heatmapOptions.gradient).length
+        : 5;
+      const contourCount =
+        typeof this.contourLineOption?.contourCount === "number"
+          ? (this.contourLineOption!.contourCount as number)
+          : Math.max(1, gradientStops);
       const rangeAlpha = alphaMax - alphaMin;
-      const epsLowRatio = Math.max(0, Math.min(0.2, this.contourLineOption?.epsilonLowRatio ?? 0.01));
-      const epsHighRatio = Math.max(0, Math.min(0.2, this.contourLineOption?.epsilonHighRatio ?? 0.01));
+      const epsLowRatio = Math.max(
+        0,
+        Math.min(0.2, this.contourLineOption?.epsilonLowRatio ?? 0.01)
+      );
+      const epsHighRatio = Math.max(
+        0,
+        Math.min(0.2, this.contourLineOption?.epsilonHighRatio ?? 0.01)
+      );
       let epsilonLow = Math.max(1, Math.round(rangeAlpha * epsLowRatio));
       let epsilonHigh = Math.max(1, Math.round(rangeAlpha * epsHighRatio));
       if (epsilonLow + epsilonHigh >= rangeAlpha) {
@@ -520,17 +609,33 @@ export class HeatmapLayer {
         epsilonHigh = Math.max(1, Math.floor(epsilonHigh * scale));
       }
       const lowClip = Math.min(alphaMax - 1, alphaMin + epsilonLow);
-      const highClip = Math.max(alphaMin + 1, Math.min(alphaMax - 1, alphaMax - epsilonHigh));
+      const highClip = Math.max(
+        alphaMin + 1,
+        Math.min(alphaMax - 1, alphaMax - epsilonHigh)
+      );
       const thresholds: number[] = [];
-      const mode = this.contourLineOption?.thresholdMode ?? "equalInterval";
+      const mode = this.contourLineOption?.thresholdMode ?? "paletteStops";
       if (contourCount > 0 && rangeAlpha > 0 && lowClip < highClip) {
-        if (mode === "custom" && Array.isArray(this.contourLineOption?.customThresholds)) {
-          const raw = (this.contourLineOption!.customThresholds || []).slice().sort((a, b) => a - b);
+        if (
+          mode === "custom" &&
+          Array.isArray(this.contourLineOption?.customThresholds)
+        ) {
+          const raw = (this.contourLineOption!.customThresholds || [])
+            .slice()
+            .sort((a, b) => a - b);
           for (const t of raw) {
             const v = Math.max(lowClip, Math.min(highClip, t));
-            if (!thresholds.length || Math.abs(thresholds[thresholds.length - 1] - v) > 1e-6) thresholds.push(v);
+            if (
+              !thresholds.length ||
+              Math.abs(thresholds[thresholds.length - 1] - v) > 1e-6
+            )
+              thresholds.push(v);
           }
-          if (!thresholds.length || thresholds[thresholds.length - 1] < highClip - 1e-6) thresholds.push(highClip);
+          if (
+            !thresholds.length ||
+            thresholds[thresholds.length - 1] < highClip - 1e-6
+          )
+            thresholds.push(highClip);
         } else if (mode === "quantile") {
           const bins = new Array(256).fill(0);
           for (let i = 0; i < data.length; i++) bins[data[i]]++;
@@ -547,14 +652,68 @@ export class HeatmapLayer {
               targetIdx++;
             }
           }
-          if (!thresholds.length || thresholds[thresholds.length - 1] < highClip - 1e-6) thresholds.push(highClip);
+          if (
+            !thresholds.length ||
+            thresholds[thresholds.length - 1] < highClip - 1e-6
+          )
+            thresholds.push(highClip);
+        } else if (mode === "paletteStops") {
+          const grad = this.heatmapOptions?.gradient;
+          const stopVals = grad
+            ? Object.keys(grad)
+                .map((k) => {
+                  const v = parseFloat(k);
+                  return isFinite(v) ? Math.max(0, Math.min(1, v)) : NaN;
+                })
+                .filter((v) => !isNaN(v))
+                .sort((a, b) => a - b)
+            : [];
+          if (stopVals.length > 0) {
+            for (const s of stopVals) {
+              const t = lowClip + (highClip - lowClip) * s;
+              const v = Math.max(lowClip, Math.min(highClip, t));
+              if (
+                !thresholds.length ||
+                Math.abs(thresholds[thresholds.length - 1] - v) > 1e-6
+              )
+                thresholds.push(v);
+            }
+            // 若最高停靠点不足以达到 highClip，则补齐
+            if (
+              !thresholds.length ||
+              thresholds[thresholds.length - 1] < highClip - 1e-6
+            )
+              thresholds.push(highClip);
+          } else {
+            // 无有效色带定义，回退到等距分段
+            const stepsCount = Math.max(0, contourCount - 1);
+            const effectiveRange = Math.max(0, highClip - lowClip);
+            if (stepsCount > 0 && effectiveRange > 0) {
+              const step = effectiveRange / stepsCount;
+              for (let i = 0; i < stepsCount; i++)
+                thresholds.push(lowClip + step * i);
+              if (
+                !thresholds.length ||
+                thresholds[thresholds.length - 1] < highClip - 1e-6
+              )
+                thresholds.push(highClip);
+            } else {
+              thresholds.push(lowClip);
+              if (lowClip < highClip) thresholds.push(highClip);
+            }
+          }
         } else {
           const stepsCount = Math.max(0, contourCount - 1);
           const effectiveRange = Math.max(0, highClip - lowClip);
           if (stepsCount > 0 && effectiveRange > 0) {
             const step = effectiveRange / stepsCount;
-            for (let i = 0; i < stepsCount; i++) thresholds.push(lowClip + step * i);
-            if (!thresholds.length || thresholds[thresholds.length - 1] < highClip - 1e-6) thresholds.push(highClip);
+            for (let i = 0; i < stepsCount; i++)
+              thresholds.push(lowClip + step * i);
+            if (
+              !thresholds.length ||
+              thresholds[thresholds.length - 1] < highClip - 1e-6
+            )
+              thresholds.push(highClip);
           } else {
             thresholds.push(lowClip);
             if (lowClip < highClip) thresholds.push(highClip);
@@ -577,9 +736,11 @@ export class HeatmapLayer {
             const hDen = Math.max(height - 1, 1);
             const positions = ring.map((p: number[]) => {
               const lon =
-                that.bounds[0] + (p[0] / wDen) * (that.bounds[2] - that.bounds[0]);
+                that.bounds[0] +
+                (p[0] / wDen) * (that.bounds[2] - that.bounds[0]);
               const lat =
-                that.bounds[3] - (p[1] / hDen) * (that.bounds[3] - that.bounds[1]);
+                that.bounds[3] -
+                (p[1] / hDen) * (that.bounds[3] - that.bounds[1]);
               return Cartesian3.fromDegrees(lon, lat);
             });
             const idx = colorIndex * 4;
@@ -588,7 +749,9 @@ export class HeatmapLayer {
             let colorWithAlpha: Color;
             if (this.contourLineOption?.color) {
               // 完全采用用户指定颜色（包含其原始 alpha），不做透明度增强
-              colorWithAlpha = Color.fromCssColorString(this.contourLineOption.color) || Color.WHITE;
+              colorWithAlpha =
+                Color.fromCssColorString(this.contourLineOption.color) ||
+                Color.WHITE;
             } else {
               const r = palette[idx] / 255;
               const g = palette[idx + 1] / 255;
@@ -598,7 +761,10 @@ export class HeatmapLayer {
             const entity = this.viewer.entities.add({
               polyline: {
                 positions: positions,
-                width: typeof this.contourLineOption?.width === "number" ? this.contourLineOption!.width! : 1,
+                width:
+                  typeof this.contourLineOption?.width === "number"
+                    ? this.contourLineOption!.width!
+                    : 1,
                 material: colorWithAlpha,
               },
             });

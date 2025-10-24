@@ -85,6 +85,9 @@ importers:
       cesium:
         specifier: 1.108.0
         version: 1.108.0
+      fast-kde:
+        specifier: ^0.2.2
+        version: 0.2.2
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -168,7 +171,7 @@ importers:
   packages/widgets:
     dependencies:
       '@xh-gis/engine':
-        specifier: workspace:^1.0.15
+        specifier: workspace:^1.0.16
         version: link:../engine
       cesium:
         specifier: 1.108.0
@@ -1623,6 +1626,10 @@ packages:
     resolution: {integrity: sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==}
     engines: {node: '>=12'}
 
+  d3-color@3.1.0:
+    resolution: {integrity: sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==}
+    engines: {node: '>=12'}
+
   d3-contour@4.0.2:
     resolution: {integrity: sha512-4EzFTRIikzs47RGmdxbeUvLWtGedDUNkTcmzoeyg4sP/dvCexO47AaQL7VKy/gul85TOxw+IBgA8US2xwbToNA==}
     engines: {node: '>=12'}
@@ -1941,6 +1948,9 @@ packages:
 
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
+
+  fast-kde@0.2.2:
+    resolution: {integrity: sha512-Jebro5gWLQvRirj+YFaNgOCKl/Q+ld9wiHpZvLc0BA8oPhEHvQ8iZHGT2lDFVIqavdL1ip6wffv/IwRwMXjryA==}
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
@@ -5112,6 +5122,8 @@ snapshots:
     dependencies:
       internmap: 2.0.3
 
+  d3-color@3.1.0: {}
+
   d3-contour@4.0.2:
     dependencies:
       d3-array: 3.2.4
@@ -5586,6 +5598,10 @@ snapshots:
       micromatch: 4.0.8
 
   fast-json-stable-stringify@2.1.0: {}
+
+  fast-kde@0.2.2:
+    dependencies:
+      d3-color: 3.1.0
 
   fast-levenshtein@2.0.6: {}
 
