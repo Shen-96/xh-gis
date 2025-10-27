@@ -79,9 +79,9 @@ const defaultLabelStyle: Pick<
   | "scaleByDistance"
   | "translucencyByDistance"
 > = {
-  fontSize: 64,
+  fontSize: 14,
   fontFamily: "sans-serif",
-  scale: 0.3,
+  scale: 1,
   outline: true,
   // showBackground: true, /// 指定标签后面背景的可见性
   // backgroundColor: "rgba(22, 171, 216, 0.8)", /// 背景颜色
@@ -219,7 +219,7 @@ export default class GraphicUtils {
     return {
       show,
       text,
-      font: `${fontSize ?? defaultLabelStyle.fontSize}px ${
+      font: `${(fontSize ?? defaultLabelStyle.fontSize) * 2}px ${
         fontFamily ?? defaultLabelStyle.fontFamily
       }`,
       fillColor: Color.fromCssColorString(color ?? defaultLabelStyle.color),
@@ -227,7 +227,7 @@ export default class GraphicUtils {
         outlineColor ?? defaultLabelStyle.outlineColor
       ),
       outlineWidth,
-      scale: scale ?? defaultLabelStyle.scale,
+      scale: (scale ?? defaultLabelStyle.scale) * 0.5,
       style: LabelStyle[style ?? defaultLabelStyle.style],
       pixelOffset: Cartesian2.fromArray(
         pixelOffset ?? defaultLabelStyle.pixelOffset
