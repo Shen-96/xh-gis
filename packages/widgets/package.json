@@ -29,7 +29,7 @@
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
-    "@xh-gis/engine": "workspace:^1.0.17",
+    "@xh-gis/engine": "workspace:^1.0.18",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
