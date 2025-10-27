@@ -42,6 +42,15 @@ const ExamplesList: React.FC = () => {
       tags: ['组件', 'UI', 'React']
     },
     {
+      id: 'layer-manager',
+      title: '图层管理',
+      description: '演示 LayerManager 添加底图组合与配置图层',
+      category: 'basic',
+      path: '/examples/basic/layer-manager',
+      difficulty: 'beginner',
+      tags: ['图层', '底图', '配置']
+    },
+    {
       id: 'heatmap',
       title: '热度图',
       description: '演示基于 Cesium 的热度图渲染与等值线',

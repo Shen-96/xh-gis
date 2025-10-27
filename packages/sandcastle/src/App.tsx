@@ -11,6 +11,7 @@ import BasicMapExample from './examples/basic/BasicMapExample';
 import DrawingExample from './examples/basic/DrawingExample';
 import WidgetsExample from './examples/basic/WidgetsExample';
 import HeatmapExample from './examples/basic/HeatmapExample';
+import LayerManagerExample from './examples/basic/LayerManagerExample';
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Route path="/examples/basic/drawing" element={<DrawingExample />} />
         <Route path="/examples/basic/widgets" element={<WidgetsExample />} />
         <Route path="/examples/basic/heatmap/*" element={<HeatmapExample />} />
+        <Route path="/examples/basic/layer-manager" element={<LayerManagerExample />} />
         
         {/* 404页面 */}
         <Route path="*" element={<NotFound />} />
