@@ -557,10 +557,10 @@ export default abstract class AbstractCore<T extends CoreType = any> {
     /// 设置场景
 
     /// 设置底图
-    this.layerManager.loadBaseMaps(basemaps ?? []);
+    this.layerManager.addBasemapLayers(basemaps ?? []);
 
     /// 设置图层
-    this.layerManager.loadLayers(layers ?? []);
+    this.layerManager.addLayersFromConfig(layers ?? []);
   }
 
   resize() {

@@ -25,6 +25,7 @@ import {
   PrimitiveCollection,
   TerrainProvider,
   CesiumTerrainProvider,
+  EllipsoidTerrainProvider,
   Entity,
   createWorldTerrainAsync,
   Cartographic,
@@ -32,12 +33,7 @@ import {
   Credit,
   createGuid,
 } from "cesium";
-import {
-  BasemapConfig,
-  Layer,
-  LayerConfig,
-  LayerItem,
-} from "../types";
+import { BasemapConfig, Layer, LayerConfig, LayerItem } from "../types";
 import { GraphicType, LayerType } from "../enum";
 import CoordinateUtils from "./CoordinateUtils";
 import GraphicManager from "./GraphicManager";
@@ -46,6 +42,12 @@ import MathUtils from "./MathUtils";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";
 import GeometryUtils from "./GeometryUtils";
+import {
+  addTdtLayer as addTdtLayerFromLoader,
+  addPublicLayer as addPublicLayerFromLoader,
+  loadBaseMaps as loadBaseMapsFromLoader,
+} from "./Loaders/BasemapLoader";
+import { loadLayers as loadLayersFromLoader } from "./Loaders/LayerConfigLoader";
 
 /// 天地图token列表
 const tdtTKList = [
@@ -59,7 +61,7 @@ const tdtTKList = [
  * @author: EV-申小虎
  */
 class LayerManager extends AbstractManager {
-  readonly #layerArr: Array<Layer<LayerItem>>;
+  readonly #layerMap: Map<string, Layer<LayerItem>>;
 
   /**
    * @descripttion: 图层记录管理器
@@ -67,7 +69,7 @@ class LayerManager extends AbstractManager {
    */
   constructor(core: AbstractCore) {
     super(core);
-    this.#layerArr = [];
+    this.#layerMap = new Map();
   }
 
   /**
@@ -78,7 +80,7 @@ class LayerManager extends AbstractManager {
    * @return {*}
    * @author: EV-申小虎
    */
-  #addLayer<T extends LayerItem>(
+  #registerLayer<T extends LayerItem>(
     id: string,
     type: LayerType,
     layer: T,
@@ -86,7 +88,7 @@ class LayerManager extends AbstractManager {
   ) {
     if (id && layer) {
       if (!this.isExists(id)) {
-        this.#layerArr.push({ id, type, item: layer, pid });
+        this.#layerMap.set(id, { id, type, item: layer, pid });
       }
     }
   }
@@ -181,7 +183,7 @@ class LayerManager extends AbstractManager {
 
       layer.show = show;
 
-      this.#addLayer(id, LayerType.ENTITY, layer);
+      this.#registerLayer(id, LayerType.ENTITY, layer);
 
       return layer;
     }
@@ -193,7 +195,7 @@ class LayerManager extends AbstractManager {
           .then((dataSource) => {
             layer.show = show;
 
-            this.#addLayer(id, LayerType.GEOJSON_DATASOURCE, dataSource);
+            this.#registerLayer(id, LayerType.GEOJSON_DATASOURCE, dataSource);
 
             resolve(dataSource);
           })
@@ -209,7 +211,7 @@ class LayerManager extends AbstractManager {
           .then((dataSource) => {
             layer.show = show;
 
-            this.#addLayer(id, LayerType.CUSTOM_DATASOURCE, dataSource);
+            this.#registerLayer(id, LayerType.CUSTOM_DATASOURCE, dataSource);
 
             resolve(dataSource);
           })
@@ -225,7 +227,7 @@ class LayerManager extends AbstractManager {
           .then((dataSource) => {
             layer.show = show;
 
-            this.#addLayer(id, LayerType.KML_DATASOURCE, dataSource);
+            this.#registerLayer(id, LayerType.KML_DATASOURCE, dataSource);
 
             resolve(dataSource);
           })
@@ -241,7 +243,7 @@ class LayerManager extends AbstractManager {
           .then((dataSource) => {
             layer.show = show;
 
-            this.#addLayer(id, LayerType.CZML_DATASOURCE, dataSource);
+            this.#registerLayer(id, LayerType.CZML_DATASOURCE, dataSource);
 
             resolve(dataSource);
           })
@@ -256,7 +258,7 @@ class LayerManager extends AbstractManager {
 
       primitive.show = show;
 
-      this.#addLayer(id, LayerType.PRIMITIVE, primitive);
+      this.#registerLayer(id, LayerType.PRIMITIVE, primitive);
 
       return primitive;
     }
@@ -267,7 +269,11 @@ class LayerManager extends AbstractManager {
 
       primitiveCollection.show = show;
 
-      this.#addLayer(id, LayerType.PRIMITIVE, primitiveCollection);
+      this.#registerLayer(
+        id,
+        LayerType.PRIMITIVE_COLLECTION,
+        primitiveCollection
+      );
 
       return primitiveCollection;
     }
@@ -277,7 +283,7 @@ class LayerManager extends AbstractManager {
 
       layer.show = show;
 
-      this.#addLayer(id, LayerType.IMAGERY, layer);
+      this.#registerLayer(id, LayerType.IMAGERY, layer);
 
       return layer;
     }
@@ -301,7 +307,7 @@ class LayerManager extends AbstractManager {
 
       imageryLayer.show = show;
 
-      this.#addLayer(id, LayerType.IMAGERY, imageryLayer);
+      this.#registerLayer(id, LayerType.IMAGERY, imageryLayer);
 
       return imageryLayer;
     }
@@ -310,15 +316,7 @@ class LayerManager extends AbstractManager {
       // this.viewer.terrainProvider = layer;
       this.viewer.scene.terrainProvider = layer;
 
-      this.#addLayer(id, LayerType.TERRAIN, this.viewer.terrainProvider);
-
-      return this.viewer.scene.terrainProvider;
-    }
-    if (layer instanceof CesiumTerrainProvider) {
-      // this.viewer.terrainProvider = layer;
-      this.viewer.scene.terrainProvider = layer;
-
-      this.#addLayer(id, LayerType.TERRAIN, this.viewer.terrainProvider);
+      this.#registerLayer(id, LayerType.TERRAIN, this.viewer.terrainProvider);
 
       return this.viewer.scene.terrainProvider;
     }
@@ -331,7 +329,7 @@ class LayerManager extends AbstractManager {
    * @author: EV-申小虎
    */
   isExists(id: string) {
-    return this.#layerArr.findIndex((item) => item.id === id) >= 0;
+    return this.#layerMap.has(id);
   }
 
   /**
@@ -341,11 +339,106 @@ class LayerManager extends AbstractManager {
    * @author: EV-申小虎
    */
   getById<T extends LayerItem>(id: string): T | undefined {
-    const layerRecord = this.#layerArr.find(
-      (layer) => String(layer.id) === String(id)
-    );
-
+    const layerRecord = this.#layerMap.get(String(id));
     return layerRecord?.item ? (layerRecord.item as T) : undefined;
+  }
+
+  /**
+   * @descripttion: 获取图层记录（包含 id/type/item/pid）
+   * @param {string} id 图层唯一标识
+   * @return {Layer<LayerItem> | undefined} 图层记录
+   * @author: EV-申小虎
+   */
+  getLayerRecord(id: string): Layer<LayerItem> | undefined {
+    return this.#layerMap.get(String(id));
+  }
+
+  /**
+   * @descripttion: 按类型列出图层记录
+   * @param {LayerType} type 图层类型
+   * @return {Array<Layer<LayerItem>>} 图层记录列表
+   * @author: EV-申小虎
+   */
+  listByType(type: LayerType): Array<Layer<LayerItem>> {
+    const list: Array<Layer<LayerItem>> = [];
+    for (const record of this.#layerMap.values()) {
+      if (record.type === type) list.push(record);
+    }
+    return list;
+  }
+
+  /**
+   * @descripttion: 列出所有图层记录
+   * @return {Array<Layer<LayerItem>>} 全部图层记录
+   * @author: EV-申小虎
+   */
+  listAll(): Array<Layer<LayerItem>> {
+    return Array.from(this.#layerMap.values());
+  }
+
+  /**
+   * @descripttion: 按分组（pid）列出图层记录
+   * @param {string} pid 分组标识
+   * @return {Array<Layer<LayerItem>>} 图层记录列表
+   * @author: EV-申小虎
+   */
+  listByPid(pid: string): Array<Layer<LayerItem>> {
+    const list: Array<Layer<LayerItem>> = [];
+    for (const record of this.#layerMap.values()) {
+      if (record.pid === pid) list.push(record);
+    }
+    return list;
+  }
+
+  /**
+   * @descripttion: 设置图层可见性（自动匹配记录类型）
+   * @param {string} id 图层唯一标识
+   * @param {boolean} visible 是否可见
+   * @return {void}
+   * @author: EV-申小虎
+   */
+  setLayerVisible(id: string, visible: boolean): void {
+    const record = this.#layerMap.get(String(id));
+    if (!record) return;
+    this.setVisible(id, record.type, visible);
+  }
+
+  /**
+   * @descripttion: 批量删除指定类型的图层
+   * @param {LayerType} type 图层类型
+   * @param {boolean} destroy 是否销毁（默认false）
+   * @return {number} 删除数量
+   * @author: EV-申小虎
+   */
+  removeByType(type: LayerType, destroy = false): number {
+    const toRemove: string[] = [];
+    for (const [id, record] of this.#layerMap.entries()) {
+      if (record.type === type) toRemove.push(id);
+    }
+    let count = 0;
+    for (const id of toRemove) {
+      if (this.removeById(id, destroy)) count++;
+    }
+    return count;
+  }
+
+  /**
+   * @descripttion: 批量删除指定分组（pid）的图层
+   * @param {string} pid 分组标识
+   * @param {boolean} destroy 是否销毁（默认false）
+   * @return {number} 删除数量
+   * @author: EV-申小虎
+   */
+  removeByPid(pid: string, destroy = false): number {
+    const toRemove: string[] = [];
+    for (const [id, record] of this.#layerMap.entries()) {
+      if (record.pid === pid) toRemove.push(id);
+    }
+    let count = 0;
+    for (const id of toRemove) {
+      if (this.removeById(id, destroy)) count++;
+    }
+    return count;
   }
 
   getOrCreate(id: string, layerType: LayerType.ENTITY): Entity | undefined;
@@ -357,6 +450,24 @@ class LayerManager extends AbstractManager {
     id: string,
     layerType: LayerType.CZML_DATASOURCE
   ): Promise<CzmlDataSource | undefined>;
+  getOrCreate(
+    id: string,
+    layerType: LayerType.GEOJSON_DATASOURCE
+  ): Promise<GeoJsonDataSource | undefined>;
+  getOrCreate(
+    id: string,
+    layerType: LayerType.GEOJSON_DATASOURCE,
+    load: { data: any; options?: any }
+  ): Promise<GeoJsonDataSource | undefined>;
+  getOrCreate(
+    id: string,
+    layerType: LayerType.KML_DATASOURCE
+  ): Promise<KmlDataSource | undefined>;
+  getOrCreate(
+    id: string,
+    layerType: LayerType.KML_DATASOURCE,
+    load: { data: any; options?: any }
+  ): Promise<KmlDataSource | undefined>;
 
   /**
    * @descripttion: 获取或创建图层
@@ -377,13 +488,15 @@ class LayerManager extends AbstractManager {
     }
     /// 数据源
     if (layerType == LayerType.CUSTOM_DATASOURCE) {
-      return new Promise((reslove, reject) => {
+      return new Promise((resolve, reject) => {
         const layer = this.getById<DataSource>(id);
-        if (layer) reslove(layer);
+        if (layer) resolve(layer as CustomDataSource);
         else {
           this.add(id, new CustomDataSource())
             .then((dataSource) => {
-              dataSource ? reslove(dataSource) : reject(undefined);
+              dataSource
+                ? resolve(dataSource as CustomDataSource)
+                : reject(undefined);
             })
             .catch(() => reject(undefined));
         }
@@ -391,15 +504,73 @@ class LayerManager extends AbstractManager {
     }
     /// 数据源
     if (layerType == LayerType.CZML_DATASOURCE) {
-      return new Promise((reslove, reject) => {
+      return new Promise((resolve, reject) => {
         const layer = this.getById<DataSource>(id);
-        if (layer) reslove(layer);
+        if (layer) resolve(layer as CzmlDataSource);
         else {
           this.add(id, new CzmlDataSource())
             .then((dataSource) => {
-              dataSource ? reslove(dataSource) : reject(undefined);
+              dataSource
+                ? resolve(dataSource as CzmlDataSource)
+                : reject(undefined);
             })
             .catch(() => reject(undefined));
+        }
+      });
+    }
+    /// 数据源
+    if (layerType == LayerType.GEOJSON_DATASOURCE) {
+      return new Promise((resolve, reject) => {
+        const layer = this.getById<DataSource>(id);
+        if (layer) resolve(layer as GeoJsonDataSource);
+        else {
+          const hasLoad =
+            arguments.length >= 3 && !!(arguments[2] as any)?.data;
+          if (hasLoad) {
+            const { data, options } = (arguments[2] as any) ?? {};
+            GeoJsonDataSource.load(data, options)
+              .then(async (ds) => {
+                const added = await this.add(id, ds);
+                added ? resolve(added as GeoJsonDataSource) : reject(undefined);
+              })
+              .catch(() => reject(undefined));
+          } else {
+            this.add(id, new GeoJsonDataSource())
+              .then((dataSource) => {
+                dataSource
+                  ? resolve(dataSource as GeoJsonDataSource)
+                  : reject(undefined);
+              })
+              .catch(() => reject(undefined));
+          }
+        }
+      });
+    }
+    /// 数据源
+    if (layerType == LayerType.KML_DATASOURCE) {
+      return new Promise((resolve, reject) => {
+        const layer = this.getById<DataSource>(id);
+        if (layer) resolve(layer as KmlDataSource);
+        else {
+          const hasLoad =
+            arguments.length >= 3 && !!(arguments[2] as any)?.data;
+          if (hasLoad) {
+            const { data, options } = (arguments[2] as any) ?? {};
+            KmlDataSource.load(data, options)
+              .then(async (ds) => {
+                const added = await this.add(id, ds);
+                added ? resolve(added as KmlDataSource) : reject(undefined);
+              })
+              .catch(() => reject(undefined));
+          } else {
+            this.add(id, new KmlDataSource())
+              .then((dataSource) => {
+                dataSource
+                  ? resolve(dataSource as KmlDataSource)
+                  : reject(undefined);
+              })
+              .catch(() => reject(undefined));
+          }
         }
       });
     }
@@ -421,146 +592,7 @@ class LayerManager extends AbstractManager {
       terrainLayer: "NONE",
     }
   ) {
-    const { imageLayer, labelLayer, terrainLayer } = options;
-
-    if (imageLayer == "TDT_IMG" || imageLayer == undefined) {
-      /// 随机使用一个天地图token
-      const tdtToken =
-          tdtTKList[MathUtils.randomWithRange(0, tdtTKList.length - 1)],
-        globeProvider = new WebMapTileServiceImageryProvider({
-          url: `https://{s}.tianditu.gov.cn/img_w/wmts?tk=${tdtToken}`,
-          layer: "img",
-          style: "default",
-          format: "tiles",
-          tileMatrixSetID: "w",
-          maximumLevel: 18,
-          subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        });
-
-      await this.add("tdtDomImageLayer", globeProvider);
-
-      if (labelLayer) {
-        const labelProvider = new WebMapTileServiceImageryProvider({
-          // url: `http://{s}.tianditu.com/cia_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=label&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=${tdtToken}`,
-          // layer: "cia",
-          // style: "default",
-          // minimumLevel: 0,
-          // maximumLevel: 15,
-          // format: "image/jpeg",
-          // tileMatrixSetID: "GoogleMapsCompatible",
-          url: `https://{s}.tianditu.gov.cn/cia_w/wmts?tk=${tdtToken}`,
-          layer: "cia",
-          style: "default",
-          format: "tiles",
-          tileMatrixSetID: "w",
-          maximumLevel: 18,
-          credit: new Credit("天地图注记服务"),
-          subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        });
-
-        await this.add("tdtLabelImageLayer", labelProvider);
-      }
-    }
-
-    if (imageLayer == "TDT_VCT") {
-      /// 随机使用一个天地图token
-      const tdtToken =
-          tdtTKList[MathUtils.randomWithRange(0, tdtTKList.length - 1)],
-        globeProvider = new WebMapTileServiceImageryProvider({
-          url: `https://{s}.tianditu.gov.cn/vec_w/wmts?tk=${tdtToken}`,
-          layer: "vec",
-          style: "default",
-          format: "tiles",
-          tileMatrixSetID: "w",
-          maximumLevel: 18,
-          subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        });
-
-      await this.add("tdtVctImageLayer", globeProvider);
-
-      if (labelLayer) {
-        const labelProvider = new WebMapTileServiceImageryProvider({
-          url: `https://{s}.tianditu.gov.cn/cva_w/wmts?tk=${tdtToken}`,
-          layer: "cva",
-          style: "default",
-          format: "tiles",
-          tileMatrixSetID: "w",
-          maximumLevel: 18,
-          credit: new Credit("天地图注记服务"),
-          subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        });
-
-        await this.add("tdtLabelImageLayer", labelProvider);
-      }
-    }
-
-    if (imageLayer == "TDT_TER") {
-      /// 随机使用一个天地图token
-      const tdtToken =
-          tdtTKList[MathUtils.randomWithRange(0, tdtTKList.length - 1)],
-        globeProvider = new WebMapTileServiceImageryProvider({
-          url: `https://{s}.tianditu.gov.cn/ter_w/wmts?tk=${tdtToken}`,
-          layer: "ter",
-          style: "default",
-          format: "tiles",
-          tileMatrixSetID: "w",
-          maximumLevel: 18,
-          subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        });
-
-      await this.add("tdtTerImageLayer", globeProvider);
-
-      if (labelLayer) {
-        const labelProvider = new WebMapTileServiceImageryProvider({
-          url: `https://{s}.tianditu.gov.cn/cta_w/wmts?tk=${tdtToken}`,
-          layer: "cta",
-          style: "default",
-          format: "tiles",
-          tileMatrixSetID: "w",
-          maximumLevel: 18,
-          credit: new Credit("天地图注记服务"),
-          subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        });
-
-        await this.add("tdtLabelImageLayer", labelProvider);
-      }
-    }
-
-    if (terrainLayer == "CASIA") {
-      const terrainProvider = await CesiumTerrainProvider.fromUrl(
-        "http://172.18.29.31:8070/china30dem_ctb_zoom14"
-      );
-
-      this.add("basicTerrainLayer", terrainProvider);
-    }
-
-    if (terrainLayer == "PUB") {
-      const terrainProvider = await createWorldTerrainAsync();
-
-      this.add("basicTerrainLayer", terrainProvider);
-    }
-
-    //ArcMap
-    // globeProvider = new Cesium.ArcGisMapServerImageryProvider({
-    //     // // online
-    //     // url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
-    //     // // http
-    //     // url: 'http://vmsgis.cnpc.com.cn:9001/arcgis/rest/services/Map/chinaimage/MapServer',
-    //     // token: "VPdJZnAZCyPzq-cU2ShEUirPD0nKLbAP7CvPA2hlfmdCh5pXF5wcbZmTzQf4LqRG",
-    //     // https
-    //     // url: 'https://vms.cnpc.com.cn:7902/arcgis/rest/services/Map/chinaimage/MapServer',
-    //     // token: "SFJnaLGvKf7s_d3em1aPLqyK5AJH-tatOTXvdQ20Q_ckW5JSipyrNP1nm9ITvWiS",
-    //     // // label
-    //     url: 'https://vms.cnpc.com.cn:7902/arcgis/rest/services/Map/china/MapServer/tile',
-    //     token: '1FMKCWARLQ-LjM0SMmCOZcqsQzZn2GmnYDS5JaTrM3SkE6q4-m6iFQZwjm8eFxTHoZT9P_uMzM72y7qjufQ7eQ..'
-    // });
-    // GoogleMap
-    // globeProvider = new Cesium.UrlTemplateImageryProvider({
-    //     url: "http://mt1.google.cn/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Gali",
-    //     tilingScheme: new Cesium.WebMercatorTilingScheme(),
-    //     // minimumLevel: this.layerLevel.minimumLevel,
-    //     // maximumLevel: this.layerLevel.maximumLevel,
-    // });
+    return await addPublicLayerFromLoader(this, options);
   }
 
   /**
@@ -576,281 +608,21 @@ class LayerManager extends AbstractManager {
       minimumLevel?: number;
       maximumLevel?: number;
       subdomains?: string[];
+      token?: string;
+      tokenResolver?: () => string | Promise<string>;
     }
   ) {
-    /// 随机使用一个天地图token
-    const tdtToken =
-      tdtTKList[MathUtils.randomWithRange(0, tdtTKList.length - 1)];
-    const { tileMatrixSetID, maximumLevel, subdomains } = {
-      tileMatrixSetID: "w",
-      maximumLevel: 18,
-      subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-      ...options,
-    };
-
-    const tdtProvider = new WebMapTileServiceImageryProvider({
-      url: `https://{s}.tianditu.gov.cn/${layer}_${tileMatrixSetID}/wmts?tk=${tdtToken}`,
-      layer,
-      style: "default",
-      format: "tiles",
-      tileMatrixSetID,
-      maximumLevel,
-      subdomains,
-    });
-
-    return await this.add(name ?? `tdt_${layer}_image_layer`, tdtProvider);
-
-    // if (terrainLayer == "CASIA") {
-    //   const terrainProvider = await CesiumTerrainProvider.fromUrl(
-    //     "http://172.18.29.31:8070/china30dem_ctb_zoom14"
-    //   );
-
-    //   this.add("basicTerrainLayer", terrainProvider);
-    // }
-
-    //ArcMap
-    // globeProvider = new Cesium.ArcGisMapServerImageryProvider({
-    //     // // online
-    //     // url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
-    //     // // http
-    //     // url: 'http://vmsgis.cnpc.com.cn:9001/arcgis/rest/services/Map/chinaimage/MapServer',
-    //     // token: "VPdJZnAZCyPzq-cU2ShEUirPD0nKLbAP7CvPA2hlfmdCh5pXF5wcbZmTzQf4LqRG",
-    //     // https
-    //     // url: 'https://vms.cnpc.com.cn:7902/arcgis/rest/services/Map/chinaimage/MapServer',
-    //     // token: "SFJnaLGvKf7s_d3em1aPLqyK5AJH-tatOTXvdQ20Q_ckW5JSipyrNP1nm9ITvWiS",
-    //     // // label
-    //     url: 'https://vms.cnpc.com.cn:7902/arcgis/rest/services/Map/china/MapServer/tile',
-    //     token: '1FMKCWARLQ-LjM0SMmCOZcqsQzZn2GmnYDS5JaTrM3SkE6q4-m6iFQZwjm8eFxTHoZT9P_uMzM72y7qjufQ7eQ..'
-    // });
-    // GoogleMap
-    // globeProvider = new Cesium.UrlTemplateImageryProvider({
-    //     url: "http://mt1.google.cn/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Gali",
-    //     tilingScheme: new Cesium.WebMercatorTilingScheme(),
-    //     // minimumLevel: this.layerLevel.minimumLevel,
-    //     // maximumLevel: this.layerLevel.maximumLevel,
-    // });
+    return await addTdtLayerFromLoader(this, layer, name, options);
   }
 
-  loadBaseMaps(baseMaps: Array<BasemapConfig>) {
-    return Promise.all(
-      baseMaps?.map(
-        async ({
-          // id: layerId,
-          name: layerName,
-          type: layerType,
-          url: layerUrl,
-          show: layerShow,
-          minimumLevel,
-          maximumLevel,
-          layers,
-          layer,
-        }): Promise<any> => {
-          if (layerType == "xyz" && layerUrl) {
-            const layer = new UrlTemplateImageryProvider({
-              url: layerUrl,
-              minimumLevel,
-              maximumLevel,
-            });
-
-            return this.add(layerName, layer, layerShow);
-          } else if (layerType == "tdt") {
-            return await this.addTdtLayer((layer as any) ?? "img", layerName, {
-              maximumLevel,
-            });
-          } else if (layerType == "group") {
-            return await this.loadBaseMaps(layers ?? []);
-          }
-        }
-      )
-    );
+  addBasemapLayers(baseMaps: Array<BasemapConfig>) {
+    return loadBaseMapsFromLoader(this, baseMaps);
   }
 
-  loadLayers(layers: Array<LayerConfig>) {
-    /// 设置图层
-    return Promise.all(
-      layers?.map(
-        async ({
-          id: layerId,
-          name: layerName,
-          type: layerType,
-          show: layerShow,
-          data: layerData,
-        }): Promise<void> => {
-          if (layerType == "graphic") {
-            const dataSource = new CustomDataSource(layerName);
-            await this.add(layerId ?? createGuid(), dataSource, layerShow);
-
-            layerData?.forEach((graphic) => {
-              const {
-                id: graphicId,
-                type: graphicType,
-                name,
-                show,
-                style,
-              } = graphic;
-
-              const entity = dataSource.entities.add({
-                id: graphicId ?? createGuid(),
-                name,
-                show,
-              });
-
-              if (graphicType == GraphicType.LABEL) {
-                const { position } = graphic;
-
-                if (position) {
-                  const cartesian = CoordinateUtils.pointToCar3(position);
-
-                  entity.merge(
-                    new Entity({
-                      position: cartesian,
-                      label:
-                        GraphicUtils.generateLabelGraphicsOptionsFromStyle(
-                          style
-                        ),
-                    })
-                  );
-                } else {
-                  console.warn(
-                    "Layer ->",
-                    layerId,
-                    "GraphicType.LABEL ->",
-                    graphicId,
-                    "未设置位置"
-                  );
-                }
-              } else if (graphicType == GraphicType.CIRCLE) {
-                const { position } = graphic;
-
-                if (position) {
-                  const cartesian = CoordinateUtils.pointToCar3(position);
-                  const points = GeometryUtils.generateCirclePoints(
-                    CoordinateUtils.car3ToProjectionPnt(cartesian),
-                    style?.radius ?? 0
-                  );
-
-                  entity.merge(
-                    new Entity({
-                      polygon:
-                        GraphicUtils.generatePolygonGraphicsOptionsFromGraphic({
-                          style,
-                          positions:
-                            CoordinateUtils.projPntArr2PointArr(points),
-                        }),
-                    })
-                  );
-                } else {
-                  console.warn(
-                    "Layer ->",
-                    layerId,
-                    "GraphicType.LABEL ->",
-                    graphicId,
-                    "未设置位置"
-                  );
-                }
-              } else if (graphicType == GraphicType.POLYLINE) {
-                const { positions } = graphic;
-
-                if (positions) {
-                  entity.merge(
-                    new Entity({
-                      polyline:
-                        GraphicUtils.generatePolylineGraphicsOptionsFromGraphic(
-                          {
-                            style,
-                            positions,
-                          }
-                        ),
-                    })
-                  );
-                } else {
-                  console.warn(
-                    "Layer ->",
-                    layerId,
-                    "GraphicType.POLYLINE ->",
-                    graphicId,
-                    "未设置位置"
-                  );
-                }
-              } else if (graphicType == GraphicType.POLYGON) {
-                const { positions } = graphic;
-
-                if (positions) {
-                  entity.merge(
-                    new Entity({
-                      polygon:
-                        GraphicUtils.generatePolygonGraphicsOptionsFromGraphic({
-                          style,
-                          positions,
-                        }),
-                    })
-                  );
-                } else {
-                  console.warn(
-                    "Layer ->",
-                    layerId,
-                    "GraphicType.POLYGON ->",
-                    graphicId,
-                    "未设置位置"
-                  );
-                }
-              } else if (graphicType == GraphicType.SYMBOL) {
-                const { code, position, positions } = graphic;
-
-                if (position) {
-                  const cartesian = CoordinateUtils.pointToCar3(position);
-
-                  entity.merge(
-                    new Entity({
-                      position: cartesian,
-                      billboard:
-                        GraphicUtils.generateBillboardGraphicsOptionsFromStyle({
-                          ...(style as any),
-                          image: `/data/symbol/icon/${code}.png`,
-                        }),
-                      label: GraphicUtils.generateLabelGraphicsOptionsFromStyle(
-                        {
-                          ...(style as any),
-                          text: name,
-                        }
-                      ),
-                    })
-                  );
-                } else if (positions) {
-                  //@ts-ignore
-                  const SymbolClass = GraphicManager.getSymbolClass(code),
-                    //@ts-ignore
-                    arrowPos = SymbolClass?.generateGeometry(positions, code);
-
-                  entity.merge(
-                    new Entity({
-                      polyline:
-                        GraphicUtils.generatePolylineGraphicsOptionsFromGraphic(
-                          {
-                            positions: arrowPos,
-                            style: {
-                              width: 3,
-                              ...style,
-                            },
-                          }
-                        ),
-                    })
-                  );
-                }
-              }
-            });
-          }
-        }
-      )
-    );
+  addLayersFromConfig(layers: Array<LayerConfig>) {
+    return loadLayersFromLoader(this, layers);
   }
 
-  /**
-   * @descripttion:
-   * @param {string} id
-   * @return {void}
-   * @author: EV-申小虎
-   */
   /**
    * @descripttion: 删除图层
    * @param {string} id 图层唯一索引
@@ -861,7 +633,8 @@ class LayerManager extends AbstractManager {
   removeById(id: string, destroy = false) {
     let result = false;
     if (this.isExists(id)) {
-      const { type, item } = this.#layerArr.find((layer) => layer.id === id)!;
+      const record = this.#layerMap.get(id);
+      const { type, item } = record!;
 
       switch (type) {
         case LayerType.ENTITY:
@@ -888,11 +661,7 @@ class LayerManager extends AbstractManager {
         default:
           break;
       }
-
-      this.#layerArr.splice(
-        this.#layerArr.findIndex((i) => i.id == id),
-        1
-      );
+      this.#layerMap.delete(id);
 
       result = true;
     }
@@ -900,10 +669,46 @@ class LayerManager extends AbstractManager {
   }
 
   setVisible(id: string, layerType: LayerType, visible: boolean) {
-    if (layerType == LayerType.CZML_DATASOURCE) {
-      const layer = this.getById<DataSource>(id);
-
-      layer && (layer.show = visible);
+    switch (layerType) {
+      case LayerType.ENTITY: {
+        const layer = this.getById<Entity>(id);
+        if (layer) layer.show = visible;
+        break;
+      }
+      case LayerType.CUSTOM_DATASOURCE:
+      case LayerType.CZML_DATASOURCE:
+      case LayerType.GEOJSON_DATASOURCE:
+      case LayerType.KML_DATASOURCE: {
+        const layer = this.getById<DataSource>(id);
+        if (layer) layer.show = visible;
+        break;
+      }
+      case LayerType.IMAGERY: {
+        const layer = this.getById<ImageryLayer>(id);
+        if (layer) layer.show = visible;
+        break;
+      }
+      case LayerType.PRIMITIVE: {
+        const layer = this.getById<Primitive>(id);
+        if (layer) (layer as any).show = visible;
+        break;
+      }
+      case LayerType.PRIMITIVE_COLLECTION: {
+        const layer = this.getById<PrimitiveCollection>(id);
+        if (layer) (layer as any).show = visible;
+        break;
+      }
+      case LayerType.TERRAIN: {
+        const layer = this.getById<TerrainProvider>(id);
+        if (layer) {
+          this.viewer.scene.terrainProvider = visible
+            ? layer
+            : new EllipsoidTerrainProvider();
+        }
+        break;
+      }
+      default:
+        break;
     }
   }
 }

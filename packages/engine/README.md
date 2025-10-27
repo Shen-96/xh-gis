@@ -171,6 +171,143 @@ earth.specialEffectManager.add('cone', {
 });
 ```
 
+### LayerManager 使用指南
+
+LayerManager 统一管理图层注册、查询、可见性与删除，支持常见数据源与便捷入口。
+
+#### 快速添加图层（统一 `add(...)`）
+
+```typescript
+import { LayerType } from '@xh-gis/engine';
+import { GeoJsonDataSource, CustomDataSource, ImageryLayer, UrlTemplateImageryProvider } from 'cesium';
+
+// 添加数据源
+await earth.layerManager.add('geo', await GeoJsonDataSource.load('/data/demo.geojson'));
+await earth.layerManager.add('graphics', new CustomDataSource('graphics'));
+
+// 添加影像图层（提供者）
+const provider = new UrlTemplateImageryProvider({ url: 'https://tiles/{z}/{x}/{y}.png' });
+const imagery = await earth.layerManager.add('base', provider);
+
+// 添加影像图层（实例）
+earth.layerManager.add('labels', imagery as ImageryLayer);
+```
+
+#### 获取或创建（含 GEOJSON/KML 便捷加载）
+
+```typescript
+import { LayerType } from '@xh-gis/engine';
+
+// GeoJSON：存在则返回；否则按入参决定加载或空实例
+const geoDs = await earth.layerManager.getOrCreate(
+  'geo1',
+  LayerType.GEOJSON_DATASOURCE,
+  { data: '/data/china.geojson', options: { clampToGround: true } }
+);
+
+// KML：同上
+const kmlDs = await earth.layerManager.getOrCreate(
+  'kml1',
+  LayerType.KML_DATASOURCE,
+  { data: '/data/line.kml', options: { camera: earth.viewer.camera } }
+);
+
+// 获取或创建空数据源（无加载）
+const czmlDs = await earth.layerManager.getOrCreate('czml1', LayerType.CZML_DATASOURCE);
+```
+
+#### 天地图便捷入口（`addTdtLayer`）
+
+```typescript
+// 支持自定义 token 或异步解析器；可配置层级范围与子域
+await earth.layerManager.addTdtLayer('img', 'tdt_img', {
+  token: 'your-token',
+  // 或者使用解析器
+  tokenResolver: async () => fetch('/api/tdt-token').then(r => r.text()),
+  minimumLevel: 0,
+  maximumLevel: 18,
+  tileMatrixSetID: 'w',
+  subdomains: ['t0','t1','t2','t3','t4','t5','t6','t7']
+});
+```
+
+#### 通过配置添加底图组合（`addBasemapLayers`）
+
+```typescript
+// 依据 BasemapConfig[] 添加底图与分组
+earth.layerManager.addBasemapLayers([
+  { name: 'base', type: 'xyz', url: 'https://tiles/{z}/{x}/{y}.png', show: true },
+  { name: 'tdt_vec', type: 'tdt', layer: 'vec', maximumLevel: 18 },
+  { name: 'group', type: 'group', layers: [
+    { name: 'tdt_img', type: 'tdt', layer: 'img' },
+    { name: 'tdt_label', type: 'tdt', layer: 'cia' }
+  ]}
+]);
+```
+
+#### 通过配置添加图层（`addLayersFromConfig`）
+
+```typescript
+// 依据 LayerConfig[] 批量添加图层（例如图形图层）
+earth.layerManager.addLayersFromConfig([
+  {
+    id: 'graphics1',
+    name: '标绘图层',
+    type: 'graphic',
+    show: true,
+    data: [
+      { type: GraphicType.POINT, position: [120, 30], style: { pixelSize: 8 } },
+      { type: GraphicType.POLYLINE, positions: [[120, 30], [121, 31]], style: { width: 3 } },
+      { type: GraphicType.LABEL, position: [120, 30], style: { text: 'Hello' } }
+    ]
+  }
+]);
+```
+
+#### 查询方法
+
+```typescript
+import { LayerType } from '@xh-gis/engine';
+
+// 获取完整记录（含 id/type/item/pid）
+const record = earth.layerManager.getLayerRecord('base');
+
+// 按类型列出
+const imageryList = earth.layerManager.listByType(LayerType.IMAGERY);
+
+// 列出全部
+const allLayers = earth.layerManager.listAll();
+
+// 按分组（pid）列出（预留：pid 当前为内部分组标识）
+const groupLayers = earth.layerManager.listByPid('demo');
+```
+
+#### 可见性控制
+
+```typescript
+// 指定类型控制（旧接口）
+earth.layerManager.setVisible('base', LayerType.IMAGERY, true);
+
+// 便捷控制（自动匹配类型）
+earth.layerManager.setLayerVisible('base', true);
+```
+
+#### 删除方法
+
+```typescript
+// 删除单个
+earth.layerManager.removeById('base', /* destroy */ true);
+
+// 批量按类型删除
+const removedImagery = earth.layerManager.removeByType(LayerType.IMAGERY, true);
+
+// 批量按分组删除
+const removedGroup = earth.layerManager.removeByPid('demo', false);
+```
+
+> 注意：`TerrainProvider` 为全局地形；当前 `removeById/removeByType/removeByPid` 删除记录后不会自动切换全局地形。如需隐藏或切换，请使用 `setVisible(id, LayerType.TERRAIN, false)`（会切换为 `EllipsoidTerrainProvider`）。
+
+
 ### 弹窗（XgPopup）
 
 XgPopup 用于在场景中的某个地理位置展示信息窗。支持三种内容类型：`string`、`HTMLElement`、`ReactElement`（含数组）。
