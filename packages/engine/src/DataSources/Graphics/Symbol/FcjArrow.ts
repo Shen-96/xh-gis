@@ -8,7 +8,11 @@
  */
 import { SymbolType } from "../../../enum";
 import BasePolygonArrow from "./BasePolygonArrow";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class FcjArrow extends BasePolygonArrow {
   symbolType = SymbolType.反冲击方向;
 }
+
+// 模块内自注册
+registry.registerSymbol(SymbolType.反冲击方向, FcjArrow as any);

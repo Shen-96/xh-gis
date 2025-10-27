@@ -12,8 +12,9 @@ import FreeFlatTailArrow from "./FreeFlatTailArrow";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
 import GeometryUtils from "../../../Core/GeometryUtils";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class FreeSwallowTailArrow extends FreeFlatTailArrow {
   tailWidthFactor: number;
@@ -23,13 +24,16 @@ export default class FreeSwallowTailArrow extends FreeFlatTailArrow {
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.graphicType = GraphicType.FREE_SWALLOW_TAIL_ARROW;
@@ -46,53 +50,6 @@ export default class FreeSwallowTailArrow extends FreeFlatTailArrow {
     const projectionPoints =
       CoordinateUtils.car3ArrToProjectionPntArr(positions);
 
-    // let [tailLeft, tailRight] = [projectionPoints[0], projectionPoints[1]];
-    // if (
-    //   MathUtils.isPathClockwise(
-    //     projectionPoints[0],
-    //     projectionPoints[1],
-    //     projectionPoints[2]
-    //   )
-    // ) {
-    //   tailLeft = projectionPoints[1];
-    //   tailRight = projectionPoints[0];
-    // }
-    // const midTail = MathUtils.mid(tailLeft, tailRight);
-    // const bonePnts = [midTail].concat(projectionPoints.slice(2));
-    // const headPnts = this.getArrowHeadPoints(bonePnts, tailLeft, tailRight);
-    // const [neckLeft, neckRight] = [headPnts[0], headPnts[4]];
-    // const tailWidth = MathUtils.projectionDistance(tailLeft, tailRight);
-    // const allLen = MathUtils.wholeProjectionDistance(bonePnts) ** 0.99;
-    // const len = allLen * this.tailWidthFactor * this.swallowTailFactor;
-    // this.swallowTailPnt = MathUtils.getThirdPoint(
-    //   bonePnts[1],
-    //   bonePnts[0],
-    //   Math.PI,
-    //   len,
-    //   true
-    // );
-    // const factor = tailWidth / allLen;
-    // const bodyPnts = this.getArrowBodyPoints(
-    //   bonePnts,
-    //   neckLeft,
-    //   neckRight,
-    //   factor
-    // );
-    // const count = bodyPnts.length;
-    // let leftPnts = [tailLeft].concat(bodyPnts.slice(0, count / 2));
-    // leftPnts.push(neckLeft);
-    // let rightPnts = [tailRight].concat(bodyPnts.slice(count / 2, count));
-    // rightPnts.push(neckRight);
-    // leftPnts = MathUtils.computeQuadraticBSplinePoints(leftPnts);
-    // rightPnts = MathUtils.computeQuadraticBSplinePoints(rightPnts);
-    // const points = leftPnts.concat(headPnts, rightPnts.reverse(), [
-    //   this.swallowTailPnt,
-    //   leftPnts[0],
-    // ]);
-    // const temp = Array.from<number>([]).concat(...points);
-    // const cartesianPoints = CoordinateUtils.projectionsToCartesian3Arr(temp);
-    // return cartesianPoints;
-
     return CoordinateUtils.projPntArr2Cartesian3Arr(
       GeometryUtils.generateTailArrow(projectionPoints, {
         isFixedTail: false,
@@ -101,3 +58,6 @@ export default class FreeSwallowTailArrow extends FreeFlatTailArrow {
     );
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.FREE_SWALLOW_TAIL_ARROW, FreeSwallowTailArrow as any);

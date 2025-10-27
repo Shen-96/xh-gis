@@ -8,7 +8,11 @@
  */
 import { SymbolType } from "../../../enum";
 import BasePolygonArrow from "./BasePolygonArrow";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class JqLhHlDjArrow extends BasePolygonArrow {
   symbolType = SymbolType.精确火力打击方向;
 }
+
+// 模块内自注册
+registry.registerSymbol(SymbolType.精确火力打击方向, JqLhHlDjArrow as any);

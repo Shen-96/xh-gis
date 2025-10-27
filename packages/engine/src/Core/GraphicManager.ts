@@ -13,6 +13,15 @@ import CoordinateUtils from "./CoordinateUtils";
 import AbstractGraphic from "../DataSources/Graphics/Abstract/AbstractGraphic";
 import { GeometryDrawEventCallbackMap } from "../DataSources/Graphics/types";
 import AbstractCore from "./AbstractCore";
+import registry from "./GraphicRegistry";
+import ZyTjArrow from "../DataSources/Graphics/Symbol/ZyTjArrow";
+import ZyFtjArrow from "../DataSources/Graphics/Symbol/ZyFtjArrow";
+import LhHlDjArrow from "../DataSources/Graphics/Symbol/LhHlDjArrow";
+import JqLhHlDjArrow from "../DataSources/Graphics/Symbol/JqLhHlDjArrow";
+import JgArrow from "../DataSources/Graphics/Symbol/JgArrow";
+import JgZxArrow from "../DataSources/Graphics/Symbol/JgZxArrow";
+import FcjArrow from "../DataSources/Graphics/Symbol/FcjArrow";
+import BbsTpDdArrow from "../DataSources/Graphics/Symbol/BbsTpDdArrow";
 import {
   XgCircle,
   XgEllipse,
@@ -25,6 +34,7 @@ import {
   XgLune,
   XgPolygon,
   XgRectangle,
+  XgFixedRatioRectangle,
   XgSector,
   XgStraightArrow,
   XgStraightTailArrow,
@@ -37,14 +47,6 @@ import {
   XgKidneyShaped,
 } from "../DataSources";
 import AbstractManager from "./AbstractManager";
-import ZyTjArrow from "../DataSources/Graphics/Symbol/ZyTjArrow";
-import ZyFtjArrow from "../DataSources/Graphics/Symbol/ZyFtjArrow";
-import LhHlDjArrow from "../DataSources/Graphics/Symbol/LhHlDjArrow";
-import JqLhHlDjArrow from "../DataSources/Graphics/Symbol/JqLhHlDjArrow";
-import JgArrow from "../DataSources/Graphics/Symbol/JgArrow";
-import JgZxArrow from "../DataSources/Graphics/Symbol/JgZxArrow";
-import FcjArrow from "../DataSources/Graphics/Symbol/FcjArrow";
-import BbsTpDdArrow from "../DataSources/Graphics/Symbol/BbsTpDdArrow";
 
 /**
  * @descripttion: 标绘管理器
@@ -60,6 +62,7 @@ export default class GraphicManager extends AbstractManager {
 
   constructor(core: AbstractCore) {
     super(core);
+    // 注册逻辑已移至各模块内部自注册
   }
 
   setDrawEventHandler(
@@ -76,6 +79,10 @@ export default class GraphicManager extends AbstractManager {
   ): void;
   setDrawEventHandler(
     type: GraphicType.RECTANGLE,
+    callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
+  ): void;
+  setDrawEventHandler(
+    type: GraphicType.FIXED_RATIO_RECTANGLE,
     callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
   ): void;
   setDrawEventHandler(
@@ -221,6 +228,10 @@ export default class GraphicManager extends AbstractManager {
     type: GraphicType.RECTANGLE,
     positions?: Array<Point3Deg>
   ): XgRectangle;
+  create(
+    type: GraphicType.FIXED_RATIO_RECTANGLE,
+    positions?: Array<Point3Deg>
+  ): XgFixedRatioRectangle;
   create(type: GraphicType.POLYGON, positions?: Array<Point3Deg>): XgPolygon;
   create(
     type: GraphicType.FREEHAND_POLYGON,
@@ -305,6 +316,32 @@ export default class GraphicManager extends AbstractManager {
   create(type: GraphicType | SymbolType, param1?: any, param2?: any) {
     let plot: AbstractGraphic<GeometryType>;
 
+    // 先使用注册表进行构造（减少巨型分支）
+    const Ctor =
+      registry.getGraphic(type as GraphicType) ||
+      registry.getSymbol(type as SymbolType);
+    if (Ctor) {
+      const symbol = (plot = new Ctor({
+        core: this.core,
+        style: param2,
+        position: type === GraphicType.POINT ? param1 : undefined,
+        positions: type !== GraphicType.POINT ? param1 : undefined,
+      }));
+      if (type === GraphicType.POINT && (symbol as any).setPosition) {
+        param1 && (symbol as any).setPosition(param1);
+      } else if ((symbol as any).setPositions) {
+        param1 && (symbol as any).setPositions(param1);
+      }
+      // 如果传入了 positions/position，说明是直接创建的静态图形，需纳入管理器
+      if (
+        (type === GraphicType.POINT && !!param1) ||
+        (type !== GraphicType.POINT && !!param1)
+      ) {
+        this.add(symbol as any);
+      }
+      return plot;
+    }
+
     // switch (type) {
     // case GraphicType.POINT:
     //   plot = this.createXgPoint(options);
@@ -316,163 +353,191 @@ export default class GraphicManager extends AbstractManager {
     //   plot = this.createXgBillboard(options);
     //   break;
     if (type === GraphicType.POINT) {
-      const symbol = (plot = new XgMark(this.core));
+      const symbol = (plot = new XgMark({ core: this.core }));
       symbol.setPosition(param1);
+      // 直接创建的对象纳入管理器
+      param1 && this.add(symbol);
     } else if (type === GraphicType.FREEHAND_LINE) {
       const symbol = (plot = new XgFreehandLine({
         core: this.core,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.CURVE) {
       const symbol = (plot = new XgCurve({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.RECTANGLE) {
       const symbol = (plot = new XgRectangle({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.POLYGON) {
       const symbol = (plot = new XgPolygon({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.FREEHAND_POLYGON) {
       const symbol = (plot = new XgFreehandPolygon({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.CIRCLE) {
       const symbol = (plot = new XgCircle({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.ELLIPSE) {
       const symbol = (plot = new XgEllipse({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.KIDNEY_SHAPED) {
       const symbol = (plot = new XgKidneyShaped({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.SECTOR) {
       const symbol = (plot = new XgSector({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.LUNE) {
       const symbol = (plot = new XgLune({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.TRIANGLE) {
       const symbol = (plot = new XgTriangle({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.STRAIGHT_TAIL_ARROW) {
       const symbol = (plot = new XgStraightTailArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.STRAIGHT_TAIL_RIGHT_ARROW) {
       const symbol = (plot = new XgStraightTailRightArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.CURVE_ARROW) {
       const symbol = (plot = new XgCurvedArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.STRAIGHT_ARROW) {
       const symbol = (plot = new XgStraightArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.FREE_FLAT_TAIL_ARROW) {
       const symbol = (plot = new XgFreeFlatTailArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.FREE_SWALLOW_TAIL_ARROW) {
       const symbol = (plot = new XgFreeSwallowTailArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.FIXED_FLAT_TAIL_ARROW) {
       const symbol = (plot = new XgFixedFlatTailArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.FIXED_SWALLOW_TAIL_ARROW) {
       const symbol = (plot = new XgFixedSwallowTailArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === GraphicType.DOUBLE_ARROW) {
       const symbol = (plot = new XgDoubleArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === SymbolType.战役突击方向) {
       const symbol = (plot = new ZyTjArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === SymbolType.战役反突击方向) {
       const symbol = (plot = new ZyFtjArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === SymbolType.联合火力打击方向) {
       const symbol = (plot = new LhHlDjArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === SymbolType.精确火力打击方向) {
       const symbol = (plot = new JqLhHlDjArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === SymbolType.进攻方向) {
       const symbol = (plot = new JgArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === SymbolType["进攻方向（直线/折线）"]) {
       const symbol = (plot = new JgZxArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     }
     //  else if (type === SymbolType.本级地面作战主攻方向) {
     //   const symbol = (plot = new CurvedArrow({
@@ -487,12 +552,14 @@ export default class GraphicManager extends AbstractManager {
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else if (type === SymbolType.不标示突破地段的作战行动) {
       const symbol = (plot = new BbsTpDdArrow({
         core: this.core,
         style: param2,
       }));
       param1 && symbol.setPositions(param1);
+      param1 && this.add(symbol);
     } else {
       throw Error("无效的标绘类型");
     }
@@ -539,23 +606,8 @@ export default class GraphicManager extends AbstractManager {
    * @author: EV-申小虎
    */
   static getSymbolClass(type: SymbolType) {
-    if (type === SymbolType.战役突击方向) {
-      return ZyTjArrow;
-    } else if (type === SymbolType.战役反突击方向) {
-      return ZyFtjArrow;
-    } else if (type === SymbolType.联合火力打击方向) {
-      return LhHlDjArrow;
-    } else if (type === SymbolType.精确火力打击方向) {
-      return JqLhHlDjArrow;
-    } else if (type === SymbolType.进攻方向) {
-      return JgArrow;
-    } else if (type === SymbolType["进攻方向（直线/折线）"]) {
-      return JgZxArrow;
-    } else if (type === SymbolType.反冲击方向) {
-      return FcjArrow;
-    } else {
-      return null;
-    }
+    const ctor = registry.getSymbol(type);
+    return ctor ?? null;
   }
 
   isExists(id: string) {
@@ -627,6 +679,34 @@ export default class GraphicManager extends AbstractManager {
     });
 
     json(data, createGuid() + ".json");
+  }
+
+  // 新增：集合与序列化便捷 API
+  size() {
+    return this.graphicCollection.size;
+  }
+
+  forEach(callback: (item: AbstractGraphic<GeometryType>, id: string) => void) {
+    this.graphicCollection.forEach((value, key) => callback?.(value, key));
+  }
+
+  addMany(items: AbstractGraphic<GeometryType>[]) {
+    items?.forEach((item) => this.add(item));
+  }
+
+  removeMany(ids: string[]) {
+    ids?.forEach((id) => this.removeById(id));
+  }
+
+  serializeAll(): { type: GraphicType | SymbolType; positions: Point3Deg[] }[] {
+    const symbols = this.getAll();
+    return symbols.map((symbol) => {
+      const car3Arr = [...symbol.points.values()];
+      return {
+        type: symbol.graphicType as any,
+        positions: CoordinateUtils.car3ArrToPoint3DegArr(car3Arr),
+      };
+    });
   }
 
   /**

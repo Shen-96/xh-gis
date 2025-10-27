@@ -16,7 +16,7 @@ import {
   GraphicType,
   SymbolType,
 } from "../../../enum";
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
 import GeometryUtils from "../../../Core/GeometryUtils";
 import { ISymbol } from "../Abstract/ISymbol";
 
@@ -27,13 +27,16 @@ export default abstract class BasePolylineArrow
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.LINE];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.hintText = "单击开始绘制";
@@ -90,6 +93,7 @@ export default abstract class BasePolylineArrow
 
   beginDraw(callback?: GeometryDrawEventCallbackMap[GeometryType.LINE]): void {
     this.setState("drawing");
+    // 统一由 AbstractGraphic.setState("drawing") 进行注册
 
     this.onLeftClick();
     this.onLeftDoubleClick(callback);

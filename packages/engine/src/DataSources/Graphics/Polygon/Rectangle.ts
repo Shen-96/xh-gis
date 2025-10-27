@@ -12,35 +12,32 @@ import AbstractCore from "../../../Core/AbstractCore";
 import { Cartesian3, createGuid } from "cesium";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import GeometryUtils from "../../../Core/GeometryUtils";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Rectangle extends AbstractPolygon {
-  graphicType: GraphicType;
-  
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.RECTANGLE;
+  readonly minPointsForShape = 2;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
-    this.graphicType = GraphicType.RECTANGLE;
-
     this.graphicName = "矩形";
-    this.minPointsForShape = 2;
-    this.hintText = "单击开始绘制";
   }
 
-  /**
-   * Add points only on click events
-   */
   protected addPoint(
     cartesian: Cartesian3,
     callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
@@ -55,19 +52,19 @@ export default class Rectangle extends AbstractPolygon {
     }
   }
 
-  /**
-   * Draw a shape based on mouse movement points during the initial drawing.
-   */
   protected updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.getPoints(), cartesian];
     const geometryPoints = this.generateGeometry(tempPoints);
     this.setGeometryPoints(geometryPoints);
   }
 
-  protected generateGeometry(positions: Cartesian3[]) {
+  protected generateGeometry(positions: Cartesian3[]): Cartesian3[] {
     const [p1, p2] = CoordinateUtils.car3ArrToPointArr(positions);
     const coords = [...p1, p1[0], p2[1], ...p2, p2[0], p1[1], ...p1];
     const cartesianPoints = Cartesian3.fromDegreesArray(coords);
     return cartesianPoints;
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.RECTANGLE, Rectangle as any);

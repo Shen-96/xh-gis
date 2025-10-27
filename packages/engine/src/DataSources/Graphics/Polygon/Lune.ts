@@ -13,30 +13,30 @@ import { Cartesian3, createGuid } from "cesium";
 import MathUtils from "../../../Core/MathUtils";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryType, GraphicType } from "../../../enum";
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Lune extends AbstractPolygon {
-  graphicType: GraphicType;
-
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.LUNE;
+  readonly minPointsForShape = 3;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
-
-    this.graphicType = GraphicType.LUNE;
 
     this.freehand = true;
     this.graphicName = "半月形";
-    this.minPointsForShape = 3;
     this.hintText = "单击开始绘制";
   }
 
@@ -108,3 +108,6 @@ export default class Lune extends AbstractPolygon {
     return cartesianPoints;
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.LUNE, Lune as any);

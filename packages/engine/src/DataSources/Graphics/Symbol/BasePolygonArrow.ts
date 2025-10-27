@@ -1,7 +1,7 @@
 import { Cartesian3, createGuid } from "cesium";
 import AbstractCore from "../../../Core/AbstractCore";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
-import { GeometryStyleMap, Point2Deg, Point3DegList } from "../../../types";
+import { GeometryStyleMap, Point2Deg, Point3DegList, Point3Deg } from "../../../types";
 import { GeometryType, GraphicType, SymbolType } from "../../../enum";
 import GeometryUtils from "../../../Core/GeometryUtils";
 import AbstractPolygon from "../Abstract/AbstractPolygon";
@@ -58,13 +58,16 @@ export default abstract class BasePolygonArrow
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.hintText = "单击开始绘制";
@@ -78,6 +81,7 @@ export default abstract class BasePolygonArrow
     callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
   ): void {
     this.setState("drawing");
+    // 统一由 AbstractGraphic.setState("drawing") 进行注册
 
     this.onLeftClick();
     this.onLeftDoubleClick(callback);

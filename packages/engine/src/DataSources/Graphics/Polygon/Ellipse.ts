@@ -12,37 +12,34 @@ import AbstractCore from "../../../Core/AbstractCore";
 import { Cartesian3, createGuid } from "cesium";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
-import { GeometryStyleMap, Point } from "../../../types";
+import GeometryUtils from "../../../Core/GeometryUtils";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
 import { GeometryType, GraphicType } from "../../../enum";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Ellipse extends AbstractPolygon {
   graphicType: GraphicType;
-
+  
   minPointsForShape: number;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
-    super({
-      core,
-      style,
-    });
+    super({ core, style, positions });
 
     this.graphicType = GraphicType.ELLIPSE;
-
     this.freehand = true;
     this.graphicName = "椭圆";
     this.minPointsForShape = 2;
-    this.hintText = "单击开始绘制";
+    this.hintText = "单击确定中心点";
   }
 
-  /**
-   * Add points only on click events
-   */
   protected addPoint(
     cartesian: Cartesian3,
     callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
@@ -57,9 +54,6 @@ export default class Ellipse extends AbstractPolygon {
     }
   }
 
-  /**
-   * Draw a shape based on mouse movement points during the initial drawing.
-   */
   protected updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.getPoints(), cartesian];
     const geometryPoints = this.generateGeometry(tempPoints);
@@ -67,33 +61,23 @@ export default class Ellipse extends AbstractPolygon {
   }
 
   protected generateGeometry(positions: Cartesian3[]) {
-    const lnglatPoints = positions.map((pnt) => {
-      return CoordinateUtils.car3ToPoint(pnt);
-    });
-    const pnt1 = lnglatPoints[0];
-    const pnt2 = lnglatPoints[1];
+    const projPoints = CoordinateUtils.car3ArrToProjectionPntArr(positions);
+    const center = projPoints[0];
+    const pnt2 = projPoints[1];
 
-    const center = MathUtils.mid(pnt1, pnt2);
-    const majorRadius = Math.abs((pnt1[0] - pnt2[0]) / 2);
-    const minorRadius = Math.abs((pnt1[1] - pnt2[1]) / 2);
-    const res = this.generatePoints(center, majorRadius, minorRadius);
-    const cartesianPoints = res.map((p) => CoordinateUtils.pointToCar3(p));
-    return cartesianPoints;
-  }
+    const { semiMajorAxis, semiMinorAxis } = MathUtils.computeEllipseAxes(
+      center,
+      pnt2
+    );
 
-  private generatePoints(
-    center: Point,
-    majorRadius: number,
-    minorRadius: number
-  ) {
-    let [x, y, angle] = [-1, -1, 0];
-    const points = [] as Point[];
-    for (let i = 0; i <= 100; i++) {
-      angle = (Math.PI * 2 * i) / 100;
-      x = center[0] + majorRadius * Math.cos(angle);
-      y = center[1] + minorRadius * Math.sin(angle);
-      points.push([x, y]);
-    }
-    return points;
+    const points = GeometryUtils.generateEllipsePoints(
+      center,
+      semiMajorAxis,
+      semiMinorAxis
+    );
+    return CoordinateUtils.projPntArr2Cartesian3Arr(points);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.ELLIPSE, Ellipse as any);

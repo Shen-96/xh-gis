@@ -99,15 +99,21 @@ export default abstract class AbstractPolygon extends AbstractGraphic<GeometryTy
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super(core);
     this.geometryType = GeometryType.POLYGON;
-
+  
     this.init();
     this.style = { ...defaultPolygonStyle, ...style };
+  
+    if (positions && positions.length) {
+      this.setPositions(positions);
+    }
   }
 
   protected init() {
@@ -173,8 +179,6 @@ export default abstract class AbstractPolygon extends AbstractGraphic<GeometryTy
     ) => void
   ): void {
     this.setState("drawing");
-    // 在开始绘制时注册到 GraphicManager
-    this.core.graphicManager.add(this);
 
     this.onLeftClick(callback);
   }

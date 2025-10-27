@@ -11,7 +11,8 @@ import AbstractLine from "../Abstract/AbstractLine";
 import AbstractCore from "../../../Core/AbstractCore";
 import { GeometryDrawEventCallbackMap } from "../types";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class FreehandLine extends AbstractLine {
   graphicType: GraphicType;
@@ -21,13 +22,16 @@ export default class FreehandLine extends AbstractLine {
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.LINE];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.graphicType = GraphicType.FREEHAND_LINE;
@@ -60,19 +64,12 @@ export default class FreehandLine extends AbstractLine {
   protected updateMovingPoint(cartesian: Cartesian3) {
     this.points.set(createGuid(), cartesian);
     this.setGeometryPoints(this.getPoints());
-    // this.eventDispatcher.dispatchEvent("drawUpdate", cartesian);
-    // const tempPoints = [...this.getPoints(), cartesian];
-    // let geometryPoints = [];
-    // if (tempPoints.length === 2) {
-    //   this.setGeometryPoints(tempPoints);
-    //   // this.drawActive();
-    // } else {
-    //   geometryPoints = this.generateGeometry(tempPoints);
-    //   this.setGeometryPoints(geometryPoints);
-    // }
   }
 
   protected generateGeometry(points: Cartesian3[]): Cartesian3[] {
     return points;
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.FREEHAND_LINE, FreehandLine as any);

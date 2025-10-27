@@ -11,35 +11,32 @@ import AbstractCore from "../../../Core/AbstractCore";
 import AbstractPolygon from "../Abstract/AbstractPolygon";
 import { GeometryDrawEventCallbackMap } from "../types";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Polygon extends AbstractPolygon {
-  graphicType: GraphicType;
-  
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.POLYGON;
+  readonly minPointsForShape = 3;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
-    this.graphicType = GraphicType.POLYGON;
-
     this.graphicName = "面";
-    this.minPointsForShape = 3;
     this.hintText = "单击开始绘制";
   }
 
-  /**
-   * Add points only on click events
-   */
   protected addPoint(cartesian: Cartesian3) {
     this.points.set(createGuid(), cartesian);
 
@@ -49,9 +46,6 @@ export default class Polygon extends AbstractPolygon {
     }
   }
 
-  /**
-   * Draw a shape based on mouse movement points during the initial drawing.
-   */
   protected updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.getPoints(), cartesian];
     const geometryPoints = this.generateGeometry(tempPoints);
@@ -61,7 +55,6 @@ export default class Polygon extends AbstractPolygon {
       this.addTempLine();
     } else {
       this.removeTempLine();
-      // this.drawActive();
     }
   }
 
@@ -78,3 +71,6 @@ export default class Polygon extends AbstractPolygon {
     this.onLeftDoubleClick(callback);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.POLYGON, Polygon as any);

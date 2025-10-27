@@ -8,7 +8,11 @@
  */
 import { SymbolType } from "../../../enum";
 import BasePolygonArrow from "./BasePolygonArrow";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class JgZxArrow extends BasePolygonArrow {
   symbolType = SymbolType["进攻方向（直线/折线）"];
 }
+
+// 模块内自注册
+registry.registerSymbol(SymbolType["进攻方向（直线/折线）"], JgZxArrow as any);

@@ -95,6 +95,7 @@ export enum GraphicType {
   KIDNEY_SHAPED = "KIDNEY_SHAPED",
   RECTANGLE = "rectangle",
   TRIANGLE = "triangle",
+  FIXED_RATIO_RECTANGLE = "fixed_ratio_rectangle",
   FIXED_RATIO_TRIANGLE = "fixed_ratio_triangle",
   LUNE = "lune",
   POLYGON = "polygon",

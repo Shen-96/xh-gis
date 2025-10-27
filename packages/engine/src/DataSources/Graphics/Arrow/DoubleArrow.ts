@@ -2,10 +2,11 @@ import { Cartesian3, createGuid } from "cesium";
 import { GeometryDrawEventCallbackMap, GrowthAnimationOpts } from "../types";
 import AbstractPolygon from "../Abstract/AbstractPolygon";
 import AbstractCore from "../../../Core/AbstractCore";
-import { GeometryStyleMap, ProjectionPoint } from "../../../types";
+import { GeometryStyleMap, ProjectionPoint, Point3Deg } from "../../../types";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
 import { GeometryType, GraphicType } from "../../../enum";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class DoubleArrow extends AbstractPolygon {
   graphicType: GraphicType;
@@ -28,13 +29,16 @@ export default class DoubleArrow extends AbstractPolygon {
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.graphicType = GraphicType.DOUBLE_ARROW;
@@ -579,3 +583,6 @@ export default class DoubleArrow extends AbstractPolygon {
     this.doubleArrowGrowthAnimation(duration, delay, callback, loop);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.DOUBLE_ARROW, DoubleArrow as any);

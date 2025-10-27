@@ -67,15 +67,21 @@ export default abstract class AbstractLine extends AbstractGraphic<GeometryType.
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.LINE];
+    positions?: Point3Deg[];
   }) {
     super(core);
     this.geometryType = GeometryType.LINE;
-
+  
     this.init();
     this.style = { ...defaultLineStyle, ...style };
+  
+    if (positions && positions.length) {
+      this.setPositions(positions);
+    }
   }
 
   protected init() {
@@ -113,8 +119,6 @@ export default abstract class AbstractLine extends AbstractGraphic<GeometryType.
       | undefined
   ): void {
     this.setState("drawing");
-    // 在开始绘制时注册到 GraphicManager
-    this.core.graphicManager.add(this);
 
     this.onLeftClick(callback);
   }

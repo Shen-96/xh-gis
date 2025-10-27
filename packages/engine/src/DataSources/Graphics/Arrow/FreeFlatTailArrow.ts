@@ -4,9 +4,10 @@ import AbstractPolygon from "../Abstract/AbstractPolygon";
 import AbstractCore from "../../../Core/AbstractCore";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
-import { GeometryStyleMap, ProjectionPoint } from "../../../types";
+import { GeometryStyleMap, ProjectionPoint, Point3Deg } from "../../../types";
 import { GeometryType, GraphicType } from "../../../enum";;
 import GeometryUtils from "../../../Core/GeometryUtils";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class FreeFlatTailArrow extends AbstractPolygon {
   graphicType: GraphicType;
@@ -21,13 +22,16 @@ export default class FreeFlatTailArrow extends AbstractPolygon {
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.graphicType = GraphicType.FREE_FLAT_TAIL_ARROW;
@@ -248,3 +252,6 @@ export default class FreeFlatTailArrow extends AbstractPolygon {
     this.onLeftDoubleClick(callback);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.FREE_FLAT_TAIL_ARROW, FreeFlatTailArrow as any);

@@ -76,6 +76,10 @@ export default abstract class AbstractGraphic<T extends GeometryType> {
 
   set state(val: State) {
     this._state = val;
+    // 统一注册：进入绘制态时确保加入管理器
+    if (val === "drawing") {
+      this.ensureRegistered();
+    }
     if (val == "static") {
       this.drawStatic();
     } else {
@@ -99,6 +103,18 @@ export default abstract class AbstractGraphic<T extends GeometryType> {
 
   protected getState(): State {
     return this.state;
+  }
+
+  // 统一的幂等注册方法
+  protected ensureRegistered() {
+    try {
+      const manager = this.core.graphicManager;
+      if (!manager.isExists(this.id)) {
+        manager.add(this);
+      }
+    } catch (e) {
+      console.error("ensureRegistered:", e);
+    }
   }
 
   readonly eventHandler: ScreenSpaceEventHandler;

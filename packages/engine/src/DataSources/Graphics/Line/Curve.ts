@@ -14,12 +14,12 @@ import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
 import { Cartesian3, createGuid } from "cesium";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Curve extends AbstractLine {
-  graphicType: GraphicType;
-  
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.CURVE;
+  readonly minPointsForShape = 3;
   arrowLengthScale: number = 5;
   maxArrowLength: number = 3000000;
   t: number;
@@ -27,25 +27,23 @@ export default class Curve extends AbstractLine {
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.LINE];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
-    this.graphicType = GraphicType.CURVE;
     this.graphicName = "曲线";
-    this.minPointsForShape = 3;
     this.t = 0.3;
     this.hintText = "单击开始绘制";
   }
 
-  /**
-   * Points are only added upon click events.
-   */
   protected addPoint(cartesian: Cartesian3) {
     this.points.set(createGuid(), cartesian);
 
@@ -58,24 +56,17 @@ export default class Curve extends AbstractLine {
     }
   }
 
-  /**
-   * Draw the shape based on the mouse movement position during the initial drawing.
-   */
   protected updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.getPoints(), cartesian];
 
     if (tempPoints.length === 2) {
       this.setGeometryPoints(tempPoints);
-      // this.drawActive();
     } else {
       const geometryPoints = this.generateGeometry(tempPoints);
       this.setGeometryPoints(geometryPoints);
     }
   }
 
-  /**
-   * Generate geometric shape points based on key points..
-   */
   protected generateGeometry(positions: Cartesian3[]) {
     const projPoints = positions.map((pnt) => {
       return CoordinateUtils.car3ToProjectionPnt(pnt);
@@ -97,3 +88,6 @@ export default class Curve extends AbstractLine {
     this.onLeftDoubleClick(callback);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.CURVE, Curve as any);

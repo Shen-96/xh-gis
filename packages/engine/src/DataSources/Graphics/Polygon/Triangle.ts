@@ -11,35 +11,32 @@ import AbstractPolygon from "../Abstract/AbstractPolygon";
 import AbstractCore from "../../../Core/AbstractCore";
 import { Cartesian3, createGuid } from "cesium";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import CoordinateUtils from "../../../Core/CoordinateUtils";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Triangle extends AbstractPolygon {
-  graphicType: GraphicType;
-  
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.TRIANGLE;
+  readonly minPointsForShape = 3;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
-    this.graphicType = GraphicType.TRIANGLE;
-
     this.graphicName = "三角形";
-    this.minPointsForShape = 3;
-    this.hintText = "单击开始绘制";
   }
 
-  /**
-   * Add points only on click events
-   */
   protected addPoint(
     cartesian: Cartesian3,
     callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
@@ -47,29 +44,31 @@ export default class Triangle extends AbstractPolygon {
     this.points.set(createGuid(), cartesian);
 
     if (this.points.size === 1) {
-      this.hintText = "单击添加点";
+      this.hintText = "单击添加第二个点";
       this.onMouseMove();
-    } else if (this.points.size === 3) {
-      this.finishDrawing(callback);
-    } else {
+    } else if (this.points.size === 2) {
       this.hintText = "单击结束绘制";
+    } else if (this.points.size >= 3) {
+      this.finishDrawing(callback);
     }
   }
 
-  /**
-   * Draw a shape based on mouse movement points during the initial drawing.
-   */
   protected updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.getPoints(), cartesian];
-    this.setGeometryPoints(tempPoints);
-    if (tempPoints.length === 2) {
-      this.addTempLine();
-    } else {
-      this.removeTempLine();
-    }
+    const geometryPoints = this.generateGeometry(tempPoints);
+    this.setGeometryPoints(geometryPoints);
   }
 
-  protected generateGeometry(points: Cartesian3[]): Cartesian3[] {
-    return points;
+  protected generateGeometry(positions: Cartesian3[]): Cartesian3[] {
+    if (positions.length < 3) {
+      return positions;
+    }
+    
+    const points = CoordinateUtils.car3ArrToPointArr(positions.slice(0, 3));
+    const coords = [...points[0], ...points[1], ...points[2], ...points[0]];
+    return Cartesian3.fromDegreesArray(coords);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.TRIANGLE, Triangle as any);

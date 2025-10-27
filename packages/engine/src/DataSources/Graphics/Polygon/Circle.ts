@@ -13,8 +13,9 @@ import { Cartesian3, createGuid } from "cesium";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
 import GeometryUtils from "../../../Core/GeometryUtils";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Circle extends AbstractPolygon {
   graphicType: GraphicType;
@@ -24,13 +25,16 @@ export default class Circle extends AbstractPolygon {
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.graphicType = GraphicType.CIRCLE;
@@ -78,3 +82,6 @@ export default class Circle extends AbstractPolygon {
     return CoordinateUtils.projPntArr2Cartesian3Arr(points);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.CIRCLE, Circle as any);

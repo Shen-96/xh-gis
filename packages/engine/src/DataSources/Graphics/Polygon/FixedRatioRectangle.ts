@@ -14,29 +14,29 @@ import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
 import Constant from "../../../Core/Constant";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class FixedRatioRectangle extends AbstractPolygon {
-  graphicType: GraphicType;
-  
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.FIXED_RATIO_RECTANGLE;
+  readonly minPointsForShape = 2;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
-    this.graphicType = GraphicType.FIXED_RATIO_TRIANGLE;
-
     this.graphicName = "等比矩形";
-    this.minPointsForShape = 2;
     this.hintText = "单击开始绘制";
   }
 
@@ -114,3 +114,6 @@ export default class FixedRatioRectangle extends AbstractPolygon {
     return cartesianPoints;
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.FIXED_RATIO_RECTANGLE, FixedRatioRectangle as any);

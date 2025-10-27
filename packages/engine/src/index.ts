@@ -6,6 +6,10 @@
  * @LastEditors: EV-申小虎
  * @LastEditTime: 2025-08-14 18:59:34
  */
+
+// 导入所有图元和符号的自注册模块（副作用导入）
+import "./DataSources/register-all";
+
 export * from "./enum";
 export * from "./types";
 export * from "./DataSources";

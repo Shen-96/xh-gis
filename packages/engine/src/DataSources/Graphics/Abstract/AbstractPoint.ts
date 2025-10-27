@@ -161,15 +161,19 @@ export default abstract class AbstractPoint extends AbstractGraphic<GeometryType
     this.style = style ?? defaultPointStyle;
   }
 
-  constructor({ core, style }: { core: AbstractCore; style?: MarkStyle }) {
+  constructor({ core, style, position }: { core: AbstractCore; style?: MarkStyle; position?: Point3Deg }) {
     super(core);
-
+  
     this.minPointsForShape = 2;
     this.geometryType = GeometryType.POINT;
     this.centerPoint = undefined;
     this.style = { ...defaultPointStyle, ...style };
-
+  
     this.init();
+  
+    if (position) {
+      this.setPosition(position);
+    }
   }
 
   protected init() {
@@ -211,8 +215,6 @@ export default abstract class AbstractPoint extends AbstractGraphic<GeometryType
       | undefined
   ): void {
     this.setState("drawing");
-    // 在开始绘制时注册到 GraphicManager
-    this.core.graphicManager.add(this);
 
     this.onLeftClick(callback);
   }
@@ -265,8 +267,14 @@ export default abstract class AbstractPoint extends AbstractGraphic<GeometryType
       CoordinateUtils.pointToCar3(position),
     ]);
     this.geometryPoints = car3Arr;
+    this.centerPoint = car3Arr[0];
 
     this.drawStatic();
+  }
+
+  protected setGeometryPoints(geometryPoints: Cartesian3[]) {
+    super.setGeometryPoints(geometryPoints);
+    this.centerPoint = geometryPoints[0];
   }
 
   showWithAnimation(

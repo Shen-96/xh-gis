@@ -13,29 +13,29 @@ import { Cartesian3, createGuid } from "cesium";
 import MathUtils from "../../../Core/MathUtils";
 import AbstractCore from "../../../Core/AbstractCore";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class Sector extends AbstractPolygon {
-  graphicType: GraphicType;
-  
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.SECTOR;
+  readonly minPointsForShape = 3;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
-    this.graphicType = GraphicType.SECTOR;
-
     this.graphicName = "扇形";
-    this.minPointsForShape = 3;
     this.hintText = "单击确定中心点";
   }
 
@@ -93,3 +93,6 @@ export default class Sector extends AbstractPolygon {
     return cartesianPoints;
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.SECTOR, Sector as any);

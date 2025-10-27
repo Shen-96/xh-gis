@@ -13,13 +13,14 @@ import AbstractCore from "../../../Core/AbstractCore";
 import { Point3Deg } from "../../../types";
 import AbstractGraphic from "../Abstract/AbstractGraphic";
 import { GeometryType, GraphicType } from "../../../enum";;
+import registry from "../../../Core/GraphicRegistry";
 
 export class Mark extends AbstractPoint {
   graphicType: GraphicType;
   
 
-  constructor(core: AbstractCore, style?: MarkStyle) {
-    super({ core, style });
+  constructor({ core, style, position }: { core: AbstractCore; style?: MarkStyle; position?: Point3Deg }) {
+    super({ core, style, position });
 
     this.graphicType = GraphicType.POINT;
     this.graphicName = "点标牌";
@@ -48,3 +49,6 @@ export class Mark extends AbstractPoint {
     return points;
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.POINT, Mark as any);

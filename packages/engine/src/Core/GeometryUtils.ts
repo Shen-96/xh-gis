@@ -379,4 +379,20 @@ export default class GeometryUtils {
 
     return pnts;
   }
+
+  // 新增：生成轴对齐椭圆点集
+  static generateEllipsePoints(
+    center: ProjectionPoint,
+    semiMajorAxis: number,
+    semiMinorAxis: number
+  ) {
+    const pnts: Array<ProjectionPoint> = [];
+    new Array(360).fill(0).forEach((_, i) => {
+      const radians = CesiumMath.toRadians(i);
+      const x = center[0] + semiMajorAxis * Math.cos(radians);
+      const y = center[1] + semiMinorAxis * Math.sin(radians);
+      pnts.push([x, y]);
+    });
+    return pnts;
+  }
 }

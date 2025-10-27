@@ -67,6 +67,16 @@ class MathUtils {
       Math.pow(target[0] - origin[0], 2) + Math.pow(target[1] - origin[1], 2)
     );
   }
+  
+  // 新增：根据中心点与第二点计算椭圆半轴（轴对齐）
+  static computeEllipseAxes(center: ProjectionPoint, pnt2: ProjectionPoint) {
+    const dx = Math.abs(pnt2[0] - center[0]);
+    const dy = Math.abs(pnt2[1] - center[1]);
+    // 使用零值容差避免退化
+    const semiMajorAxis = dx < ZERO_TOLERANCE ? ZERO_TOLERANCE : dx;
+    const semiMinorAxis = dy < ZERO_TOLERANCE ? ZERO_TOLERANCE : dy;
+    return { semiMajorAxis, semiMinorAxis };
+  }
 
   /**
    * @descripttion: 计算中点

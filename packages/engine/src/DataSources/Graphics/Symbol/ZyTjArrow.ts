@@ -8,7 +8,11 @@
  */
 import { SymbolType } from "../../../enum";
 import BasePolygonArrow from "./BasePolygonArrow";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class ZyTjArrow extends BasePolygonArrow {
   symbolType = SymbolType.战役突击方向;
 }
+
+// 模块内自注册
+registry.registerSymbol(SymbolType.战役突击方向, ZyTjArrow as any);

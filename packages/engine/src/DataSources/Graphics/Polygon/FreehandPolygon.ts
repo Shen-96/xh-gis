@@ -11,35 +11,33 @@ import { GeometryDrawEventCallbackMap } from "../types";
 import AbstractPolygon from "../Abstract/AbstractPolygon";
 import AbstractCore from "../../../Core/AbstractCore";
 import { GeometryType, GraphicType } from "../../../enum";;
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class FreehandPolygon extends AbstractPolygon {
-  graphicType: GraphicType;
-  
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.FREEHAND_POLYGON;
+  readonly minPointsForShape = 3;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
-
-    this.graphicType = GraphicType.FREEHAND_POLYGON;
 
     this.freehand = true;
     this.graphicName = "手绘面";
-    this.minPointsForShape = 3;
     this.hintText = "单击开始绘制";
   }
-  /**
-   * Add points only on click events
-   */
+
   protected addPoint(
     cartesian: Cartesian3,
     callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
@@ -54,9 +52,6 @@ export default class FreehandPolygon extends AbstractPolygon {
     }
   }
 
-  /**
-   * Draw a shape based on mouse movement points during the initial drawing.
-   */
   protected updateMovingPoint(cartesian: Cartesian3) {
     this.points.set(createGuid(), cartesian);
 
@@ -72,3 +67,6 @@ export default class FreehandPolygon extends AbstractPolygon {
     return points.concat(points[0]);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.FREEHAND_POLYGON, FreehandPolygon as any);

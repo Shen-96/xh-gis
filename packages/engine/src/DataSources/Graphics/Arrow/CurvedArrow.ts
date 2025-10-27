@@ -12,32 +12,31 @@ import AbstractLine from "../Abstract/AbstractLine";
 import AbstractCore from "../../../Core/AbstractCore";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryType, GraphicType } from "../../../enum";
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
 import GeometryUtils from "../../../Core/GeometryUtils";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class CurvedArrow extends AbstractLine {
   graphicType: GraphicType;
-
-  arrowLengthScale: number = 5;
-  maxArrowLength: number = 3000000;
-  t: number;
   minPointsForShape: number;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.LINE];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.graphicType = GraphicType.CURVE_ARROW;
     this.graphicName = "曲线箭头";
-    this.t = 0.3;
     this.minPointsForShape = 2;
     this.hintText = "单击开始绘制";
   }
@@ -94,3 +93,6 @@ export default class CurvedArrow extends AbstractLine {
     this.onLeftDoubleClick(callback);
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.CURVE_ARROW, CurvedArrow as any);

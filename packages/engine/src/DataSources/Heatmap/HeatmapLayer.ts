@@ -64,7 +64,7 @@ export interface BaseHeatmapConfiguration {
    * An object that represents the gradient.
    * Syntax: {[key: number in range [0,1]]: color}
    */
-  gradient?: { [key: string]: string } | undefined;
+  gradient?: { [key: string | number]: string } | undefined;
 
   /**
    * The maximal opacity the highest value in the heatmap will have. (will be

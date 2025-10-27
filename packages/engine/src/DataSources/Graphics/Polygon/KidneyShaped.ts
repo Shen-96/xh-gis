@@ -12,37 +12,34 @@ import AbstractCore from "../../../Core/AbstractCore";
 import { Cartesian3, createGuid, Math as CesiumMath } from "cesium";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import MathUtils from "../../../Core/MathUtils";
-import { GeometryStyleMap, Point, ProjectionPoint } from "../../../types";
+import { GeometryStyleMap, Point, ProjectionPoint, Point3Deg } from "../../../types";
 import { GeometryType, GraphicType } from "../../../enum";
+import registry from "../../../Core/GraphicRegistry";
 
 export default class KidneyShaped extends AbstractPolygon {
-  graphicType: GraphicType;
-
-  minPointsForShape: number;
+  readonly graphicType = GraphicType.KIDNEY_SHAPED;
+  readonly minPointsForShape = 3;
 
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.POLYGON];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
-
-    this.graphicType = GraphicType.KIDNEY_SHAPED;
 
     this.freehand = true;
     this.graphicName = "肾形闭合曲线";
-    this.minPointsForShape = 3;
     this.hintText = "单击开始绘制";
   }
 
-  /**
-   * Add points only on click events
-   */
   protected addPoint(
     cartesian: Cartesian3,
     callback?: GeometryDrawEventCallbackMap[GeometryType.POLYGON]
@@ -57,9 +54,6 @@ export default class KidneyShaped extends AbstractPolygon {
     }
   }
 
-  /**
-   * Draw a shape based on mouse movement points during the initial drawing.
-   */
   protected updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.getPoints(), cartesian];
     const geometryPoints = this.generateGeometry(tempPoints);
@@ -156,3 +150,6 @@ export default class KidneyShaped extends AbstractPolygon {
     return points; // write by ai
   }
 }
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.KIDNEY_SHAPED, KidneyShaped as any);

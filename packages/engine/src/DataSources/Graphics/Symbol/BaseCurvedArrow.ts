@@ -12,7 +12,7 @@ import AbstractLine from "../Abstract/AbstractLine";
 import AbstractCore from "../../../Core/AbstractCore";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryType, GraphicType, SymbolType } from "../../../enum";
-import { GeometryStyleMap } from "../../../types";
+import { GeometryStyleMap, Point3Deg } from "../../../types";
 import GeometryUtils from "../../../Core/GeometryUtils";
 import { ISymbol } from "../Abstract/ISymbol";
 
@@ -39,13 +39,16 @@ export default abstract class BaseCurvedArrow
   constructor({
     core,
     style,
+    positions,
   }: {
     core: AbstractCore;
     style?: GeometryStyleMap[GeometryType.LINE];
+    positions?: Point3Deg[];
   }) {
     super({
       core,
       style,
+      positions,
     });
 
     this.hintText = "单击开始绘制";
@@ -64,6 +67,9 @@ export default abstract class BaseCurvedArrow
     this.hintText = "单击继续添加点，双击结束绘制";
     if (this.points.size < 2) {
       this.onMouseMove();
+    } else {
+      const geometryPoints = this.generateGeometry(this.getPoints());
+      this.setGeometryPoints(geometryPoints);
     }
   }
 
@@ -111,6 +117,7 @@ export default abstract class BaseCurvedArrow
 
   beginDraw(callback?: GeometryDrawEventCallbackMap[GeometryType.LINE]): void {
     this.setState("drawing");
+    // 统一由 AbstractGraphic.setState("drawing") 进行注册
 
     this.onLeftClick();
     this.onLeftDoubleClick(callback);
