@@ -7,13 +7,16 @@
  * @LastEditTime: 2025-04-14 07:09:13
  */
 
-// 导出核心组件
-export { default as Earth } from "./Earth";
-export { default as Map } from "./Map";
-export { default as StatusBar } from "./Statusbar";
-export { default as TimeLine } from "./Timeline";
-export { default as ToolBar } from "./Toolbox";
-export { PlottingToolbar, PlottingList } from "./GraphicsTools";
+// 仅保留 Widget 前缀导出，避免与运行时类（XgEarth、XgMap）产生歧义
+export { default as WidgetEarth } from "./Earth";
+export { default as WidgetMap } from "./Map";
+export { default as WidgetStatusBar } from "./Statusbar";
+export { default as WidgetTimeLine } from "./Timeline";
+export { default as WidgetToolBar } from "./Toolbox";
+export {
+  PlottingToolbar as WidgetPlottingToolbar,
+  PlottingList as WidgetPlottingList,
+} from "./GraphicsTools";
 
 // 导出类型
 export type { CoreProps } from "./Core";

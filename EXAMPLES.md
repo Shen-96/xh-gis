@@ -10,7 +10,7 @@ npm install xh-gis
 
 ```typescript
 // 导入所有功能
-import { XgEarth, XgMap, Earth, Map } from 'xh-gis';
+import { XgEarth, XgMap, WidgetEarth, WidgetMap } from 'xh-gis';
 
 // 或者按需导入
 import { XgEarth } from 'xh-gis';
@@ -25,7 +25,7 @@ npm install @xh-gis/engine @xh-gis/widgets
 ```typescript
 // 分别导入
 import { XgEarth, XgMap } from '@xh-gis/engine';
-import { Earth, Map } from '@xh-gis/widgets';
+import { WidgetEarth, WidgetMap } from '@xh-gis/widgets';
 ```
 
 ### 方式三：只使用引擎
@@ -44,7 +44,7 @@ import { XgEarth, XgMap } from '@xh-gis/engine';
 
 ```tsx
 import React from 'react';
-import { Earth } from 'xh-gis';
+import { WidgetEarth } from 'xh-gis';
 
 function App() {
   const handleInit = (core) => {
@@ -61,7 +61,7 @@ function App() {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <Earth onInit={handleInit} />
+      <WidgetEarth onInit={handleInit} />
     </div>
   );
 }

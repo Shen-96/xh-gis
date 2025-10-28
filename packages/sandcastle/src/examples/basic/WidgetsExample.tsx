@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Earth, Map, TimeLine, PlottingList, ToolBar } from '@xh-gis/widgets';
+import { WidgetEarth as Earth, WidgetMap as Map, WidgetTimeLine as TimeLine, WidgetPlottingList as PlottingList, WidgetToolBar as ToolBar } from '@xh-gis/widgets';
 import { XgEarth, XgMap, AbstractCore, CoreType } from '@xh-gis/engine';
 import styles from './WidgetsExample.module.css';
 
@@ -287,10 +287,10 @@ const WidgetsExample: React.FC = () => {
           <div className={styles.infoCard}>
             <h3 className={styles.infoTitle}>📝 使用示例</h3>
             <pre className={styles.codeBlock}>
-              <code>{`import { Earth, Map, TimeLine, PlottingList, ToolBar } from '@xh-gis/widgets';
+              <code>{`import { WidgetEarth, WidgetMap, WidgetTimeLine, WidgetPlottingList, WidgetToolBar } from '@xh-gis/widgets';
 
-// 使用Earth组件
-<Earth onInit={(earth) => {
+// 使用 Widget 前缀的 Earth 组件
+<WidgetEarth onInit={(earth) => {
   console.log('Earth initialized:', earth);
   const { Cartesian3 } = window.Cesium;
   earth.viewer.scene.camera.setView({
@@ -300,26 +300,26 @@ const WidgetsExample: React.FC = () => {
   });
 }} />
 
-// 使用Map组件  
-<Map onInit={(map) => {
+// 使用 Widget 前缀的 Map 组件  
+<WidgetMap onInit={(map) => {
   console.log('Map initialized:', map);
 }} />
 
-// 使用TimeLine组件
-<TimeLine 
+// 使用 Widget 前缀的 TimeLine 组件
+<WidgetTimeLine 
   coreRef={coreRef}
   systemTime={true}
   visible={true}
   shouldAnimate={false}
 />
 
-// 使用PlottingList组件
-<PlottingList 
+// 使用 Widget 前缀的 PlottingList 组件
+<WidgetPlottingList 
   coreRef={coreRef}
 />
 
-// 使用ToolBar组件
-<ToolBar 
+// 使用 Widget 前缀的 ToolBar 组件
+<WidgetToolBar 
   coreRef={coreRef}
 />`}</code>
             </pre>

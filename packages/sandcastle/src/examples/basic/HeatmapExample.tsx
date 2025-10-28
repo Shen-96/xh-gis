@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Earth, ToolBar } from "@xh-gis/widgets";
+import { WidgetEarth as Earth, WidgetToolBar as ToolBar } from "@xh-gis/widgets";
 import { XgEarth, HeatmapOption } from "@xh-gis/engine";
 import styles from "./HeatmapExample.module.css";
 import { CustomDataSource, Cartesian3, Color, Cartesian2, HeightReference, SingleTileImageryProvider, Rectangle, ImageryLayer } from "cesium";

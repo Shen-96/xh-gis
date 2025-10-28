@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Earth, ToolBar } from '@xh-gis/widgets';
+import { WidgetEarth as Earth, WidgetToolBar as ToolBar } from '@xh-gis/widgets';
 import { AbstractCore, CoreType, XgEarth, GraphicType, LayerType } from '@xh-gis/engine';
 import styles from './LayerManagerExample.module.css';
 

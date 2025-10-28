@@ -26,18 +26,18 @@ npm install @xh-gis/engine @xh-gis/widgets
 
 ```typescript
 // 使用统一包
-import { XgEarth, XgMap, Earth, Map } from 'xh-gis';
+import { XgEarth, XgMap, WidgetEarth, WidgetMap } from 'xh-gis';
 
 // 或者单独导入
 import { XgEarth, XgMap } from '@xh-gis/engine';
-import { Earth, Map } from '@xh-gis/widgets';
+import { WidgetEarth, WidgetMap } from '@xh-gis/widgets';
 ```
 
 #### React 组件使用
 
 ```tsx
 import React from 'react';
-import { Earth } from 'xh-gis';
+import { WidgetEarth } from 'xh-gis';
 
 function App() {
   const handleInit = (core) => {
@@ -47,7 +47,7 @@ function App() {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <Earth
+      <WidgetEarth
         onInit={handleInit}
         infoLine={true}
         timeLine={false}

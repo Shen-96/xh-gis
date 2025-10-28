@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Earth } from '@xh-gis/widgets';
+import { WidgetEarth as Earth } from '@xh-gis/widgets';
 import { XgEarth, GraphicManager, GraphicType, SymbolType } from '@xh-gis/engine';
 import styles from './DrawingExample.module.css';
 

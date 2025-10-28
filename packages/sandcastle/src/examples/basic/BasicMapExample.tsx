@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Earth } from '@xh-gis/widgets';
+import { WidgetEarth as Earth } from '@xh-gis/widgets';
 import { XgEarth } from '@xh-gis/engine';
 import styles from './BasicMapExample.module.css';
 
@@ -158,12 +158,12 @@ const BasicMapExample: React.FC = () => {
             <div className={styles.infoCard}>
               <h3 className={styles.infoTitle}>📝 代码示例</h3>
               <pre className={styles.codeBlock}>
-                <code>{`import { Earth } from '@xh-gis/widgets';
+                <code>{`import { WidgetEarth } from '@xh-gis/widgets';
 import { XgEarth } from '@xh-gis/engine';
 
-// 使用Earth组件
-<Earth onInit={(earth) => {
-  // 通过全局Cesium对象使用API
+// 使用 Widget 前缀的 Earth 组件
+<WidgetEarth onInit={(earth) => {
+  // 通过全局 Cesium 对象使用 API
   const { Cartesian3 } = window.Cesium;
   earth.viewer.scene.camera.setView({
     destination: Cartesian3.fromDegrees(
