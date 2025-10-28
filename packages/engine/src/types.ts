@@ -682,6 +682,15 @@ export type CircleStyleOptions = {
 //   position?: PositionOptions;
 // };
 
+/// 椭圆样式
+export type EllipseStyleOptions = {
+  show?: boolean;
+  semiMajorAxis?: number;
+  semiMinorAxis?: number;
+} & PolygonMaterialOptions;
+// 椭圆图形选项使用统一的 AbstractGraphicOptions 结构
+export type EllipseGraphicOptions = AbstractGraphicOptions<GraphicType.ELLIPSE>;
+
 /// 扇形样式
 export type SectorStyleOptions = {
   show?: boolean;
@@ -1073,6 +1082,7 @@ export type GraphicStyleMap = {
   [GraphicType.POLYLINE]: PolylineStyleOptions;
   [GraphicType.POLYGON]: PolygonStyleOptions;
   [GraphicType.CIRCLE]: CircleStyleOptions;
+  [GraphicType.ELLIPSE]: EllipseStyleOptions;
   [GraphicType.SYMBOL]: {
     color: string;
     icon: Partial<BillboardStyleOptions>;
@@ -1105,6 +1115,18 @@ export type AbstractGraphicOptions<T extends GraphicType> = T extends
       name?: string;
       show?: boolean;
       type: T;
+      positions?: Point3DegList;
+      style?: Partial<GraphicStyleMap[T]>;
+      attr?: { [key: string]: string };
+    }
+  : T extends GraphicType.ELLIPSE
+  ? {
+      id?: string;
+      name?: string;
+      show?: boolean;
+      type: T;
+      // 支持两种输入：中心点+半轴 或 两点自动推算半轴
+      position?: Point3Deg;
       positions?: Point3DegList;
       style?: Partial<GraphicStyleMap[T]>;
       attr?: { [key: string]: string };
@@ -1142,6 +1164,7 @@ export type GraphicOptions =
   | PolylineGraphicOptions
   | PolygonGraphicOptions
   | CircleGraphicOptions
+  | EllipseGraphicOptions
   | SymbolGraphicOptions;
 
 /// Xh-GIS配置

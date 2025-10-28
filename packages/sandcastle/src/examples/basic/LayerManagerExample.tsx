@@ -57,6 +57,10 @@ const LayerManagerExample: React.FC = () => {
           { type: GraphicType.POLYGON, positions: [[116.2, 40.0], [116.6, 40.0], [116.6, 39.8], [116.2, 39.8]], style: { fill: true, color: '#ff000044', materialType: 'SolidColor' as any, outline: true, outlineColor: '#ff0000', outlineWidth: 3 } },
           { type: GraphicType.LABEL, position: [116.4, 39.9], style: { text: '重点区域', fontSize: 28, fontFamily: 'system-ui', color: '#ff0000', showBackground: true, backgroundColor: '#ffffffaa' } },
 
+          // 椭圆（由最小外接矩形两个顶点控制：左上与右下）
+          { type: GraphicType.ELLIPSE, positions: [[117.218465, 31.809438], [120.218465, 26.809438]], style: { fill: true, color: '#00ff00aa', outline: true, outlineColor: '#008800', outlineWidth: 3 } },
+          { type: GraphicType.LABEL, position: [118.718465, 29.309438], style: { text: '椭圆示例', fontSize: 26, fontFamily: 'system-ui', color: '#00aa00', showBackground: true, backgroundColor: '#ffffffaa' } },
+
           // 环形一圈点，便于观察
           { type: GraphicType.POINT, position: [116.30, 39.90], style: { pixelSize: 12, color: '#ff9800' } },
           { type: GraphicType.POINT, position: [116.50, 39.90], style: { pixelSize: 12, color: '#ff9800' } },
