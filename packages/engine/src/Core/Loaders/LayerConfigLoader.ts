@@ -17,10 +17,7 @@ import GraphicUtils from "../GraphicUtils";
 import GeometryUtils from "../GeometryUtils";
 import MathUtils from "../MathUtils";
 
-export function loadLayers(
-  manager: LayerManager,
-  layers: Array<LayerConfig>
-) {
+export function loadLayers(manager: LayerManager, layers: Array<LayerConfig>) {
   return Promise.all(
     layers?.map(
       async ({
@@ -54,10 +51,9 @@ export function loadLayers(
                   entity.merge(
                     new Entity({
                       position: cartesian,
-                      point:
-                        GraphicUtils.generatePointGraphicsOptionsFromStyle(
-                          g.style as any
-                        ),
+                      point: GraphicUtils.generatePointGraphicsOptionsFromStyle(
+                        g.style as any
+                      ),
                     })
                   );
                 } else {
@@ -113,7 +109,15 @@ export function loadLayers(
                       polygon:
                         GraphicUtils.generatePolygonGraphicsOptionsFromGraphic({
                           style: g.style,
-                          positions: CoordinateUtils.projPntArr2PointArr(points),
+                          positions:
+                            CoordinateUtils.projPntArr2PointArr(points),
+                        }),
+                      polyline:
+                        GraphicUtils.generateOutlineGraphicsOptionsFromGraphic({
+                          style: g.style,
+                          positions: CoordinateUtils.projPntArr2PointArr(
+                            points.concat([points[0]])
+                          ),
                         }),
                     })
                   );
@@ -132,20 +136,33 @@ export function loadLayers(
                 const g = graphic as EllipseGraphicOptions;
                 const { position, positions } = g;
 
-                let polygonPositions: Array<[number, number, number?]> | undefined;
+                let polygonPositions:
+                  | Array<[number, number, number?]>
+                  | undefined;
 
-                if (position && (g.style?.semiMajorAxis || g.style?.semiMinorAxis)) {
+                if (
+                  position &&
+                  (g.style?.semiMajorAxis || g.style?.semiMinorAxis)
+                ) {
                   const centerCar3 = CoordinateUtils.pointToCar3(position);
-                  const centerProj = CoordinateUtils.car3ToProjectionPnt(centerCar3);
+                  const centerProj =
+                    CoordinateUtils.car3ToProjectionPnt(centerCar3);
                   const a = (g.style as any)?.semiMajorAxis ?? 0;
                   const b = (g.style as any)?.semiMinorAxis ?? 0;
 
-                  const pointsProj = GeometryUtils.generateEllipsePoints(centerProj, a, b);
-                  polygonPositions = CoordinateUtils.projPntArr2PointArr(pointsProj);
+                  const pointsProj = GeometryUtils.generateEllipsePoints(
+                    centerProj,
+                    a,
+                    b
+                  );
+                  polygonPositions =
+                    CoordinateUtils.projPntArr2PointArr(pointsProj);
                 } else if (positions && positions.length >= 2) {
                   // 椭圆由最小外接矩形的两个顶点控制（例如左上与右下）
-                  const car3Arr = CoordinateUtils.point3DegArrToCar3Arr(positions);
-                  const projArr = CoordinateUtils.car3ArrToProjectionPntArr(car3Arr);
+                  const car3Arr =
+                    CoordinateUtils.point3DegArrToCar3Arr(positions);
+                  const projArr =
+                    CoordinateUtils.car3ArrToProjectionPntArr(car3Arr);
                   const p1 = projArr[0];
                   const p2 = projArr[1];
                   const minX = Math.min(p1[0], p2[0]);
@@ -165,7 +182,8 @@ export function loadLayers(
                       a,
                       b
                     );
-                    polygonPositions = CoordinateUtils.projPntArr2PointArr(pointsProj);
+                    polygonPositions =
+                      CoordinateUtils.projPntArr2PointArr(pointsProj);
                   } else {
                     console.warn(
                       "Layer ->",
@@ -188,10 +206,21 @@ export function loadLayers(
                 if (polygonPositions) {
                   entity.merge(
                     new Entity({
-                      polygon: GraphicUtils.generatePolygonGraphicsOptionsFromGraphic({
-                        style: g.style,
-                        positions: polygonPositions,
-                      }),
+                      polygon:
+                        GraphicUtils.generatePolygonGraphicsOptionsFromGraphic({
+                          style: g.style,
+                          positions: polygonPositions,
+                        }),
+                      polyline: {
+                        ...GraphicUtils.generateOutlineGraphicsOptionsFromGraphic(
+                          {
+                            style: g.style,
+                            positions: polygonPositions.concat([
+                              polygonPositions[0],
+                            ]),
+                          }
+                        ),
+                      },
                     })
                   );
                 }
@@ -206,10 +235,12 @@ export function loadLayers(
                   entity.merge(
                     new Entity({
                       polyline:
-                        GraphicUtils.generatePolylineGraphicsOptionsFromGraphic({
-                          style: g.style,
-                          positions,
-                        }),
+                        GraphicUtils.generatePolylineGraphicsOptionsFromGraphic(
+                          {
+                            style: g.style,
+                            positions,
+                          }
+                        ),
                     })
                   );
                 } else {
@@ -235,6 +266,14 @@ export function loadLayers(
                           style: g.style,
                           positions,
                         }),
+                      polyline: {
+                        ...GraphicUtils.generateOutlineGraphicsOptionsFromGraphic(
+                          {
+                            style: g.style,
+                            positions: positions.concat([positions[0]]),
+                          }
+                        ),
+                      },
                     })
                   );
                 } else {
@@ -263,10 +302,12 @@ export function loadLayers(
                           ...(g.style as any),
                           image: `/data/symbol/icon/${code}.png`,
                         }),
-                      label: GraphicUtils.generateLabelGraphicsOptionsFromStyle({
-                        ...(g.style as any),
-                        text: name,
-                      }),
+                      label: GraphicUtils.generateLabelGraphicsOptionsFromStyle(
+                        {
+                          ...(g.style as any),
+                          text: name,
+                        }
+                      ),
                     })
                   );
                 } else if (positions) {
@@ -278,13 +319,15 @@ export function loadLayers(
                   entity.merge(
                     new Entity({
                       polyline:
-                        GraphicUtils.generatePolylineGraphicsOptionsFromGraphic({
-                          positions: arrowPos,
-                          style: {
-                            width: 3,
-                            ...(g.style as any),
-                          },
-                        }),
+                        GraphicUtils.generatePolylineGraphicsOptionsFromGraphic(
+                          {
+                            positions: arrowPos,
+                            style: {
+                              width: 3,
+                              ...(g.style as any),
+                            },
+                          }
+                        ),
                     })
                   );
                 }

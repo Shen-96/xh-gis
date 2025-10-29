@@ -1107,7 +1107,7 @@ export type AbstractGraphicOptions<T extends GraphicType> = T extends
       type: T;
       position?: Point3Deg;
       style?: Partial<GraphicStyleMap[T]>;
-      attr?: { [key: string]: string };
+      attr?: { [key: string]: string | number };
     }
   : T extends GraphicType.POLYLINE | GraphicType.POLYGON
   ? {
@@ -1117,7 +1117,7 @@ export type AbstractGraphicOptions<T extends GraphicType> = T extends
       type: T;
       positions?: Point3DegList;
       style?: Partial<GraphicStyleMap[T]>;
-      attr?: { [key: string]: string };
+      attr?: { [key: string]: string | number };
     }
   : T extends GraphicType.ELLIPSE
   ? {
@@ -1129,7 +1129,7 @@ export type AbstractGraphicOptions<T extends GraphicType> = T extends
       position?: Point3Deg;
       positions?: Point3DegList;
       style?: Partial<GraphicStyleMap[T]>;
-      attr?: { [key: string]: string };
+      attr?: { [key: string]: string | number };
     }
   : T extends GraphicType.SYMBOL
   ? {
@@ -1141,7 +1141,7 @@ export type AbstractGraphicOptions<T extends GraphicType> = T extends
       position?: Point3Deg;
       positions?: Point3DegList;
       style?: Partial<GraphicStyleMap[T]>;
-      attr?: { [key: string]: string };
+      attr?: { [key: string]: string | number };
     }
   : never;
 

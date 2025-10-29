@@ -491,6 +491,25 @@ export default class GraphicUtils {
     };
   }
 
+  static generateOutlineGraphicsOptionsFromGraphic(
+    options: Partial<PolygonGraphicOptions>
+  ): PolylineGraphics.ConstructorOptions {
+    const { show, positions, style } = options ?? {},
+      { outline, outlineMaterialType, outlineWidth } = style ?? {};
+
+    return {
+      show: show ?? outline,
+      arcType: ArcType[defaultPolylineStyle.arcType],
+      width: outlineWidth ?? defaultPolylineStyle.width,
+      clampToGround: defaultPolylineStyle.clampToGround,
+      material: this.generatePolylineMaterialPropertyByMaterialOptions({
+        ...style,
+        materialType: outlineMaterialType,
+      }),
+      positions: positions && CoordinateUtils.point3DegArrToCar3Arr(positions),
+    };
+  }
+
   /**
    * @descripttion:
    * @param {SymbolMergeStyleOptions} options
