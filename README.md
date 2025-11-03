@@ -2,6 +2,10 @@
 
 一个基于 CesiumJS 的强大 GIS 开发框架，提供完整的三维地理可视化解决方案。
 
+## 🚀 在线沙盒
+
+- https://shen-96.github.io/xh-gis/
+
 ## 📦 包结构
 
 XH-GIS 采用 monorepo 架构，包含以下三个 npm 包：
