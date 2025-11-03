@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build vite-plugin-xhgis
+        run: pnpm -r --filter vite-plugin-xhgis build
+
       - name: Build engine
         run: pnpm -r --filter @xh-gis/engine build
 
