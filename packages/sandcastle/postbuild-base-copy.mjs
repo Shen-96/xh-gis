@@ -4,6 +4,7 @@
 import { existsSync, mkdirSync, readdirSync, statSync, copyFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -50,6 +51,24 @@ function main() {
   const srcCesium = join(distRoot, 'cesium');
   const destCesium = join(targetRoot, 'cesium');
   copyDir(srcCesium, destCesium);
+
+  // 确保根目录也存在 cesium 资源，避免 /xh-gis/cesium/* 请求落到根找不到
+  const rootCesium = join(distRoot, 'cesium');
+  if (!existsSync(rootCesium)) {
+    // 使用 Node 模块解析定位 cesium 安装位置，兼容 pnpm 的符号链接结构
+    const require = createRequire(import.meta.url);
+    let nmCesium = '';
+    try {
+      const cesiumPkg = require.resolve('cesium/package.json');
+      nmCesium = join(dirname(cesiumPkg), 'Build', 'Cesium');
+    } catch {}
+    if (nmCesium && existsSync(nmCesium)) {
+      console.log('⚙️ 未检测到 dist/cesium，尝试从 node_modules/cesium 复制...');
+      copyDir(nmCesium, rootCesium);
+    } else {
+      console.warn('⚠️ 未找到 node_modules/cesium/Build/Cesium，可能导致线上 /cesium/* 404。');
+    }
+  }
 
   // 复制 favicon（如果存在）到 BASE/
   const srcFavicon = join(distRoot, 'vite.svg');
