@@ -26,7 +26,18 @@ import CoordinateUtils from "../../Core/CoordinateUtils";
 import GraphicUtils from "../../Core/GraphicUtils";
 import AbstractSpecialEffect from "./AbstractSpecialEffect";
 // import SuperGif from "libgif";
-import { cloneDeep } from "lodash";
+// 轻量深拷贝：优先使用 structuredClone，回退到 JSON 方法
+const deepClone = (obj: any) => {
+  try {
+    // @ts-ignore
+    if (typeof structuredClone === "function") return structuredClone(obj);
+  } catch {}
+  try {
+    return JSON.parse(JSON.stringify(obj));
+  } catch {
+    return obj;
+  }
+};
 
 export default class XgSuperGifFX extends AbstractSpecialEffect<XgSuperGifFxStyleOptions> {
   #frames: Array<string>;
@@ -91,7 +102,7 @@ export default class XgSuperGifFX extends AbstractSpecialEffect<XgSuperGifFxStyl
       billboards = new BillboardCollection({
         modelMatrix,
       }),
-      style = cloneDeep(this.graphics);
+      style = deepClone(this.graphics);
 
     delete style["width"];
     delete style["height"];

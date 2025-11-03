@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 import Home from './pages/Home';
 import ExamplesList from './pages/ExamplesList';
 import TestingSuite from './pages/TestingSuite';
@@ -15,8 +16,9 @@ import LayerManagerExample from './examples/basic/LayerManagerExample';
 
 const App: React.FC = () => {
   return (
-    <Layout>
-      <Routes>
+    <ErrorBoundary>
+      <Layout>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/examples" element={<ExamplesList />} />
         <Route path="/testing" element={<TestingSuite />} />
@@ -30,8 +32,9 @@ const App: React.FC = () => {
         
         {/* 404页面 */}
         <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Layout>
+        </Routes>
+      </Layout>
+    </ErrorBoundary>
   );
 };
 

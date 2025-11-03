@@ -53,11 +53,13 @@ async function compressDirectory(dir) {
 async function compressFile(filePath) {
   try {
     const code = readFileSync(filePath, 'utf8');
+    // 针对 Core/index.js 保留 console 输出，避免 drop_console
+    const keepConsole = /\/Core\/index\.js$/.test(filePath);
     
     const result = await minify(code, {
       ecma: 2020,
       compress: {
-        drop_console: true,
+        drop_console: keepConsole ? false : true,
         drop_debugger: true,
         passes: 3,
         pure_funcs: [],

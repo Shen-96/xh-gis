@@ -10,6 +10,7 @@
 import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 import copy from "rollup-plugin-copy";
 import terser from "@rollup/plugin-terser";
 
@@ -25,6 +26,7 @@ export default {
   plugins: [
     resolve(), // 解析 node_modules 中的包（如 cesium）
     commonjs(), // 将 CommonJS 转为 ES Module（比如 Cesium）
+    json(), // 支持导入 package.json 等 JSON 文件
     typescript(), // 编译 TypeScript
     // 只使用 copy 插件来处理 Assets 文件夹，保持目录结构
     copy({

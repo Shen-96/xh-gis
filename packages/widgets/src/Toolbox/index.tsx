@@ -108,11 +108,13 @@ export default function Toolbar({
           />
         ))}
       </div>
-      {toolbarButtons.map(
-        (button) =>
-          button.panel &&
-          state[button.key] && <button.panel key={"panel_" + button.key} />
-      )}
+      {toolbarButtons.map((button) => {
+        if (!button.panel) return null;
+        if (!state[button.key]) return null;
+        // 正确调用 panel 函数以返回 React 节点，避免把函数对象/元素对象当作子节点
+        const PanelNode = button.panel();
+        return <React.Fragment key={"panel_" + button.key}>{PanelNode}</React.Fragment>;
+      })}
     </>
   );
 }

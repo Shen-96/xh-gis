@@ -80,7 +80,7 @@ const Core = <T extends CoreType>({
     console.timeEnd(`${coreType} 实例化耗时`);
 
     console.log(
-      `%c欢迎使用Xh-GIS ，当前版本为${xgCore.version}`,
+      `%c欢迎使用Xh-GIS ，当前版本为：${xgCore.version}`,
       "color: #fff; background: linear-gradient(90deg, #ff6b6b, #4ecdc4); padding: 10px 20px; border-radius: 5px; font-weight: bold;"
     );
     // 初始化完成回调

@@ -42,6 +42,7 @@ import SpecialEffectManager from "./SpecialEffectManager";
 import MouseEventUtils from "./MouseEventUtils";
 import AbstractPopup from "../DataSources/XgPopup/AbstractPopup";
 import { getResourceUrl } from "./ResourceConfig";
+import pkg from "../../package.json" assert { type: "json" };
 import HeatmapManager from "./HeatmapManager";
 /// token
 Ion.defaultAccessToken =
@@ -166,7 +167,7 @@ Camera.DEFAULT_VIEW_RECTANGLE = Rectangle.fromDegrees(30, -20, 180, 70);
  */
 export default abstract class AbstractCore<T extends CoreType = any> {
   /// 版本号
-  readonly version = "1.0.0";
+  readonly version = pkg.version ?? "0.0.0";
   abstract readonly coreType: T;
   /// 视图对象
   readonly viewer: Viewer;

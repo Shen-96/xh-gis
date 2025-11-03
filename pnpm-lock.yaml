@@ -14,6 +14,9 @@ importers:
       '@xh-gis/widgets':
         specifier: ^1.0.1
         version: 1.0.1(cesium@1.134.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      scheduler:
+        specifier: ^0.23.0
+        version: 0.23.2
     devDependencies:
       terser:
         specifier: ^5.43.1
@@ -40,6 +43,9 @@ importers:
       '@rollup/plugin-commonjs':
         specifier: ^28.0.6
         version: 28.0.8(rollup@4.52.5)
+      '@rollup/plugin-json':
+        specifier: ^6.1.0
+        version: 6.1.0(rollup@4.52.5)
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.1
         version: 16.0.3(rollup@4.52.5)
@@ -88,6 +94,9 @@ importers:
       fast-kde:
         specifier: ^0.2.2
         version: 0.2.2
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -97,6 +106,9 @@ importers:
       react-router-dom:
         specifier: ^6.8.0
         version: 6.30.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      scheduler:
+        specifier: ^0.23.0
+        version: 0.23.2
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^5.16.5
@@ -908,6 +920,15 @@ packages:
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+
+  '@rollup/plugin-json@6.1.0':
+    resolution: {integrity: sha512-EGI2te5ENk1coGeADSIwZ7G2Q8CJS2sF120T7jLw4xFw9n7wIOXHo+kIYRAoVpJAN+kmqZSoO3Fp4JtoNF4ReA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -4364,6 +4385,12 @@ snapshots:
       is-reference: 1.2.1
       magic-string: 0.30.18
       picomatch: 4.0.3
+    optionalDependencies:
+      rollup: 4.52.5
+
+  '@rollup/plugin-json@6.1.0(rollup@4.52.5)':
+    dependencies:
+      '@rollup/pluginutils': 5.2.0(rollup@4.52.5)
     optionalDependencies:
       rollup: 4.52.5
 
