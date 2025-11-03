@@ -242,3 +242,4 @@ MIT License
 - [NPM - xh-gis](https://www.npmjs.com/package/xh-gis)
 - [NPM - @xh-gis/engine](https://www.npmjs.com/package/@xh-gis/engine)
 - [NPM - @xh-gis/widgets](https://www.npmjs.com/package/@xh-gis/widgets)
+- 在线沙盒（GitHub Pages）: https://shen-96.github.io/xh-gis/

@@ -155,6 +155,7 @@ pnpm test:coverage
 - [XH-GIS Engine 文档](../engine/README.md)
 - [XH-GIS Widgets 文档](../widgets/README.md)
 - [项目主页](../../README.md)
+- 在线沙盒（GitHub Pages）: https://shen-96.github.io/xh-gis/
 
 ## 📄 许可证
 

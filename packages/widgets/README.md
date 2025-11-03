@@ -14,6 +14,10 @@ npm install @xh-gis/widgets @xh-gis/engine
 - **@xh-gis/engine**: ^1.0.0
 - **CesiumJS**: 1.108.0
 
+## 🔗 相关链接
+
+- 在线沙盒（GitHub Pages）: https://shen-96.github.io/xh-gis/
+
 ## 🚀 使用
 
 ### 三维地球组件

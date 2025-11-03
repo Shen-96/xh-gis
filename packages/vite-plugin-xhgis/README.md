@@ -108,6 +108,10 @@ This plugin follows the same patterns as `vite-plugin-cesium`:
 
 ## Examples
 
+## 🔗 Online Sandbox
+
+- GitHub Pages: https://shen-96.github.io/xh-gis/
+
 ### React + Vite
 
 ```typescript
