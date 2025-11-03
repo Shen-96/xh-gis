@@ -58,6 +58,26 @@ function main() {
   }
 
   console.log(`✅ 构建后资源已复制到子路径: ${base}`);
+
+  // 创建 .nojekyll 以禁用 Jekyll 处理，确保静态资源（如 Cesium）完整提供
+  try {
+    copyFileSync(join(__dirname, 'README.md'), join(distRoot, '.nojekyll'));
+  } catch {
+    // 如果没有 README，用空文件占位
+    try { copyFileSync(join(distRoot, '.nojekyll'), join(distRoot, '.nojekyll')); } catch {}
+  }
+  try {
+    copyFileSync(join(__dirname, 'README.md'), join(targetRoot, '.nojekyll'));
+  } catch {
+    try { copyFileSync(join(targetRoot, '.nojekyll'), join(targetRoot, '.nojekyll')); } catch {}
+  }
+
+  // 复制 index.html 为 404.html，方便 GitHub Pages 的 SPA 深链回退
+  try {
+    copyFileSync(join(distRoot, 'index.html'), join(distRoot, '404.html'));
+  } catch (e) {
+    console.warn('⚠️ 复制 404.html 失败：', e?.message || e);
+  }
 }
 
 main();
