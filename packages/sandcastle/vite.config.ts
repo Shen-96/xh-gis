@@ -8,26 +8,14 @@ export default defineConfig({
   // 基础路径，用于 GitHub Pages 等子路径部署
   base: process.env.BASE || "/",
   plugins: [
-    cesium(),
     react(),
-    xhgis(),
-    // 重写构建产物中的静态资源路径为包含 base 前缀
-    {
-      name: "rewrite-html-paths",
-      transformIndexHtml(html) {
-        const base = process.env.BASE || "/";
-        // 统一处理以根路径开头的资源，将其改为 base 前缀
-        return html
-          // Cesium 注入的样式与脚本
-          .replace(/href="\/cesium\//g, `href="${base}cesium/`)
-          .replace(/src="\/cesium\//g, `src="${base}cesium/`)
-          // Vite 静态资源
-          .replace(/href="\/assets\//g, `href="${base}assets/`)
-          .replace(/src="\/assets\//g, `src="${base}assets/`)
-          // Favicon
-          .replace(/href="\/vite.svg"/g, `href="${base}vite.svg"`);
-      },
-    } as Plugin,
+    cesium(),
+    // 指定 monorepo 中引擎包路径与基础资源 URL，由插件负责拷贝到 public
+    xhgis({
+      baseUrl: "/xh-gis/Assets",
+      xhgisPath: "../engine",
+      debug: false,
+    }),
   ],
   resolve: {
     alias: {
@@ -37,6 +25,10 @@ export default defineConfig({
     },
     // 去重 React 相关包，确保仅打入一个版本
     dedupe: ["react", "react-dom"],
+  },
+  define: {
+    // 显式为 Cesium 设置资源基础路径，适配子路径部署
+    CESIUM_BASE_URL: JSON.stringify((process.env.BASE || "/").replace(/\/$/, "") + "/cesium"),
   },
   optimizeDeps: {
     include: ["scheduler"],
