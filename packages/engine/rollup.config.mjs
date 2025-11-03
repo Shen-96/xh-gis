@@ -11,6 +11,7 @@ import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import copy from "rollup-plugin-copy";
+import terser from "@rollup/plugin-terser";
 
 export default {
   input: "src/index.ts", // TypeScript 入口文件
@@ -29,20 +30,25 @@ export default {
     copy({
       targets: [{ src: "src/Assets", dest: "dist" }],
     }),
-    // 暂时禁用压缩和去注释，避免变量名混淆导致的问题
-    // terser({
-    //   compress: {
-    //     drop_console: false, // 保留 console，如需去掉可设为 true
-    //     drop_debugger: true, // 去掉 debugger
-    //     pure_funcs: [], // 可以指定纯函数进行优化
-    //   },
-    //   format: {
-    //     comments: false, // 去掉所有注释
-    //     beautify: false, // 不美化，保持压缩
-    //   },
-    //   mangle: {
-    //     reserved: ['Cesium', 'core', 'style', 'cartesian', 'callback', 'positions', 'self', 't', 'e', 'n', 'r', 'i', 'o', 's', 'a', 'c', 'u', 'l', 'd', 'p', 'h', 'm', 'g', 'f', 'v', 'w', 'y', 'b', 'S', 'P', 'M', 'D', 'R', 'A', 'E', 'T', 'O', 'I', 'N', 'L', 'C', 'U', 'F', 'G', 'H', 'J', 'K', 'Q', 'V', 'W', 'X', 'Y', 'Z'], // 保留更多变量名不被混淆
-    //   },
-    // }),
+    // 启用压缩与安全混淆，保留必要名称
+    terser({
+      ecma: 2020,
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        passes: 3,
+      },
+      format: {
+        comments: false,
+        beautify: false,
+      },
+      mangle: {
+        toplevel: true,
+        reserved: [
+          'Cesium',
+          'XgEarth', 'XgMap', 'GraphicManager', 'LayerManager', 'HeatmapOption', 'CoreType', 'AbstractCore'
+        ],
+      },
+    }),
   ],
 };

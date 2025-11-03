@@ -55,17 +55,28 @@ async function compressFile(filePath) {
     const code = readFileSync(filePath, 'utf8');
     
     const result = await minify(code, {
+      ecma: 2020,
       compress: {
-        drop_console: false, // 保留 console，如需去掉可设为 true
-        drop_debugger: true, // 去掉 debugger
-        pure_funcs: [], // 可以指定纯函数进行优化
+        drop_console: true,
+        drop_debugger: true,
+        passes: 3,
+        pure_funcs: [],
       },
       format: {
-        comments: false, // 去掉所有注释
-        beautify: false, // 不美化，保持压缩
+        comments: false,
+        beautify: false,
       },
       mangle: {
-        reserved: ['React', 'Component', 'useState', 'useEffect', 'useRef'], // 保留 React 相关变量名不被混淆
+        toplevel: false, // 避免混淆顶层导出名称
+        reserved: [
+          // React 相关
+          'React', 'Component', 'useState', 'useEffect', 'useRef',
+          // Cesium 全局
+          'Cesium',
+          // XH-GIS 导出名称（避免误混淆）
+          'WidgetEarth', 'WidgetMap', 'WidgetStatusBar', 'WidgetTimeLine', 'WidgetToolBar', 'WidgetPlottingToolbar', 'WidgetPlottingList',
+          'XgEarth', 'XgMap'
+        ],
       },
     });
     

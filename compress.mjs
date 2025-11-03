@@ -37,17 +37,19 @@ async function compressFile(filePath) {
     const code = readFileSync(filePath, 'utf8');
     
     const result = await minify(code, {
+      ecma: 2020,
       compress: {
-        drop_console: false, // 保留 console，如需去掉可设为 true
-        drop_debugger: true, // 去掉 debugger
-        pure_funcs: [], // 可以指定纯函数进行优化
+        drop_console: true,
+        drop_debugger: true,
+        passes: 3,
       },
       format: {
-        comments: false, // 去掉所有注释
-        beautify: false, // 不美化，保持压缩
+        comments: false,
+        beautify: false,
       },
       mangle: {
-        reserved: [], // 根包主要是导出，可以混淆
+        toplevel: true, // 尽量混淆顶层
+        reserved: ['version'], // 保留版本导出
       },
     });
     
