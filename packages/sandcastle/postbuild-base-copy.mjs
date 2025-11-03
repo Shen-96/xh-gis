@@ -70,6 +70,24 @@ function main() {
     }
   }
 
+  // 复制 @xh-gis/engine 的静态资源 Assets 到 BASE/Assets（以及根目录兜底）
+  try {
+    const require = createRequire(import.meta.url);
+    const enginePkg = require.resolve('@xh-gis/engine/package.json');
+    const engineAssets = join(dirname(enginePkg), 'dist', 'Assets');
+    if (existsSync(engineAssets)) {
+      const destBaseAssets = join(targetRoot, 'Assets');
+      copyDir(engineAssets, destBaseAssets);
+      const rootAssets = join(distRoot, 'Assets');
+      copyDir(engineAssets, rootAssets);
+      console.log('✅ 已复制 Engine Assets 到:', destBaseAssets, '和', rootAssets);
+    } else {
+      console.warn('⚠️ 未找到 @xh-gis/engine 的 dist/Assets，跳过复制。');
+    }
+  } catch (e) {
+    console.warn('⚠️ 复制 Engine Assets 失败：', e?.message || e);
+  }
+
   // 复制 favicon（如果存在）到 BASE/
   const srcFavicon = join(distRoot, 'vite.svg');
   if (existsSync(srcFavicon)) {
