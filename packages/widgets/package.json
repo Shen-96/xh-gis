@@ -1,6 +1,6 @@
 {
   "name": "@xh-gis/widgets",
-  "version": "1.0.23",
+  "version": "1.0.4",
   "description": "XH GIS React Widgets - 基于 Engine 的 React 组件",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
