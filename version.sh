@@ -60,10 +60,14 @@ show_help() {
 
 # 默认参数
 DRY_RUN=false
-NO_COMMIT=false
+NO_COMMIT=true
 PACKAGE_NAME=""
 NEW_VERSION=""
 AUTO_CONFIRM=false
+# 统一模式下各包目标版本（语义关键词时按各自递增）
+ROOT_TARGET_VERSION=""
+ENGINE_TARGET_VERSION=""
+WIDGETS_TARGET_VERSION=""
 
 # 解析命令行参数
 while [[ $# -gt 0 ]]; do
@@ -78,6 +82,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --no-commit)
             NO_COMMIT=true
+            shift
+            ;;
+        --commit)
+            NO_COMMIT=false
             shift
             ;;
         -y|--yes)
@@ -134,18 +142,34 @@ fi
 # 处理语义化版本关键词
 if [[ "$NEW_VERSION" =~ ^(major|minor|patch)$ ]]; then
     info "计算 $NEW_VERSION 版本号..."
-    if [ -n "$PACKAGE_NAME" ] && [ "$PACKAGE_PATH" != "." ]; then
-        cd "$PACKAGE_PATH"
-        TEMP_VERSION=$(npm version $NEW_VERSION --no-git-tag-version --dry-run 2>/dev/null | sed 's/^v//')
-        # 恢复 package.json
+    if [ -n "$PACKAGE_NAME" ]; then
+        # 单包模式：在对应目录计算目标版本
+        if [ "$PACKAGE_PATH" != "." ]; then
+            cd "$PACKAGE_PATH"
+            TEMP_VERSION=$(npm version $NEW_VERSION --no-git-tag-version --dry-run 2>/dev/null | sed 's/^v//')
+            git checkout package.json 2>/dev/null || true
+            cd - > /dev/null
+        else
+            TEMP_VERSION=$(npm version $NEW_VERSION --no-git-tag-version --dry-run 2>/dev/null | sed 's/^v//')
+        fi
+        NEW_VERSION=$TEMP_VERSION
+    else
+        # 统一模式：为每个包分别计算目标版本
+        # 根包
+        ROOT_TARGET_VERSION=$(npm version $NEW_VERSION --no-git-tag-version --dry-run 2>/dev/null | sed 's/^v//')
+        # engine 包
+        cd packages/engine
+        ENGINE_TARGET_VERSION=$(npm version $NEW_VERSION --no-git-tag-version --dry-run 2>/dev/null | sed 's/^v//')
         git checkout package.json 2>/dev/null || true
         cd - > /dev/null
-    else
-        TEMP_VERSION=$(npm version $NEW_VERSION --no-git-tag-version --dry-run 2>/dev/null | sed 's/^v//')
-        # 恢复 package.json
+        # widgets 包
+        cd packages/widgets
+        WIDGETS_TARGET_VERSION=$(npm version $NEW_VERSION --no-git-tag-version --dry-run 2>/dev/null | sed 's/^v//')
         git checkout package.json 2>/dev/null || true
+        cd - > /dev/null
+        # 用根包目标版本占位 NEW_VERSION 以兼容后续打印
+        NEW_VERSION=$ROOT_TARGET_VERSION
     fi
-    NEW_VERSION=$TEMP_VERSION
 fi
 
 # 验证版本号格式
@@ -157,8 +181,11 @@ fi
 
 # 检查版本号是否大于当前版本（仅在非模拟模式下检查）
 if [ "$DRY_RUN" = false ] && [[ "$NEW_VERSION" == "$CURRENT_VERSION" ]]; then
-    error "新版本不能与当前版本相同"
-    exit 1
+    # 单包模式严格检查；统一模式在语义关键词下按各包分别计算
+    if [ -n "$PACKAGE_NAME" ]; then
+        error "新版本不能与当前版本相同"
+        exit 1
+    fi
 fi
 
 # 检查是否在主分支
@@ -182,8 +209,8 @@ if [ -n "$PACKAGE_NAME" ]; then
     info "目标版本: $NEW_VERSION"
 else
     info "🔄 更新所有包的版本号..."
-    info "当前版本: $CURRENT_VERSION"
-    info "目标版本: $NEW_VERSION"
+    info "当前根包版本: $CURRENT_VERSION"
+    info "目标版本：root=${ROOT_TARGET_VERSION:-$NEW_VERSION}, engine=${ENGINE_TARGET_VERSION:-$NEW_VERSION}, widgets=${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
 fi
 
 if [ "$DRY_RUN" = true ]; then
@@ -206,13 +233,10 @@ fi
 update_version() {
     local package_path=$1
     local package_name=$2
+    local target_version=$3
     
     if [ "$DRY_RUN" = true ]; then
-        if [ -n "$PACKAGE_NAME" ]; then
-            info "[模拟] 更新 $package_name 版本到 $NEW_VERSION"
-        else
-            info "[模拟] 更新 $package_name 版本到 $NEW_VERSION"
-        fi
+        info "[模拟] 更新 $package_name 版本到 $target_version"
         return
     fi
     
@@ -223,15 +247,15 @@ update_version() {
     fi
     
     if [ "$package_path" = "." ]; then
-        info "在当前目录执行: npm version $NEW_VERSION --no-git-tag-version"
-        npm version $NEW_VERSION --no-git-tag-version > /dev/null
+        info "在当前目录执行: npm version $target_version --no-git-tag-version"
+        npm version $target_version --no-git-tag-version > /dev/null
         info "npm version 命令执行完成"
     else
         info "切换到目录: $package_path"
         cd "$package_path"
-        info "在 $package_path 目录执行: npm version $NEW_VERSION --no-git-tag-version"
+        info "在 $package_path 目录执行: npm version $target_version --no-git-tag-version"
         # 添加错误检查
-        if ! npm version $NEW_VERSION --no-git-tag-version > /dev/null 2>&1; then
+        if ! npm version $target_version --no-git-tag-version > /dev/null 2>&1; then
             error "npm version 命令执行失败"
             cd - > /dev/null
             exit 1
@@ -259,12 +283,12 @@ update_dependencies() {
     
     # 更新 widgets 包对 engine 的依赖
     cd packages/widgets
-    sed -i.bak "s/\"@xh-gis\/engine\": \"workspace:[^\"]*\"/\"@xh-gis\/engine\": \"workspace:^$NEW_VERSION\"/g" package.json
+    sed -i.bak "s/\"@xh-gis\/engine\": \"workspace:[^\"]*\"/\"@xh-gis\/engine\": \"workspace:^${ENGINE_TARGET_VERSION:-$NEW_VERSION}\"/g" package.json
     rm -f package.json.bak
     cd ../..
     
     # 更新根包对子包的依赖版本
-    sed -i.bak -e "s/\"@xh-gis\/engine\": \"workspace:[^\"]*\"/\"@xh-gis\/engine\": \"workspace:^$NEW_VERSION\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:[^\"]*\"/\"@xh-gis\/widgets\": \"workspace:^$NEW_VERSION\"/g" package.json
+    sed -i.bak -e "s/\"@xh-gis\/engine\": \"workspace:[^\"]*\"/\"@xh-gis\/engine\": \"workspace:^${ENGINE_TARGET_VERSION:-$NEW_VERSION}\"/g" -e "s/\"@xh-gis\/widgets\": \"workspace:[^\"]*\"/\"@xh-gis\/widgets\": \"workspace:^${WIDGETS_TARGET_VERSION:-$NEW_VERSION}\"/g" package.json
     rm -f package.json.bak
 }
 
@@ -358,7 +382,7 @@ update_version_constant() {
     fi
     
     info "📝 更新版本常量..."
-    sed -i.bak "s/export const version = \"[^\"]*\"/export const version = \"$NEW_VERSION\"/g" index.ts
+    sed -i.bak "s/export const version = \"[^\"]*\"/export const version = \"${ROOT_TARGET_VERSION:-$NEW_VERSION}\"/g" index.ts
     rm -f index.ts.bak
 }
 
@@ -367,7 +391,7 @@ info "开始执行更新..."
 if [ -n "$PACKAGE_NAME" ]; then
     # 单包模式
     info "执行单包模式更新..."
-    update_version "$PACKAGE_PATH" "$FULL_PACKAGE_NAME"
+    update_version "$PACKAGE_PATH" "$FULL_PACKAGE_NAME" "$NEW_VERSION"
     info "update_version 执行完成"
     update_engine_dependencies
     info "update_engine_dependencies 执行完成"
@@ -380,9 +404,9 @@ if [ -n "$PACKAGE_NAME" ]; then
 else
     # 统一模式
     info "执行统一模式更新..."
-    update_version "." "根包"
-    update_version "packages/engine" "@xh-gis/engine"
-    update_version "packages/widgets" "@xh-gis/widgets"
+    update_version "." "根包" "${ROOT_TARGET_VERSION:-$NEW_VERSION}"
+    update_version "packages/engine" "@xh-gis/engine" "${ENGINE_TARGET_VERSION:-$NEW_VERSION}"
+    update_version "packages/widgets" "@xh-gis/widgets" "${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
     update_dependencies
     update_version_constant
 fi
@@ -393,9 +417,9 @@ info "📦 新版本："
 if [ -n "$PACKAGE_NAME" ]; then
     echo "  - $FULL_PACKAGE_NAME@$NEW_VERSION"
 else
-    echo "  - @xh-gis/engine@$NEW_VERSION"
-    echo "  - @xh-gis/widgets@$NEW_VERSION"
-    echo "  - xh-gis@$NEW_VERSION"
+    echo "  - @xh-gis/engine@${ENGINE_TARGET_VERSION:-$NEW_VERSION}"
+    echo "  - @xh-gis/widgets@${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
+    echo "  - xh-gis@${ROOT_TARGET_VERSION:-$NEW_VERSION}"
 fi
 echo ""
 
@@ -405,7 +429,7 @@ if [ "$DRY_RUN" = false ]; then
         if [ -n "$PACKAGE_NAME" ]; then
             warn "即将更新 $FULL_PACKAGE_NAME 包版本到 $NEW_VERSION"
         else
-            warn "即将更新所有包版本到 $NEW_VERSION"
+            warn "即将更新所有包版本：root=${ROOT_TARGET_VERSION:-$NEW_VERSION}, engine=${ENGINE_TARGET_VERSION:-$NEW_VERSION}, widgets=${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
         fi
         echo ""
         
@@ -452,8 +476,17 @@ if [ "$DRY_RUN" = false ]; then
         
         success "版本更改已提交"
         echo ""
-        info "🏷️  创建标签: ${PACKAGE_NAME}-v$NEW_VERSION"
-        git tag "${PACKAGE_NAME}-v$NEW_VERSION"
+        # 构造标签名：统一模式下为每个包创建对应标签
+        if [ -n "$PACKAGE_NAME" ]; then
+            TAG_NAME="${PACKAGE_NAME:-root}-v$NEW_VERSION"
+            info "🏷️  创建标签: $TAG_NAME"
+            git tag "$TAG_NAME"
+        else
+            info "🏷️  创建统一模式标签"
+            git tag "root-v${ROOT_TARGET_VERSION:-$NEW_VERSION}"
+            git tag "engine-v${ENGINE_TARGET_VERSION:-$NEW_VERSION}"
+            git tag "widgets-v${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
+        fi
         
         # 如果是子包更新，还需要为根包创建标签
         if [ -n "$PACKAGE_NAME" ] && [ "$PACKAGE_NAME" != "root" ]; then
