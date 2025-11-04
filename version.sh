@@ -222,10 +222,10 @@ if [ "$DRY_RUN" = false ] && [ "$NO_COMMIT" = false ]; then
     # 使用 || true 确保即使 grep 没有匹配也不会导致脚本退出
     UNCOMMITTED_FILES=$(git status --porcelain | grep -v "pnpm-lock.yaml" || true)
     if [[ -n "$UNCOMMITTED_FILES" ]]; then
-        error "工作目录不干净，请先提交所有更改"
+        warn "工作目录不干净，将把未提交变更一并纳入本次提交"
         echo "未提交的文件:"
         echo "$UNCOMMITTED_FILES"
-        exit 1
+        # 不再退出，继续执行并在后续统一 git add .
     fi
 fi
 
@@ -247,12 +247,29 @@ update_version() {
     fi
     
     if [ "$package_path" = "." ]; then
+        # 获取当前版本，若与目标版本相同则跳过
+        local current_version
+        current_version=$(node -p "require('./package.json').version")
+        if [ "$current_version" = "$target_version" ]; then
+            warn "目标版本与当前版本相同，跳过更新: $package_name@$target_version"
+            return
+        fi
         info "在当前目录执行: npm version $target_version --no-git-tag-version"
         npm version $target_version --no-git-tag-version > /dev/null
         info "npm version 命令执行完成"
     else
         info "切换到目录: $package_path"
         cd "$package_path"
+        # 获取当前版本，若与目标版本相同则跳过
+        local current_version
+        current_version=$(node -p "require('./package.json').version")
+        if [ "$current_version" = "$target_version" ]; then
+            warn "目标版本与当前版本相同，跳过更新: $package_name@$target_version"
+            info "切换回原目录"
+            cd - > /dev/null
+            info "目录切换完成"
+            return
+        fi
         info "在 $package_path 目录执行: npm version $target_version --no-git-tag-version"
         # 添加错误检查
         if ! npm version $target_version --no-git-tag-version > /dev/null 2>&1; then
