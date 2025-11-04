@@ -480,19 +480,51 @@ if [ "$DRY_RUN" = false ]; then
         if [ -n "$PACKAGE_NAME" ]; then
             TAG_NAME="${PACKAGE_NAME:-root}-v$NEW_VERSION"
             info "🏷️  创建标签: $TAG_NAME"
-            git tag "$TAG_NAME"
+            if git rev-parse -q --verify "refs/tags/$TAG_NAME" > /dev/null; then
+                warn "标签已存在，跳过: $TAG_NAME"
+            else
+                git tag "$TAG_NAME" || true
+                success "标签已创建: $TAG_NAME"
+            fi
         else
             info "🏷️  创建统一模式标签"
-            git tag "root-v${ROOT_TARGET_VERSION:-$NEW_VERSION}"
-            git tag "engine-v${ENGINE_TARGET_VERSION:-$NEW_VERSION}"
-            git tag "widgets-v${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
+            # root 标签
+            ROOT_TAG="root-v${ROOT_TARGET_VERSION:-$NEW_VERSION}"
+            if git rev-parse -q --verify "refs/tags/$ROOT_TAG" > /dev/null; then
+                warn "标签已存在，跳过: $ROOT_TAG"
+            else
+                git tag "$ROOT_TAG" || true
+                success "标签已创建: $ROOT_TAG"
+            fi
+            # engine 标签
+            ENGINE_TAG="engine-v${ENGINE_TARGET_VERSION:-$NEW_VERSION}"
+            if git rev-parse -q --verify "refs/tags/$ENGINE_TAG" > /dev/null; then
+                warn "标签已存在，跳过: $ENGINE_TAG"
+            else
+                git tag "$ENGINE_TAG" || true
+                success "标签已创建: $ENGINE_TAG"
+            fi
+            # widgets 标签
+            WIDGETS_TAG="widgets-v${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
+            if git rev-parse -q --verify "refs/tags/$WIDGETS_TAG" > /dev/null; then
+                warn "标签已存在，跳过: $WIDGETS_TAG"
+            else
+                git tag "$WIDGETS_TAG" || true
+                success "标签已创建: $WIDGETS_TAG"
+            fi
         fi
         
         # 如果是子包更新，还需要为根包创建标签
         if [ -n "$PACKAGE_NAME" ] && [ "$PACKAGE_NAME" != "root" ]; then
             ROOT_CURRENT_VERSION=$(node -p "require('./package.json').version")
-            info "🏷️  创建根包标签: root-v$ROOT_CURRENT_VERSION"
-            git tag "root-v$ROOT_CURRENT_VERSION"
+            ROOT_TAG="root-v$ROOT_CURRENT_VERSION"
+            info "🏷️  创建根包标签: $ROOT_TAG"
+            if git rev-parse -q --verify "refs/tags/$ROOT_TAG" > /dev/null; then
+                warn "标签已存在，跳过: $ROOT_TAG"
+            else
+                git tag "$ROOT_TAG" || true
+                success "标签已创建: $ROOT_TAG"
+            fi
         fi
         
         success "标签已创建"
