@@ -9,7 +9,7 @@
 import "./index.css";
 import React, { ReactNode, RefObject, useMemo, useReducer } from "react";
 import { AbstractCore, CoreType } from "@xh-gis/engine";
-import { PlottingToolbar, PlottingList } from "../GraphicsTools";
+import { GraphicTools } from "../GraphicsTools";
 
 // 使用Unicode字符替代react-icons
 const IoLayersSharpIcon = () => <span>🗂️</span>;
@@ -82,12 +82,7 @@ export default function Toolbar({
         key: "graphic",
         icon: <MdOutlineScatterPlotIcon />,
         label: "图形",
-        panel: () => (
-          <>
-            <PlottingToolbar coreRef={coreRef} />
-            <PlottingList coreRef={coreRef} />
-          </>
-        ),
+        panel: () => <GraphicTools coreRef={coreRef} />,
       },
     ];
 

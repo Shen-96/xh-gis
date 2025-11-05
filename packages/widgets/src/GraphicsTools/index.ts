@@ -1,2 +1,1 @@
-export { default as PlottingToolbar } from "./PlottingToolbar";
-export { default as PlottingList } from "./PlottingList";
+export { default as GraphicTools } from "./GraphicTools";

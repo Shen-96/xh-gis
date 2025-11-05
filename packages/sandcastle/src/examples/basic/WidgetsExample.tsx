@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { WidgetEarth as Earth, WidgetMap as Map, WidgetTimeLine as TimeLine, WidgetPlottingList as PlottingList, WidgetToolBar as ToolBar } from '@xh-gis/widgets';
+import { WidgetEarth as Earth, WidgetMap as Map, WidgetTimeLine as TimeLine, WidgetGraphicTools as GraphicTools, WidgetToolBar as ToolBar } from '@xh-gis/widgets';
 import { XgEarth, XgMap, AbstractCore, CoreType } from '@xh-gis/engine';
 import styles from './WidgetsExample.module.css';
 
@@ -44,7 +44,7 @@ const WidgetsExample: React.FC = () => {
     { id: 'map', name: 'Map组件', icon: '🗺️', description: '2D地图组件', category: 'core' },
     { id: 'toolbar', name: '工具栏', icon: '🧰', description: '地图操作工具栏', category: 'navigation' },
     { id: 'timeline', name: '时间轴', icon: '⏰', description: '时间控制组件', category: 'control' },
-    { id: 'plottinglist', name: '标绘列表', icon: '📋', description: '标绘图形管理', category: 'control' },
+    { id: 'graphictools', name: '图形工具', icon: '📋', description: '绘制/管理/导出一体', category: 'control' },
     { id: 'popup', name: '弹窗', icon: '💬', description: '信息展示弹窗', category: 'display' },
     { id: 'legend', name: '图例', icon: '🎨', description: '图层图例显示', category: 'display' },
   ];
@@ -138,16 +138,16 @@ const WidgetsExample: React.FC = () => {
             </div>
           </div>
         );
-      case 'plottinglist':
+      case 'graphictools':
         return (
           <div className={styles.plottingListDemo}>
             <div className={styles.plottingListActual}>
-              <PlottingList 
+              <GraphicTools 
                 coreRef={coreRef as React.RefObject<AbstractCore<CoreType>>}
               />
             </div>
             <div className={styles.demoDescription}>
-              标绘列表组件用于显示和管理已创建的标绘图形。请先加载Earth或Map组件并创建一些标绘图形以查看列表。
+              图形工具组件集成绘制与管理与导出。请先加载Earth或Map组件并创建一些标绘图形以查看列表。
             </div>
           </div>
         );
@@ -287,7 +287,7 @@ const WidgetsExample: React.FC = () => {
           <div className={styles.infoCard}>
             <h3 className={styles.infoTitle}>📝 使用示例</h3>
             <pre className={styles.codeBlock}>
-              <code>{`import { WidgetEarth, WidgetMap, WidgetTimeLine, WidgetPlottingList, WidgetToolBar } from '@xh-gis/widgets';
+              <code>{`import { WidgetEarth, WidgetMap, WidgetTimeLine, WidgetGraphicTools, WidgetToolBar } from '@xh-gis/widgets';
 
 // 使用 Widget 前缀的 Earth 组件
 <WidgetEarth onInit={(earth) => {
@@ -313,8 +313,8 @@ const WidgetsExample: React.FC = () => {
   shouldAnimate={false}
 />
 
-// 使用 Widget 前缀的 PlottingList 组件
-<WidgetPlottingList 
+// 使用 Widget 前缀的 GraphicTools 组件
+<WidgetGraphicTools 
   coreRef={coreRef}
 />
 

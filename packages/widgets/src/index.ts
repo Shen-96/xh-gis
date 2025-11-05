@@ -13,10 +13,7 @@ export { default as WidgetMap } from "./Map";
 export { default as WidgetStatusBar } from "./Statusbar";
 export { default as WidgetTimeLine } from "./Timeline";
 export { default as WidgetToolBar } from "./Toolbox";
-export {
-  PlottingToolbar as WidgetPlottingToolbar,
-  PlottingList as WidgetPlottingList,
-} from "./GraphicsTools";
+export { GraphicTools as WidgetGraphicTools } from "./GraphicsTools";
 
 // 导出类型
 export type { CoreProps } from "./Core";

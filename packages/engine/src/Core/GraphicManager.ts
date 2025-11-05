@@ -6,8 +6,7 @@
  * @LastEditors: EV-申小虎
  * @LastEditTime: 2025-08-18 17:27:22
  */
-import { createGuid } from "cesium";
-import type { Point3Deg } from "../types";
+import type { GraphicOptions, Point3Deg } from "../types";
 import { GeometryType, GraphicType, SymbolType } from "../enum";
 import CoordinateUtils from "./CoordinateUtils";
 import AbstractGraphic from "../DataSources/Graphics/Abstract/AbstractGraphic";
@@ -49,6 +48,40 @@ import {
 import AbstractManager from "./AbstractManager";
 
 /**
+ * 管理器事件类型枚举：
+ * - added：有图形加入集合，负载为加入的图形实例
+ * - removed：有图形从集合移除，负载为移除的图形 id
+ * - cleared：集合被清空，负载为 undefined
+ * - sizeChanged：集合元素数量变化，负载为当前 size（number）
+ * - collectionChanged：集合整体变化（新增/删除/清空后派生），负载为当前图形列表
+ */
+export type GraphicManagerEvent =
+  | "added"
+  | "removed"
+  | "cleared"
+  | "sizeChanged"
+  | "collectionChanged";
+
+/**
+ * 不同事件对应的负载类型映射。
+ * 订阅时会按事件名称推导相应的负载类型，实现强类型的事件分发。
+ */
+export interface GraphicManagerEventPayloads {
+  added: AbstractGraphic<GeometryType>;
+  removed: string;
+  cleared: undefined;
+  sizeChanged: number;
+  collectionChanged: Array<AbstractGraphic<GeometryType>>;
+}
+
+// 监听器类型映射：为每个事件提供精确的负载类型
+type GraphicManagerListenerMap = {
+  [K in GraphicManagerEvent]?: Set<
+    (payload: GraphicManagerEventPayloads[K]) => void
+  >;
+};
+
+/**
  * @descripttion: 标绘管理器
  * @return {*}
  * @author: EV-申小虎
@@ -60,9 +93,90 @@ export default class GraphicManager extends AbstractManager {
     AbstractGraphic<GeometryType>
   > = new Map();
 
+  // 监听器记录：按事件类型分别维护订阅者集合（强类型负载）
+  private readonly listeners: GraphicManagerListenerMap = {};
+
   constructor(core: AbstractCore) {
     super(core);
     // 注册逻辑已移至各模块内部自注册
+  }
+
+  /**
+   * 订阅管理器事件（强类型负载），返回取消订阅函数。
+   *
+   * 用法示例：
+   * - 监听新增：on('added', (g) => console.log(g.id))
+   * - 监听删除：on('removed', (id) => console.log(id))
+   * - 监听清空：on('cleared', () => { ... })
+   * - 监听数量变化：on('sizeChanged', (n) => { ... })
+   * - 监听集合变化：on('collectionChanged', (list) => { ... })
+   *
+   * 说明：负载类型会根据事件名称自动推导，例如：
+   * - added → AbstractGraphic<GeometryType>
+   * - removed → string
+   * - cleared → undefined
+   * - sizeChanged → number
+   * - collectionChanged → Array<AbstractGraphic<GeometryType>>
+   */
+  on<T extends GraphicManagerEvent>(
+    event: T,
+    handler: (payload: GraphicManagerEventPayloads[T]) => void
+  ): () => void {
+    const set =
+      (this.listeners[event] as
+        | Set<(payload: GraphicManagerEventPayloads[T]) => void>
+        | undefined) ??
+      new Set<(payload: GraphicManagerEventPayloads[T]) => void>();
+    set.add(handler);
+    // 由于泛型索引的限制，这里做一次窄化赋值
+    this.listeners[event] = set as any;
+    return () => {
+      set.delete(handler);
+    };
+  }
+
+  /**
+   * 内部分发事件（强类型负载）。
+   *
+   * 注意：该方法用于管理器内部派发事件，外部请使用 on() 进行订阅。
+   * 当派发 added/removed/cleared 时，会在方法内自动派发派生事件：
+   * - sizeChanged：集合大小发生变化的数值
+   * - collectionChanged：当前完整的图形集合数组
+   */
+  private emit<T extends GraphicManagerEvent>(
+    event: T,
+    payload: GraphicManagerEventPayloads[T]
+  ) {
+    const set = this.listeners[event] as
+      | Set<(payload: GraphicManagerEventPayloads[T]) => void>
+      | undefined;
+    set?.forEach((fn) => {
+      try {
+        fn(payload);
+      } catch (e) {
+        console.error("GraphicManager listener error:", e);
+      }
+    });
+    // 派发派生事件，保持集合与数量同步
+    if (event === "added" || event === "removed" || event === "cleared") {
+      const sizeListeners = this.listeners["sizeChanged"];
+      sizeListeners?.forEach((fn) => {
+        try {
+          fn(this.size());
+        } catch (e) {
+          console.error("GraphicManager sizeChanged listener error:", e);
+        }
+      });
+      const colListeners = this.listeners["collectionChanged"];
+      const list = this.getAll();
+      colListeners?.forEach((fn) => {
+        try {
+          fn(list);
+        } catch (e) {
+          console.error("GraphicManager collectionChanged listener error:", e);
+        }
+      });
+    }
   }
 
   setDrawEventHandler(
@@ -213,6 +327,7 @@ export default class GraphicManager extends AbstractManager {
       if (this.isExists(plotSymbol.id)) throw "标会实体已存在";
 
       this.graphicCollection.set(plotSymbol.id, plotSymbol);
+      this.emit("added", plotSymbol);
     } catch (error) {
       console.error("drawManager:", error);
     }
@@ -627,58 +742,146 @@ export default class GraphicManager extends AbstractManager {
     return [...this.graphicCollection.values()];
   }
 
-  save2Json() {
-    const json = (
-      data: { type: GraphicType; positions: Point3Deg[] }[] | BlobPart,
-      filename: string
-    ) => {
-      if (!data) {
-        alert("保存的数据为空");
-        return;
+  /**
+   * 返回完整序列化结果为 GraphicOptions
+   */
+  serializeAll(): Array<GraphicOptions> {
+    const graphics = this.getAll();
+    return graphics.map((g) => {
+      const type = g.graphicType as GraphicType | SymbolType;
+      const id = g.id;
+      const name = g.graphicName;
+      const show = g.state !== "hidden";
+
+      const positions = CoordinateUtils.car3ArrToPoint3DegArr([
+        ...g.points.values(),
+      ]);
+
+      const base = { id, name, show, type } as any;
+
+      // 位置/几何类型分发
+      const geometryType = g.getGeometryType
+        ? g.getGeometryType()
+        : (g as any).geometryType;
+
+      if (geometryType === GeometryType.POINT) {
+        base.position = positions[0];
+      } else if (geometryType === GeometryType.LINE) {
+        base.positions = positions;
+      } else if (geometryType === GeometryType.POLYGON) {
+        base.positions = positions;
       }
-      if (!filename) filename = "json.json";
-      if (typeof data === "object") {
-        data = JSON.stringify(data, undefined, 4);
+
+      // 样式序列化（按已有样式对象透传）
+      base.style = g.style as any;
+
+      // 附加自定义属性
+      if (g.attributes && Object.keys(g.attributes).length) {
+        base.attr = g.attributes;
       }
-      const blob = new Blob([data], { type: "text/json" }),
-        e = document.createEvent("MouseEvents"),
-        a = document.createElement("a");
-      a.download = filename;
-      a.href = window.URL.createObjectURL(blob);
-      a.dataset.downloadurl = ["text/json", a.download, a.href].join(":");
-      e.initMouseEvent(
-        "click",
-        true,
-        false,
-        window,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
-        false,
-        false,
-        0,
-        null
-      );
-      a.dispatchEvent(e);
-    };
+
+      // SYMBOL 额外包含 code
+      if (type === GraphicType.SYMBOL) {
+        // 符号类都实现了 ISymbol，且拥有 symbolType 字段（枚举字符串）
+        const symbolType = (g as any).symbolType as SymbolType | undefined;
+        // 若 symbolType 缺失，则尝试通过枚举值反查键名；否则直接用枚举值（字符串）
+        const codeKey = symbolType
+          ? CoordinateUtils.getKeyByEnumValue(SymbolType, symbolType) ?? symbolType
+          : undefined;
+        base.code = (codeKey ?? type) as any;
+      }
+
+      return base;
+    });
+  }
+
+  /**
+   * 导出为标准 GeoJSON FeatureCollection
+   */
+  toGeoJSON(closeRing: boolean = true): {
+    type: "FeatureCollection";
+    features: Array<{
+      type: "Feature";
+      properties: { type: GraphicType | SymbolType; [key: string]: any };
+      geometry:
+        | { type: "Point"; coordinates: [number, number] }
+        | { type: "LineString"; coordinates: [number, number][] }
+        | { type: "Polygon"; coordinates: [number, number][][] };
+    }>;
+  } {
     const symbols = this.getAll();
 
-    const data = symbols.map((symbol) => {
+    const features = symbols.map((symbol) => {
       const car3Arr = [...symbol.points.values()];
+      const positions = CoordinateUtils.car3ArrToPoint3DegArr(car3Arr);
+      const geometryType = symbol.getGeometryType
+        ? symbol.getGeometryType()
+        : (symbol as any).geometryType;
 
-      const i = {
-        type: symbol.graphicType,
-        positions: CoordinateUtils.car3ArrToPoint3DegArr(car3Arr),
+      const coords: [number, number][] = positions.map((p) => {
+        // Point3Deg is [lon, lat, alt]
+        const lon = Array.isArray(p) ? p[0] : (p as any)?.longitude ?? (p as any)?.lon ?? (p as any)?.lng ?? (p as any)?.x;
+        const lat = Array.isArray(p) ? p[1] : (p as any)?.latitude ?? (p as any)?.lat ?? (p as any)?.y;
+        return [Number(lon ?? 0), Number(lat ?? 0)] as [number, number];
+      });
+
+      let geometry:
+        | { type: "Point"; coordinates: [number, number] }
+        | { type: "LineString"; coordinates: [number, number][] }
+        | { type: "Polygon"; coordinates: [number, number][][] };
+
+      if (geometryType === GeometryType.POLYGON) {
+        let ring: [number, number][] = coords;
+        if (closeRing && coords.length) {
+          const first = coords[0];
+          const last = coords[coords.length - 1];
+          const isClosed = first[0] === last[0] && first[1] === last[1];
+          ring = isClosed ? coords : [...coords, first];
+        }
+        geometry = { type: "Polygon", coordinates: [ring] };
+      } else if (geometryType === GeometryType.LINE) {
+        geometry = { type: "LineString", coordinates: coords };
+      } else {
+        const first: [number, number] = (coords[0] ?? [0, 0]) as [
+          number,
+          number
+        ];
+        geometry = { type: "Point", coordinates: first };
+      }
+
+      const props: { type: GraphicType | SymbolType; [key: string]: any } = {
+        type: symbol.graphicType as any,
       };
 
-      return i;
+      // 附加基本属性
+      const name = (symbol as any).graphicName;
+      if (name) props.name = name;
+      const state = (symbol as any).state;
+      if (state) props.show = state !== "hidden";
+      const attr = (symbol as any).attributes;
+      if (attr && Object.keys(attr).length > 0) props.attr = attr;
+
+      // 附加样式（注意：样式对象应为可序列化的纯数据结构）
+      const style = (symbol as any).style;
+      if (style) props.style = style;
+
+      // 附加符号 code（若为 SYMBOL 类型）
+      if (symbol.graphicType === GraphicType.SYMBOL) {
+        const symbolType = (symbol as any).symbolType as SymbolType | string | undefined;
+        if (symbolType) {
+          const key = CoordinateUtils.getKeyByEnumValue(SymbolType as any, symbolType as any);
+          props.code = key ?? String(symbolType);
+        }
+      }
+
+      return {
+        type: "Feature" as const,
+        properties: props,
+        geometry,
+      };
     });
 
-    json(data, createGuid() + ".json");
+    return { type: "FeatureCollection", features };
   }
 
   // 新增：集合与序列化便捷 API
@@ -698,16 +901,7 @@ export default class GraphicManager extends AbstractManager {
     ids?.forEach((id) => this.removeById(id));
   }
 
-  serializeAll(): { type: GraphicType | SymbolType; positions: Point3Deg[] }[] {
-    const symbols = this.getAll();
-    return symbols.map((symbol) => {
-      const car3Arr = [...symbol.points.values()];
-      return {
-        type: symbol.graphicType as any,
-        positions: CoordinateUtils.car3ArrToPoint3DegArr(car3Arr),
-      };
-    });
-  }
+  // 保留在文件底部的便捷 API 无改动
 
   /**
    * @descripttion: 清除标绘
@@ -721,6 +915,7 @@ export default class GraphicManager extends AbstractManager {
     if (symbol) {
       symbol.remove("manager");
       this.graphicCollection.delete(id);
+      this.emit("removed", id);
     }
   }
 
@@ -734,5 +929,6 @@ export default class GraphicManager extends AbstractManager {
       i.remove("manager");
     });
     this.graphicCollection.clear();
+    this.emit("cleared", undefined);
   }
 }

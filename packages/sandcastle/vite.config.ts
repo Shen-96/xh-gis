@@ -34,7 +34,7 @@ export default defineConfig({
     include: ["scheduler"],
   },
   server: {
-    port: 3001,
+    port: 5000,
     open: true,
     host: true,
     fs: {

@@ -1,0 +1,229 @@
+/* 统一绘图+管理+导出 面板样式 */
+.xh-gis-graphic-tools {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: all;
+  width: 380px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+.xh-gis-graphic-tools,
+.xh-gis-graphic-tools * {
+  box-sizing: border-box;
+}
+
+.gt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+}
+
+.gt-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.gt-tab {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  background: #fafafa;
+  cursor: pointer;
+}
+.gt-tab.active {
+  background: #e6f4ff;
+  border-color: #91caff;
+}
+
+.gt-body {
+  padding: 10px 12px;
+  overflow: auto;
+}
+
+.gt-toolbar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.gt-toolbar button {
+  padding: 6px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+.gt-toolbar button:hover {
+  background: #f5f5f5;
+}
+
+.gt-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.gt-actions button {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.gt-actions button { white-space: nowrap; }
+.gt-danger {
+  background: #ff4d4f;
+  color: #fff;
+}
+.gt-primary {
+  background: #1677ff;
+  color: #fff;
+}
+
+.gt-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.gt-table th,
+.gt-table td {
+  border-bottom: 1px solid #eee;
+  padding: 6px;
+  text-align: left;
+  word-break: break-word;
+}
+.gt-table th {
+  background: #fafafa;
+}
+
+.gt-empty {
+  color: #999;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* 样式编辑区 */
+.gt-editor {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+}
+.gt-editor-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.gt-editor-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.gt-editor-col label {
+  width: 96px;
+  color: #555;
+}
+.gt-editor-col input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+.gt-editor-col input[type="number"] {
+  width: 80px;
+  max-width: 100%;
+}
+.gt-editor-col input[type="color"] {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+.gt-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* 管理工具条：搜索与实时开关 */
+.gt-manage-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+.gt-search {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+}
+.gt-realtime {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 行选中高亮 */
+.gt-row-selected {
+  background: #e6f4ff;
+}
+
+/* 颜色与线宽预设 */
+.gt-swatches {
+  display: flex;
+  gap: 6px;
+}
+.gt-swatches {
+  flex-wrap: wrap;
+}
+.gt-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+.gt-widths {
+  display: flex;
+  gap: 8px;
+}
+.gt-widths {
+  flex-wrap: wrap;
+}
+.gt-width {
+  padding: 4px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+.gt-ellipsis {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gt-inline-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.gt-inline-actions button {
+  padding: 4px 8px;
+}

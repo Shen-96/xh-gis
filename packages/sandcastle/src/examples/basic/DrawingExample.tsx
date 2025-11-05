@@ -18,6 +18,8 @@ const DrawingExample: React.FC = () => {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
+  const [serialized, setSerialized] = useState<string | null>(null);
+  // 已移除：线样式编辑相关状态
 
   const handleEarthInit = useCallback((earth: XgEarth) => {
     console.log('XH-GIS Earth initialized for drawing:', earth);
@@ -343,6 +345,22 @@ const DrawingExample: React.FC = () => {
     }
   }, [graphicManager]);
 
+  const exportSerialized = useCallback(() => {
+    if (!graphicManager) {
+      console.warn('引擎或绘制管理器未初始化');
+      return;
+    }
+    try {
+      const data = graphicManager.serializeAll();
+      setSerialized(JSON.stringify(data, null, 2));
+      console.log('序列化结果:', data);
+    } catch (error) {
+      console.warn('序列化失败:', error);
+    }
+  }, [graphicManager]);
+
+  // 已移除：线样式编辑与应用逻辑
+
   return (
     <div className={styles.example}>
       <div className={styles.container}>
@@ -353,118 +371,8 @@ const DrawingExample: React.FC = () => {
           </p>
         </div>
 
-        <div className={styles.content}>
-          <div className={styles.sidebar}>
-            <div className={styles.actionsSection}>
-              <h3 className={styles.sectionTitle}>⚡ 操作</h3>
-              <div className={styles.actions}>
-                <button onClick={simulateDrawing} className={styles.drawButton}>
-                  开始绘制 ✏️
-                </button>
-                <button onClick={clearAll} className={styles.clearButton}>
-                  清空画布 🗑️
-                </button>
-                <button
-                  onClick={() => {
-                    if (!graphicManager) return;
-                    const data = graphicManager.serializeAll();
-                    const text = JSON.stringify(data, null, 2);
-                    console.log('导出标绘:', text);
-                    if (navigator?.clipboard?.writeText) {
-                      navigator.clipboard.writeText(text).then(() => {
-                        console.log('已复制到剪贴板');
-                      }).catch(() => {});
-                    }
-                  }}
-                  className={styles.exportButton}
-                >
-                  导出标绘 📤
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.toolsSection}>
-              <h3 className={styles.sectionTitle}>🛠️ 绘制工具</h3>
-              <div className={styles.searchBar}>
-                <input
-                  className={styles.searchInput}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="搜索工具名称或说明..."
-                />
-              </div>
-              <div className={styles.tools}>
-                {filteredCategories.map((cat) => (
-                  <div key={cat.id} className={styles.category}>
-                    <button
-                      className={styles.categoryHeader}
-                      onClick={() => toggleCategory(cat.id)}
-                      title={cat.name}
-                    >
-                      <span className={styles.categoryTitle}>{cat.name}</span>
-                      <span className={styles.categoryCount}>{cat.tools.length}</span>
-                      <span className={styles.categoryToggle}>
-                        {openCategories[cat.id] !== false ? '▾' : '▸'}
-                      </span>
-                    </button>
-                    {openCategories[cat.id] !== false && (
-                      <div className={styles.categoryTools}>
-                        {cat.tools.map((id) => {
-                          const tool = tools.find((t) => t.id === id);
-                          if (!tool) return null;
-                          return (
-                            <button
-                              key={tool.id}
-                              onClick={() => handleToolSelect(tool.id)}
-                              className={`${styles.tool} ${
-                                selectedTool === tool.id ? styles.toolActive : ''
-                              }`}
-                            >
-                              <span className={styles.toolIcon}>{tool.icon}</span>
-                              <div className={styles.toolInfo}>
-                                <div className={styles.toolName}>{tool.name}</div>
-                                <div className={styles.toolDescription}>{tool.description}</div>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.shapesSection}>
-              <h3 className={styles.sectionTitle}>📝 已绘制图形</h3>
-              <div className={styles.shapesList}>
-                {drawnShapes.length === 0 ? (
-                  <div className={styles.emptyShapes}>
-                    暂无绘制图形
-                  </div>
-                ) : (
-                  drawnShapes.map((shape) => {
-                    const tool = tools.find(t => t.id === shape.type);
-                    return (
-                      <div key={shape.id} className={styles.shapeItem}>
-                        <span className={styles.shapeIcon}>{tool?.icon}</span>
-                        <span className={styles.shapeName}>{tool?.name}</span>
-                        <button 
-                          onClick={() => setDrawnShapes(prev => 
-                            prev.filter(s => s.id !== shape.id)
-                          )}
-                          className={styles.removeShape}
-                        >
-                          ❌
-                        </button>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-          </div>
-
+        <div className={styles.contentSingle}>
+          
           <div className={styles.mapSection}>
             <div className={styles.mapContainer}>
               {status === 'loading' && (
@@ -488,50 +396,75 @@ const DrawingExample: React.FC = () => {
                   <div className={styles.shapeCount}>
                     已绘制: {drawnShapes.length} 个图形
                   </div>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    <button
+                      onClick={exportSerialized}
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: 6,
+                        border: '1px solid #cbd5e1',
+                        background: '#fff',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      导出序列化
+                    </button>
+                    <button
+                      onClick={clearAll}
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: 6,
+                        border: '1px solid #fecaca',
+                        background: '#fee2e2',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      清空图形
+                    </button>
+                    {/* 已移除：线样式编辑面板 */}
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className={styles.info}>
-          <div className={styles.infoCard}>
-            <h3 className={styles.infoTitle}>📋 功能特性</h3>
-            <ul className={styles.featureList}>
-              <li>✅ 多种几何图形绘制</li>
-              <li>✅ 实时交互式绘制</li>
-              <li>✅ 图形编辑和删除</li>
-              <li>✅ 属性信息设置</li>
-              <li>✅ 导入导出功能</li>
-            </ul>
-          </div>
-
-          <div className={styles.infoCard}>
-            <h3 className={styles.infoTitle}>📝 代码示例</h3>
-            <pre className={styles.codeBlock}>
-              <code>{`import { GraphicManager, GraphicType } from '@xh-gis/engine';
-
-// 使用图形管理器
-const graphicManager = earth.graphicManager;
-
-// 绘制点
-graphicManager.setDrawEventHandler(
-  GraphicType.POINT, 
-  (position, self) => {
-    console.log('点绘制完成:', position);
-  }
-);
-
-// 绘制多边形
-graphicManager.setDrawEventHandler(
-  GraphicType.POLYGON,
-  (positions, self) => {
-    console.log('多边形绘制完成:', positions);
-  }
-);`}</code>
+        {serialized && (
+          <div style={{
+            marginTop: 16,
+            background: '#f8fafc',
+            padding: 12,
+            borderRadius: 8,
+            border: '1px solid #e2e8f0'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <span style={{ fontWeight: 600 }}>序列化结果</span>
+              <button
+                onClick={() => {
+                  try {
+                    if (serialized) {
+                      navigator.clipboard?.writeText(serialized);
+                    }
+                  } catch (e) {
+                    console.warn('复制失败:', e);
+                  }
+                }}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: 6,
+                  border: '1px solid #cbd5e1',
+                  background: '#fff',
+                  cursor: 'pointer'
+                }}
+              >
+                复制JSON
+              </button>
+            </div>
+            <pre style={{ maxHeight: 240, overflow: 'auto', fontSize: 12, lineHeight: 1.4 }}>
+{serialized}
             </pre>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
