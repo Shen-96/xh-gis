@@ -18,6 +18,30 @@ success() { echo -e "${GREEN}✅ $1${NC}"; }
 warn() { echo -e "${YELLOW}⚠️  $1${NC}"; }
 error() { echo -e "${RED}❌ $1${NC}"; }
 
+# 同步 pnpm lockfile，确保 package.json 与锁文件一致
+sync_lockfile() {
+    if [ "$DRY_RUN" = true ]; then
+        warn "[dry-run] 跳过 pnpm-lock.yaml 同步"
+        return
+    fi
+
+    if [ -f "pnpm-lock.yaml" ]; then
+        info "🔒 同步 pnpm-lock.yaml..."
+        if ! pnpm install; then
+            warn "pnpm install 同步锁文件失败，请手动运行 pnpm install 修复锁文件"
+        else
+            success "锁文件已同步，依赖安装完成"
+        fi
+    else
+        warn "未检测到 pnpm-lock.yaml，执行依赖安装以生成锁文件..."
+        if ! pnpm install; then
+            warn "pnpm install 失败，请检查网络或 registry 设置"
+        else
+            success "依赖安装完成"
+        fi
+    fi
+}
+
 # 显示帮助信息
 show_help() {
     echo "XH-GIS 发布脚本"
@@ -196,11 +220,9 @@ else
     fi
 fi
 
-# 安装依赖
-info "📥 安装依赖..."
-info "执行 pnpm install..."
-pnpm install
-success "依赖安装完成"
+# 安装依赖并同步锁文件
+info "📥 安装依赖并同步锁文件..."
+sync_lockfile
 
 # 构建包
 if [ "$SKIP_BUILD" = false ]; then
