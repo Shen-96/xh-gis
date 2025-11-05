@@ -386,6 +386,26 @@ update_root_version_for_subpackage() {
     info "根包版本已更新到 $ROOT_NEW_VERSION"
 }
 
+# 同步 pnpm lockfile，确保 package.json 变更后锁文件一致
+sync_lockfile() {
+    if [ "$DRY_RUN" = true ]; then
+        info "[模拟] 同步 pnpm-lock.yaml"
+        return
+    fi
+
+    if [ -f "pnpm-lock.yaml" ]; then
+        info "🔒 同步 pnpm-lock.yaml..."
+        # 使用安装来刷新锁文件；若失败则提示但不中断流程
+        if ! pnpm install > /dev/null 2>&1; then
+            warn "pnpm install 同步锁文件失败，请手动运行 pnpm install 修复锁文件"
+        else
+            success "锁文件已同步"
+        fi
+    else
+        warn "未检测到 pnpm-lock.yaml，跳过锁文件同步"
+    fi
+}
+
 # 更新版本常量函数（仅在统一模式或更新根包时执行）
 update_version_constant() {
     # 在统一模式或更新根包时更新版本常量
@@ -426,6 +446,8 @@ else
     update_version "packages/widgets" "@xh-gis/widgets" "${WIDGETS_TARGET_VERSION:-$NEW_VERSION}"
     update_dependencies
     update_version_constant
+    # 在版本号与依赖更新后，立刻同步 pnpm-lock.yaml，避免 CI 的 --frozen-lockfile 失败
+    sync_lockfile
 fi
 
 success "版本更新完成！"
