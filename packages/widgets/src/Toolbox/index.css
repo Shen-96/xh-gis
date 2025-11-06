@@ -8,21 +8,41 @@
   display: flex;
   flex-direction: column;
   row-gap: 10px;
+  color: var(--wg-text, #e6e6e6);
 }
 
 .xh-gis-viewer-toolbar {
   border-radius: 2px;
   border-width: 1px;
-  color: var(--ant-color-primary-text, #ffffff);
-  background-color: var(--ant-color-primary-bg, rgba(63, 72, 84, 0.9));
-  fill: #e6e6e6;
+  color: var(--wg-primary-text, var(--ant-color-primary-text, #ffffff));
+  background-color: var(
+    --wg-overlay-bg,
+    var(--ant-color-primary-bg, rgba(63, 72, 84, 0.9))
+  );
+  fill: var(--wg-text, #e6e6e6);
   font-size: 32px;
   line-height: 32px;
   text-align: center;
   cursor: pointer;
+  outline: none;
+  border-style: solid;
+  border-color: var(--wg-border, rgba(63, 72, 84, 0.9));
 }
 
 .xh-gis-viewer-toolbar:hover {
-  color: var(--ant-color-primary-hover, #ffffff);
-  background-color: var(--ant-color-primary-bg-hover, rgba(63, 72, 84, 0.9));
+  color: var(--wg-primary-text, var(--ant-color-primary-hover, #ffffff));
+  background-color: var(
+    --wg-panel-hover-bg,
+    var(--ant-color-primary-bg-hover, rgba(63, 72, 84, 0.9))
+  );
+}
+
+.xh-gis-viewer-toolbar.active {
+  background-color: var(--wg-primary-bg, rgba(63, 72, 84, 0.9));
+  color: var(--wg-primary-text, #ffffff);
+  border-color: var(--wg-primary-bg, rgba(63, 72, 84, 0.9));
+}
+
+.xh-gis-viewer-toolbar:focus-visible {
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.45);
 }

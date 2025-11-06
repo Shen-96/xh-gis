@@ -70,11 +70,11 @@ const TestingSuite: React.FC = () => {
 
   const getStatusColor = (status: TestResult['status']) => {
     switch (status) {
-      case 'pending': return '#64748b';
-      case 'running': return '#3b82f6';
-      case 'passed': return '#10b981';
-      case 'failed': return '#ef4444';
-      default: return '#64748b';
+      case 'pending': return 'var(--sc-muted, #64748b)';
+      case 'running': return 'var(--sc-primary-bg, #3b82f6)';
+      case 'passed': return 'var(--sc-success, #10b981)';
+      case 'failed': return 'var(--sc-danger, #ef4444)';
+      default: return 'var(--sc-muted, #64748b)';
     }
   };
 
@@ -115,13 +115,13 @@ const TestingSuite: React.FC = () => {
             <div className={styles.summaryLabel}>总测试</div>
           </div>
           <div className={styles.summaryCard}>
-            <div className={styles.summaryNumber} style={{ color: '#10b981' }}>
+            <div className={styles.summaryNumber} style={{ color: 'var(--sc-success, #10b981)' }}>
               {passedCount}
             </div>
             <div className={styles.summaryLabel}>通过</div>
           </div>
           <div className={styles.summaryCard}>
-            <div className={styles.summaryNumber} style={{ color: '#ef4444' }}>
+            <div className={styles.summaryNumber} style={{ color: 'var(--sc-danger, #ef4444)' }}>
               {failedCount}
             </div>
             <div className={styles.summaryLabel}>失败</div>

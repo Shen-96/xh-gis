@@ -12,10 +12,10 @@
 }
 
 .panel {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--sc-border, #e5e7eb);
   border-radius: 8px;
   overflow: hidden;
-  background: #fff;
+  background: var(--sc-panel-bg, #fff);
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
@@ -24,8 +24,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--sc-panel-hover-bg, #f9fafb);
+  border-bottom: 1px solid var(--sc-border, #e5e7eb);
 }
 
 .panelTitle {
@@ -37,9 +37,9 @@
 .radiusDisplay {
   font-size: 14px;
   font-weight: 700;
-  color: #111827;
-  background: #fff3cd;
-  border: 1px solid #f59e0b;
+  color: var(--sc-text, #e2e8f0);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--sc-warning, #f59e0b);
   border-radius: 6px;
   padding: 4px 8px;
 }
@@ -50,8 +50,8 @@
 
 .controls {
   padding: 10px 12px;
-  border-top: 1px solid #e5e7eb;
-  background: #fafafa;
+  border-top: 1px solid var(--sc-border, #e5e7eb);
+  background: var(--sc-panel-hover-bg, #fafafa);
 }
 
 .toggleRow {
@@ -75,15 +75,15 @@
 .errorTip {
   margin: 8px 12px;
   padding: 8px 10px;
-  color: #b91c1c;
-  background: #fee2e2;
-  border: 1px solid #fecaca;
+  color: var(--sc-danger, #b91c1c);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   border-radius: 6px;
 }
 
 .tips {
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--sc-border, #e5e7eb);
   padding: 8px 12px;
   border-radius: 8px;
-  color: #374151;
+  color: var(--sc-text, #374151);
 }

@@ -97,7 +97,11 @@ export default function Toolbar({
             key={button.key}
             icon={button.icon}
             label={button.label}
+            active={state[button.key]}
             onClick={() =>
+              dispatch({ type: button.key, payload: !state[button.key] })
+            }
+            onKeyPress={() =>
               dispatch({ type: button.key, payload: !state[button.key] })
             }
           />
@@ -117,14 +121,31 @@ export default function Toolbar({
 const ToolbarButton = ({
   icon,
   label,
+  active,
   onClick,
+  onKeyPress,
 }: {
   icon: ReactNode;
   label: string;
+  active?: boolean;
   onClick: () => void;
+  onKeyPress?: () => void;
 }) => {
   return (
-    <div className="xh-gis-viewer-toolbar" onClick={onClick} title={label}>
+    <div
+      className={`xh-gis-viewer-toolbar${active ? " active" : ""}`}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onKeyPress?.();
+        }
+      }}
+      role="button"
+      aria-pressed={!!active}
+      tabIndex={0}
+      title={label}
+    >
       {icon}
     </div>
   );

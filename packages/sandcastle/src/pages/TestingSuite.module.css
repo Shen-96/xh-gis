@@ -84,23 +84,23 @@
 }
 
 .summaryCard {
-  background: white;
+  background: var(--sc-panel-bg, #ffffff);
   padding: 24px;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--sc-border, #e2e8f0);
 }
 
 .summaryNumber {
   font-size: 2rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--sc-text, #1e293b);
   margin-bottom: 8px;
 }
 
 .summaryLabel {
-  color: #64748b;
+  color: var(--sc-muted, #64748b);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -108,16 +108,16 @@
 }
 
 .testsList {
-  background: white;
+  background: var(--sc-panel-bg, #ffffff);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--sc-border, #e2e8f0);
   overflow: hidden;
   margin-bottom: 40px;
 }
 
 .testItem {
   padding: 20px 24px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--sc-border, #f1f5f9);
   border-left: 4px solid transparent;
   transition: all 0.2s ease;
 }
@@ -127,7 +127,7 @@
 }
 
 .testItem:hover {
-  background: #f8fafc;
+  background: var(--sc-panel-hover-bg, #f8fafc);
 }
 
 .testHeader {
@@ -145,11 +145,11 @@
 .testName {
   flex: 1;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--sc-text, #1e293b);
 }
 
 .testDuration {
-  color: #64748b;
+  color: var(--sc-muted, #64748b);
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -157,13 +157,13 @@
 .testError {
   margin-top: 12px;
   padding: 12px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   border-radius: 6px;
 }
 
 .testError code {
-  color: #dc2626;
+  color: var(--sc-danger, #dc2626);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 0.9rem;
 }
@@ -175,14 +175,14 @@
 .progressBar {
   width: 100%;
   height: 4px;
-  background: #f1f5f9;
+  background: var(--sc-panel-hover-bg, #f1f5f9);
   border-radius: 2px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(90deg, var(--sc-gradient-progress-start, #3b82f6), var(--sc-gradient-progress-end, #8b5cf6));
   border-radius: 2px;
   animation: progressAnimation 2s ease-in-out infinite;
 }

@@ -3,8 +3,8 @@
 }
 
 .hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--sc-gradient-progress-start, #3b82f6) 0%, var(--sc-gradient-progress-end, #8b5cf6) 100%);
+  color: var(--sc-overlay-text, #ffffff);
   padding: 80px 0;
   text-align: center;
 }
@@ -44,26 +44,26 @@
 }
 
 .primaryButton {
-  background: #3b82f6;
-  color: white;
+  background: var(--sc-primary-bg, #3b82f6);
+  color: var(--sc-primary-text, #ffffff);
   padding: 14px 28px;
   text-decoration: none;
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.2s ease;
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--sc-primary-bg, #3b82f6);
 }
 
 .primaryButton:hover {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: var(--sc-primary-bg, #3b82f6);
+  border-color: var(--sc-primary-bg, #3b82f6);
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
 }
 
 .secondaryButton {
   background: transparent;
-  color: white;
+  color: var(--sc-overlay-text, #ffffff);
   padding: 14px 28px;
   text-decoration: none;
   border-radius: 8px;
@@ -73,14 +73,14 @@
 }
 
 .secondaryButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--sc-overlay-bg, rgba(255, 255, 255, 0.12));
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
 }
 
 .features {
   padding: 80px 0;
-  background: white;
+  background: var(--sc-bg, #f8fafc);
 }
 
 .container {
@@ -94,7 +94,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 60px;
-  color: #1e293b;
+  color: var(--sc-text, #1e293b);
 }
 
 .featuresGrid {
@@ -104,13 +104,13 @@
 }
 
 .featureCard {
-  background: white;
+  background: var(--sc-panel-bg, #ffffff);
   padding: 40px 30px;
   border-radius: 12px;
   text-decoration: none;
   color: inherit;
   transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--sc-border, #e2e8f0);
   position: relative;
   overflow: hidden;
 }
@@ -146,18 +146,18 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 15px;
-  color: #1e293b;
+  color: var(--sc-text, #1e293b);
   text-align: center;
 }
 
 .featureDescription {
-  color: #64748b;
+  color: var(--sc-muted, #64748b);
   line-height: 1.6;
   text-align: center;
 }
 
 .stats {
-  background: #f8fafc;
+  background: var(--sc-panel-hover-bg, #f8fafc);
   padding: 60px 0;
 }
 
@@ -175,12 +175,12 @@
 .statNumber {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #3b82f6;
+  color: var(--sc-primary-bg, #3b82f6);
   margin-bottom: 10px;
 }
 
 .statLabel {
-  color: #64748b;
+  color: var(--sc-muted, #64748b);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;

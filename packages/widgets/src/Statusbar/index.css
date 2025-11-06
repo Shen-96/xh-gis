@@ -4,10 +4,9 @@
   width: 100%;
   position: absolute;
   bottom: 0;
-  color: #dfd9c8f0;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
-    1px 1px 0 #000;
-  background: #0000006b;
+  color: var(--wg-overlay-text, #dfd9c8f0);
+  text-shadow: var(--wg-text-shadow, 0 1px 2px rgba(0, 0, 0, 0.35));
+  background: var(--wg-overlay-bg, #0000006b);
   font-size: 16px;
   padding: 0 2px;
   display: flex;

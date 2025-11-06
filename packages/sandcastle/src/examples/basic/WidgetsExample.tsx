@@ -50,10 +50,10 @@ const WidgetsExample: React.FC = () => {
   ];
 
   const categories = {
-    core: { name: '核心组件', color: '#ef4444' },
-    navigation: { name: '导航控件', color: '#3b82f6' },
-    control: { name: '控制组件', color: '#10b981' },
-    display: { name: '显示组件', color: '#8b5cf6' },
+    core: { name: '核心组件', color: 'var(--sc-danger, #ef4444)' },
+    navigation: { name: '导航控件', color: 'var(--sc-primary-bg, #3b82f6)' },
+    control: { name: '控制组件', color: 'var(--sc-success, #10b981)' },
+    display: { name: '显示组件', color: 'var(--sc-gradient-progress-end, #8b5cf6)' },
   };
 
   const groupedWidgets = widgets.reduce((acc, widget) => {
@@ -188,15 +188,15 @@ const WidgetsExample: React.FC = () => {
             <div className={styles.legend}>
               <div className={styles.legendTitle}>图层图例</div>
               <div className={styles.legendItem}>
-                <div className={styles.legendSymbol} style={{ background: '#ef4444' }}></div>
+                <div className={styles.legendSymbol} style={{ background: 'var(--sc-danger, #ef4444)' }}></div>
                 <span>重要区域</span>
               </div>
               <div className={styles.legendItem}>
-                <div className={styles.legendSymbol} style={{ background: '#10b981' }}></div>
+                <div className={styles.legendSymbol} style={{ background: 'var(--sc-success, #10b981)' }}></div>
                 <span>普通区域</span>
               </div>
               <div className={styles.legendItem}>
-                <div className={styles.legendSymbol} style={{ background: '#3b82f6' }}></div>
+                <div className={styles.legendSymbol} style={{ background: 'var(--sc-primary-bg, #3b82f6)' }}></div>
                 <span>特殊区域</span>
               </div>
             </div>

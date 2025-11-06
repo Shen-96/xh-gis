@@ -9,28 +9,28 @@ const Home: React.FC = () => {
       title: '示例展示',
       description: '浏览各种XH-GIS功能的实际应用示例，从基础到高级功能',
       link: '/examples',
-      color: '#3b82f6'
+      color: 'var(--sc-primary-bg, #3b82f6)'
     },
     {
       icon: '🧪',
       title: '功能测试',
       description: '运行自动化测试套件，验证engine和widgets包的功能',
       link: '/testing',
-      color: '#10b981'
+      color: 'var(--sc-success, #10b981)'
     },
     {
       icon: '📚',
       title: 'API文档',
       description: '查看详细的API文档和使用指南',
       link: '/docs',
-      color: '#8b5cf6'
+      color: 'var(--sc-gradient-progress-end, #8b5cf6)'
     },
     {
       icon: '🚀',
       title: '快速开始',
       description: '学习如何在你的项目中集成和使用XH-GIS',
       link: '/getting-started',
-      color: '#f59e0b'
+      color: 'var(--sc-warning, #f59e0b)'
     }
   ];
 

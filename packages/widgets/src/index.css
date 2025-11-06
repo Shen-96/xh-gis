@@ -72,7 +72,7 @@
   position: absolute;
   pointer-events: none;
   height: 0;
-  border-top: 1px dashed rgb(255, 255, 255);
+  border-top: 1px dashed var(--wg-border-contrast, #ffffff);
 }
 
 .xh-gis-integrated {
@@ -81,4 +81,73 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+/* Root 级变量作为后备，使非 viewer 包裹的部件也能继承 */
+:root {
+  --wg-bg: #ffffff;
+  --wg-text: #1f1f1f;
+  --wg-muted: #666666;
+  --wg-border: #e5e5e5;
+  /* 浅色主题下的覆盖层采用浅底深字，更易读 */
+  --wg-overlay-bg: rgba(255, 255, 255, 0.88);
+  --wg-overlay-text: #1f1f1f;
+  --wg-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --wg-primary-bg: #1677ff;
+  --wg-primary-text: #ffffff;
+  --wg-panel-bg: #fafafa;
+  --wg-panel-hover-bg: #f5f5f5;
+  --wg-border-contrast: #ffffff;
+}
+
+/* Widgets 全局主题变量（浅色为默认）
+   注意：不要在 .xh-gis-viewer 作用域内自引用变量，否则会导致循环引用，
+   使使用这些变量的样式在计算时失效。保留 :root 和 data-theme 控制即可。 */
+
+/* 暗色主题覆盖：系统自动适配 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wg-bg: #1f1f1f;
+    --wg-text: #e6e6e6;
+    --wg-muted: #b3b3b3;
+    --wg-border: #333333;
+    --wg-overlay-bg: rgba(0, 0, 0, 0.6);
+    --wg-overlay-text: #e6e6e6;
+    --wg-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --wg-panel-bg: #2a2a2a;
+    --wg-panel-hover-bg: #333333;
+    --wg-border-contrast: #e6e6e6;
+  }
+}
+
+
+/* 暗色主题覆盖：Root 显式控制 */
+:root[data-theme="dark"] {
+  --wg-bg: #1f1f1f;
+  --wg-text: #e6e6e6;
+  --wg-muted: #b3b3b3;
+  --wg-border: #333333;
+  --wg-overlay-bg: rgba(0, 0, 0, 0.6);
+  --wg-overlay-text: #e6e6e6;
+  --wg-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --wg-panel-bg: #2a2a2a;
+  --wg-panel-hover-bg: #333333;
+  --wg-border-contrast: #e6e6e6;
+}
+
+
+/* 浅色主题覆盖：Root 显式控制 */
+:root[data-theme="light"] {
+  --wg-bg: #ffffff;
+  --wg-text: #1f1f1f;
+  --wg-muted: #666666;
+  --wg-border: #e5e5e5;
+  --wg-overlay-bg: rgba(255, 255, 255, 0.88);
+  --wg-overlay-text: #1f1f1f;
+  --wg-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --wg-primary-bg: #1677ff;
+  --wg-primary-text: #ffffff;
+  --wg-panel-bg: #fafafa;
+  --wg-panel-hover-bg: #f5f5f5;
+  --wg-border-contrast: #ffffff;
 }

@@ -12,14 +12,58 @@ html, body {
   height: 100%;
 }
 
+/* Sandcastle 独立主题变量（默认浅色） */
+:root {
+  --sc-bg: #f8fafc;
+  --sc-text: #1e293b;
+  --sc-muted: #64748b;
+  --sc-border: #e5e7eb;
+  --sc-primary-bg: #3b82f6;
+  --sc-primary-text: #ffffff;
+  --sc-panel-bg: #ffffff;
+  --sc-panel-hover-bg: #f1f5f9;
+  --sc-overlay-bg: rgba(255, 255, 255, 0.12);
+  --sc-overlay-text: #ffffff;
+  /* 渐变与状态色 */
+  --sc-gradient-map-start: #1e3c72;
+  --sc-gradient-map-end: #2a5298;
+  --sc-gradient-progress-start: #3b82f6;
+  --sc-gradient-progress-end: #8b5cf6;
+  --sc-success: #10b981;
+  --sc-warning: #f59e0b;
+  --sc-danger: #ef4444;
+}
+
+/* 暗色主题覆盖 */
+:root[data-theme="dark"] {
+  --sc-bg: #0f172a;
+  --sc-text: #e2e8f0;
+  --sc-muted: #94a3b8;
+  --sc-border: #334155;
+  --sc-primary-bg: #3b82f6;
+  --sc-primary-text: #ffffff;
+  --sc-panel-bg: #111827;
+  --sc-panel-hover-bg: #1f2937;
+  --sc-overlay-bg: rgba(31, 41, 55, 0.6);
+  --sc-overlay-text: #e5e7eb;
+  /* 暗色下的渐变与状态色（可按需调整） */
+  --sc-gradient-map-start: #1e293b;
+  --sc-gradient-map-end: #0b1220;
+  --sc-gradient-progress-start: #3b82f6;
+  --sc-gradient-progress-end: #8b5cf6;
+  --sc-success: #10b981;
+  --sc-warning: #f59e0b;
+  --sc-danger: #ef4444;
+}
+
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  background-color: #f8fafc;
-  color: #1e293b;
+  background-color: var(--sc-bg, #f8fafc);
+  color: var(--sc-text, #1e293b);
 }
 
 img, picture, video, canvas, svg {
@@ -46,16 +90,16 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--sc-panel-hover-bg, #f1f5f9);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--sc-border, #cbd5e1);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--sc-muted, #94a3b8);
 }
 
 /* 工具类 */

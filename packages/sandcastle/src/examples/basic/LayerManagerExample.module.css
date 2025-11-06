@@ -17,7 +17,7 @@
 }
 
 .description {
-  color: #666;
+  color: var(--sc-muted, #64748b);
   margin-top: 6px;
 }
 
@@ -31,13 +31,13 @@
   height: 520px;
   border-radius: 12px;
   overflow: hidden;
-  background: #0b1220;
-  border: 1px solid #1f2937;
+  background: var(--sc-panel-bg, #0b1220);
+  border: 1px solid var(--sc-border, #1f2937);
 }
 
 .panel {
-  background: #0b1220;
-  border: 1px solid #1f2937;
+  background: var(--sc-panel-bg, #0b1220);
+  border: 1px solid var(--sc-border, #1f2937);
   border-radius: 12px;
   padding: 16px;
 }
@@ -60,30 +60,30 @@
 
 .button {
   padding: 8px 12px;
-  border: 1px solid #374151;
+  border: 1px solid var(--sc-border, #374151);
   border-radius: 8px;
-  background: #111827;
-  color: #e5e7eb;
+  background: var(--sc-panel-bg, #111827);
+  color: var(--sc-text, #e5e7eb);
   cursor: pointer;
 }
 
 .button.primary {
-  background: #1f2937;
-  border-color: #4b5563;
+  background: var(--sc-panel-hover-bg, #1f2937);
+  border-color: var(--sc-border, #4b5563);
 }
 
 .status {
   margin-top: 8px;
-  color: #9ca3af;
+  color: var(--sc-muted, #9ca3af);
 }
 
 .codeBlock {
   margin-top: 12px;
-  background: #111827;
-  border: 1px solid #374151;
+  background: var(--sc-panel-bg, #111827);
+  border: 1px solid var(--sc-border, #374151);
   border-radius: 8px;
   padding: 12px;
-  color: #e5e7eb;
+  color: var(--sc-text, #e5e7eb);
   font-size: 12px;
   overflow: auto;
 }

@@ -399,13 +399,7 @@ const DrawingExample: React.FC = () => {
                   <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
                     <button
                       onClick={exportSerialized}
-                      style={{
-                        padding: '6px 10px',
-                        borderRadius: 6,
-                        border: '1px solid #cbd5e1',
-                        background: '#fff',
-                        cursor: 'pointer'
-                      }}
+                      className={styles.overlayButton}
                     >
                       导出序列化
                     </button>

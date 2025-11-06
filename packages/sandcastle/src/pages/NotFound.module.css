@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8fafc;
+  background: var(--sc-bg, #f8fafc);
 }
 
 .container {
@@ -14,11 +14,11 @@
 
 .content {
   text-align: center;
-  background: white;
+  background: var(--sc-panel-bg, #ffffff);
   padding: 60px 40px;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--sc-border, #e2e8f0);
 }
 
 .icon {
@@ -30,13 +30,13 @@
 .title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--sc-text, #1e293b);
   margin-bottom: 20px;
 }
 
 .description {
   font-size: 1.2rem;
-  color: #64748b;
+  color: var(--sc-muted, #64748b);
   line-height: 1.6;
   margin-bottom: 40px;
 }
@@ -49,14 +49,14 @@
 }
 
 .homeButton {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
+  background: var(--sc-primary-bg, #3b82f6);
+  color: var(--sc-primary-text, #ffffff);
   padding: 14px 28px;
   text-decoration: none;
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.2s ease;
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--sc-primary-bg, #3b82f6);
 }
 
 .homeButton:hover {
@@ -65,19 +65,19 @@
 }
 
 .examplesButton {
-  background: white;
-  color: #3b82f6;
+  background: var(--sc-panel-bg, #ffffff);
+  color: var(--sc-primary-bg, #3b82f6);
   padding: 14px 28px;
   text-decoration: none;
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.2s ease;
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--sc-primary-bg, #3b82f6);
 }
 
 .examplesButton:hover {
-  background: #3b82f6;
-  color: white;
+  background: var(--sc-primary-bg, #3b82f6);
+  color: var(--sc-primary-text, #ffffff);
   transform: translateY(-2px);
 }
 

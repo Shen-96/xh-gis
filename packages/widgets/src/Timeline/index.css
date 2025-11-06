@@ -9,7 +9,8 @@
   align-items: center;
   column-gap: 12px;
   padding: 0 20px;
-  background: #0000006b;
+  background: var(--wg-overlay-bg, #0000006b);
+  color: var(--wg-overlay-text, #ffffff);
 }
 
 .xh-gis-viewer-time-line > .xh-gis-viewer-time-line-tools {

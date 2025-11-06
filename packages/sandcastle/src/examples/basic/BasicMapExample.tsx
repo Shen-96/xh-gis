@@ -27,70 +27,6 @@ const BasicMapExample: React.FC = () => {
     }
   }, []);
 
-  const handleZoomIn = useCallback(() => {
-    if (earthInstance && earthInstance.viewer && earthInstance.viewer.scene.camera) {
-      try {
-        const { Cartesian3, Math: CesiumMath } = (window as any).Cesium || {};
-        if (Cartesian3 && CesiumMath) {
-          const camera = earthInstance.viewer.scene.camera;
-          const currentHeight = camera.positionCartographic.height;
-          const newHeight = Math.max(currentHeight * 0.5, 1000);
-          
-          camera.flyTo({
-            destination: Cartesian3.fromDegrees(
-              CesiumMath.toDegrees(camera.positionCartographic.longitude),
-              CesiumMath.toDegrees(camera.positionCartographic.latitude),
-              newHeight
-            ),
-            duration: 1.0
-          });
-        }
-      } catch (error) {
-        console.warn('缩放操作失败:', error);
-      }
-    }
-  }, [earthInstance]);
-
-  const handleZoomOut = useCallback(() => {
-    if (earthInstance && earthInstance.viewer && earthInstance.viewer.scene.camera) {
-      try {
-        const { Cartesian3, Math: CesiumMath } = (window as any).Cesium || {};
-        if (Cartesian3 && CesiumMath) {
-          const camera = earthInstance.viewer.scene.camera;
-          const currentHeight = camera.positionCartographic.height;
-          const newHeight = Math.min(currentHeight * 2.0, 50000000);
-          
-          camera.flyTo({
-            destination: Cartesian3.fromDegrees(
-              CesiumMath.toDegrees(camera.positionCartographic.longitude),
-              CesiumMath.toDegrees(camera.positionCartographic.latitude),
-              newHeight
-            ),
-            duration: 1.0
-          });
-        }
-      } catch (error) {
-        console.warn('缩放操作失败:', error);
-      }
-    }
-  }, [earthInstance]);
-
-  const handleResetView = useCallback(() => {
-    if (earthInstance && earthInstance.viewer && earthInstance.viewer.scene.camera) {
-      try {
-        const { Cartesian3 } = (window as any).Cesium || {};
-        if (Cartesian3) {
-          earthInstance.viewer.scene.camera.flyTo({
-            destination: Cartesian3.fromDegrees(116.4074, 39.9042, 15000000),
-            duration: 2.0
-          });
-        }
-      } catch (error) {
-        console.warn('重置视图失败:', error);
-      }
-    }
-  }, [earthInstance]);
-
   return (
     <div className={styles.example}>
       <div className={styles.container}>
@@ -113,21 +49,6 @@ const BasicMapExample: React.FC = () => {
               
               <Earth onInit={handleEarthInit} />
             </div>
-            
-            {/* 控制按钮 */}
-            {status === 'ready' && (
-              <div className={styles.controls}>
-                <button onClick={handleZoomIn} className={styles.controlButton}>
-                  🔍 放大
-                </button>
-                <button onClick={handleZoomOut} className={styles.controlButton}>
-                  🔍 缩小
-                </button>
-                <button onClick={handleResetView} className={styles.controlButton}>
-                  🏠 重置视图
-                </button>
-              </div>
-            )}
           </div>
 
           <div className={styles.infoSection}>
@@ -174,27 +95,7 @@ import { XgEarth } from '@xh-gis/engine';
               </pre>
             </div>
             
-            {earthInstance && (
-              <div className={styles.infoCard}>
-                <h3 className={styles.infoTitle}>🎮 实时控制</h3>
-                <div className={styles.runtimeControls}>
-                  <p className={styles.controlDescription}>
-                    引擎版本: {earthInstance.version || 'Unknown'}
-                  </p>
-                  <div className={styles.buttonGroup}>
-                    <button onClick={handleZoomIn} className={styles.actionButton}>
-                      放大视图
-                    </button>
-                    <button onClick={handleZoomOut} className={styles.actionButton}>
-                      缩小视图
-                    </button>
-                    <button onClick={handleResetView} className={styles.actionButton}>
-                      重置视图
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+            {earthInstance && null}
           </div>
         </div>
       </div>
