@@ -22,11 +22,10 @@
     ],
     "author": "Xiaohu.Shen",
     "license": "MIT",
-    "dependencies": {
-        "@xh-gis/engine": "^1.0.8",
-        "@xh-gis/widgets": "^1.0.1",
-        "scheduler": "^0.23.0"
-    },
+  "dependencies": {
+      "@xh-gis/engine": "^1.0.8",
+      "@xh-gis/widgets": "^1.0.1"
+  },
     "devDependencies": {
         "terser": "^5.43.1",
         "typescript": "^5.0.0"
