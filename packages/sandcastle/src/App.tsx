@@ -13,6 +13,7 @@ import DrawingExample from './examples/basic/DrawingExample';
 import WidgetsExample from './examples/basic/WidgetsExample';
 import HeatmapExample from './examples/basic/HeatmapExample';
 import LayerManagerExample from './examples/basic/LayerManagerExample';
+import XgPopupExample from './examples/basic/XgPopupExample';
 
 const App: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         <Route path="/examples/basic/widgets" element={<WidgetsExample />} />
         <Route path="/examples/basic/heatmap/*" element={<HeatmapExample />} />
         <Route path="/examples/basic/layer-manager" element={<LayerManagerExample />} />
+        <Route path="/examples/basic/xg-popup" element={<XgPopupExample />} />
         
         {/* 404页面 */}
         <Route path="*" element={<NotFound />} />

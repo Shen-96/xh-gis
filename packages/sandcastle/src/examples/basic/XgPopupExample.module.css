@@ -1,0 +1,71 @@
+.example {
+  padding: 20px 0;
+ }
+ 
+ .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+ }
+ 
+ .header {
+  margin-bottom: 16px;
+ }
+ 
+ .title {
+  font-size: 24px;
+  margin: 0 0 8px;
+ }
+ 
+ .description {
+  color: #666;
+ }
+ 
+ .contentSingle {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+ }
+ 
+ .mapSection {
+  display: grid;
+  grid-template-columns: 1fr;
+ }
+ 
+ .mapContainer {
+  position: relative;
+  height: 600px;
+  border: 1px solid var(--wg-border, #e5e5e5);
+  border-radius: 6px;
+  overflow: hidden;
+ }
+ 
+ .controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+ }
+ 
+ .button {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--wg-border, #d9d9d9);
+  background: var(--wg-panel-bg, #ffffff);
+  color: var(--wg-text, #1f1f1f);
+  cursor: pointer;
+ }
+ 
+ .button.primary {
+  background: var(--wg-primary-bg, #1677ff);
+  color: var(--wg-primary-text, #ffffff);
+  border-color: var(--wg-primary-bg, #1677ff);
+ }
+ 
+ .codeBlock {
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--wg-panel-bg, #fafafa);
+  border: 1px solid var(--wg-border, #e5e5e5);
+  border-radius: 6px;
+  overflow: auto;
+ }

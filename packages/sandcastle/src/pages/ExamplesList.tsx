@@ -59,6 +59,16 @@ const ExamplesList: React.FC = () => {
       difficulty: 'beginner',
       tags: ['热力图', '分析', 'Cesium']
     }
+    ,
+    {
+      id: 'xg-popup',
+      title: '弹窗（XgPopup）',
+      description: '展示 XgPopup 在字符串、DOM、React 三种内容形态下的使用',
+      category: 'basic',
+      path: '/examples/basic/xg-popup',
+      difficulty: 'beginner',
+      tags: ['弹窗', '交互', 'UI']
+    }
   ];
 
   const categories = {

@@ -36,9 +36,9 @@ export class XgPopup extends AbstractPopup {
     else if (this.element instanceof HTMLElement) {
       // 不移除自身节点，直接替换子节点，避免节点抖动
       popDiv.replaceChildren(this.element);
-    } else if (this.isReactElement(this.element) || this.isReactElementsArray(this.element)) {
+    } else if (this.element != null) {
+      // 宽松策略：只要不是 string 或 HTMLElement，尝试用 React 渲染，并用 try/catch 兜底
       popDiv.innerHTML = "";
-      // 仅在需要时动态导入 react-dom/client，避免将 React 打进核心包
       import("react-dom/client")
         .then((mod) => {
           const root = mod.createRoot(popDiv);
@@ -46,12 +46,31 @@ export class XgPopup extends AbstractPopup {
             root.render(this.element as any);
           } catch (err) {
             console.error("XgPopup React render error:", err);
+            // 渲染失败时兜底为文本展示，避免空白
+            try {
+              if (typeof this.element === "string") {
+                popDiv.innerHTML = this.element;
+              } else if (this.element instanceof HTMLElement) {
+                popDiv.replaceChildren(this.element);
+              } else {
+                popDiv.textContent = String(this.element);
+              }
+            } catch {}
           }
           this.reactRoot = root;
         })
         .catch(() => {
-          // 动态导入失败时，不阻断；可选择输出告警或降级
           console.warn("Failed to import react-dom/client");
+          // 无法导入 ReactDOM 时兜底为文本展示
+          try {
+            if (typeof this.element === "string") {
+              popDiv.innerHTML = this.element;
+            } else if (this.element instanceof HTMLElement) {
+              popDiv.replaceChildren(this.element);
+            } else {
+              popDiv.textContent = String(this.element ?? "");
+            }
+          } catch {}
         });
     }
   }
@@ -94,7 +113,8 @@ export class XgPopup extends AbstractPopup {
     /// 若element的类型为Element，则添加到div中
     else if (this.element instanceof HTMLElement)
       popDiv.appendChild(this.element);
-    else if (this.isReactElement(this.element) || this.isReactElementsArray(this.element)) {
+    else if (this.element != null) {
+      // 宽松策略：只要不是 string 或 HTMLElement，尝试用 React 渲染，并用 try/catch 兜底
       import("react-dom/client")
         .then((mod) => {
           const root = mod.createRoot(popDiv);
@@ -102,11 +122,31 @@ export class XgPopup extends AbstractPopup {
             root.render(this.element as any);
           } catch (err) {
             console.error("XgPopup React render error:", err);
+            // 渲染失败时兜底为文本展示，避免空白
+            try {
+              if (typeof this.element === "string") {
+                popDiv.innerHTML = this.element;
+              } else if (this.element instanceof HTMLElement) {
+                popDiv.appendChild(this.element);
+              } else {
+                popDiv.textContent = String(this.element);
+              }
+            } catch {}
           }
           this.reactRoot = root;
         })
         .catch(() => {
           console.warn("Failed to import react-dom/client");
+          // 无法导入 ReactDOM 时兜底为文本展示
+          try {
+            if (typeof this.element === "string") {
+              popDiv.innerHTML = this.element;
+            } else if (this.element instanceof HTMLElement) {
+              popDiv.appendChild(this.element);
+            } else {
+              popDiv.textContent = String(this.element ?? "");
+            }
+          } catch {}
         });
     }
 

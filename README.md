@@ -232,6 +232,43 @@ export default function App() {
 
 详细文档请访问：[XH-GIS 文档](https://github.com/Shen-96/xh-gis#readme)
 
+### XgPopup 快速使用（引擎侧）
+
+`XgPopup` 支持三种内容类型：`string`（HTML 字符串）、`HTMLElement`、以及 React 元素（JSX）。当前版本在 React 模式下采用“宽松识别 + try/catch 兜底”策略：只要传入内容不是 `string`、不是 `HTMLElement`，就尝试用 `react-dom/client` 渲染，失败则降级为文本，避免空白。
+
+```typescript
+import { XgEarth, XgPopup } from '@xh-gis/engine';
+
+const earth = new XgEarth('cesiumContainer');
+
+// HTML 字符串
+new XgPopup({ id: 'html', xgCore: earth, position: [116.39, 39.9], element: '<div>HTML</div>' });
+
+// HTMLElement
+const el = document.createElement('div');
+el.textContent = 'DOM';
+new XgPopup({ id: 'dom', xgCore: earth, position: [116.40, 39.91], element: el });
+
+// React 元素（建议在客户端环境中创建并传入）
+```
+
+```tsx
+'use client';
+import React, { useEffect } from 'react';
+import { XgEarth, XgPopup } from '@xh-gis/engine';
+
+export default function Demo() {
+  useEffect(() => {
+    const earth = new XgEarth('cesiumContainer');
+    const content = (<div style={{ color: '#fff' }}>React 内容</div>);
+    new XgPopup({ id: 'react', xgCore: earth, position: [116.41, 39.92], element: content });
+  }, []);
+  return <div id="cesiumContainer" style={{ width: '100vw', height: '100vh' }} />;
+}
+```
+
+提示：在 Next.js 中建议将地图/弹窗组件通过 `dynamic(..., { ssr: false })` 关闭 SSR，并在 `useEffect` 中创建 JSX 再传入。
+
 ## 🤝 贡献
 
 欢迎提交 Issues 和 Pull Requests！

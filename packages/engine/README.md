@@ -175,6 +175,99 @@ earth.specialEffectManager.add('cone', {
 });
 ```
 
+### XgPopup 弹窗使用
+
+`XgPopup` 用于在场景中展示弹窗内容，支持三种内容类型：`string`（HTML 字符串）、`HTMLElement`、以及 React 元素（JSX）。从当前版本起，弹窗对 React 内容采用宽松识别策略：只要传入内容不是 `string`、不是 `HTMLElement`，即尝试用 `react-dom/client` 渲染；渲染失败会降级为文本显示，避免空白。
+
+#### 快速示例
+
+```typescript
+import { XgEarth, XgPopup } from '@xh-gis/engine';
+
+const earth = new XgEarth('cesiumContainer');
+
+// 1) 以 HTML 字符串渲染
+new XgPopup({
+  id: 'html-popup',
+  xgCore: earth,
+  position: [116.39, 39.9, 0],
+  element: '<div style="color:#fff">Hello XgPopup</div>'
+});
+
+// 2) 以 HTMLElement 渲染
+const dom = document.createElement('div');
+dom.textContent = 'DOM 内容';
+new XgPopup({ id: 'dom-popup', xgCore: earth, position: [116.4, 39.9], element: dom });
+
+// 3) 以 React 元素渲染（推荐在客户端环境中创建）
+// 注意：React 元素请在浏览器端创建并传入（Next.js 中建议在 Client 组件 + useEffect 中使用）
+```
+
+```tsx
+'use client';
+import React, { useEffect } from 'react';
+import { XgEarth, XgPopup } from '@xh-gis/engine';
+
+export default function PopupDemo() {
+  useEffect(() => {
+    const earth = new XgEarth('cesiumContainer');
+    const content = (
+      <div style={{ minWidth: 200, padding: 8, color: '#fff' }}>
+        <div style={{ fontWeight: 600 }}>责任区详情</div>
+        <div>统计项 A: 10</div>
+        <div>统计项 B: 20</div>
+      </div>
+    );
+
+    new XgPopup({
+      id: 'react-popup',
+      xgCore: earth,
+      position: [116.41, 39.92, 0],
+      element: content
+    });
+  }, []);
+  return <div id="cesiumContainer" style={{ width: '100vw', height: '100vh' }} />;
+}
+```
+
+#### Next.js 使用建议（React 模式）
+
+- 将创建弹窗与 JSX 的代码置于 Client 组件文件，并在文件顶部使用 `use client`。
+- 对包含地图/弹窗的大组件使用 `next/dynamic(() => import(...), { ssr: false })`，确保在客户端渲染。
+- 在 `useEffect` 中创建 React 元素并传给 `XgPopup`，避免在服务端生成 JSX。
+
+#### 更新与销毁
+
+```typescript
+const popup = new XgPopup({ id: 'p1', xgCore: earth, position: [116.39, 39.9], element: '初始内容' });
+
+// 更新内容：赋值到 element 即可触发更新
+popup.element = '<div>更新后的内容</div>';
+
+// 更新位置
+popup.position = [116.40, 39.91, 0];
+
+// 可选：设置图标及大小
+popup.icon = '/path/icon.png';
+popup.iconSize = [24, 24];
+
+// 可选：最大显示距离（超过则自动隐藏）
+popup.maxRange = 200000; // 米
+
+// 销毁
+popup.destroy();
+```
+
+#### 容器说明
+
+- 使用 `@xh-gis/widgets` 的 `WidgetEarth/WidgetMap` 时，会自动渲染弹窗容器（`.xh-gis-popup-container`）。
+- 若仅使用引擎且未引入 Widgets，建议配合 Widgets 或自行在 `xgCore.container` 的父节点中提供一个 `.xh-gis-popup-container` 容器，以便弹窗正确挂载。
+
+#### 常见问题
+
+- JSX 在 Next.js 中必须在客户端创建并传入，否则可能无法被识别为 React 元素；本引擎采用宽松策略进行尝试渲染并兜底为文本。
+- 若希望更“严格”判断，可在项目层确保统一的 React 引用（避免多实例），并按需使用 `React.isValidElement` 在业务侧先行判定。
+
 ### LayerManager 使用指南
 
 LayerManager 统一管理图层注册、查询、可见性与删除，支持常见数据源与便捷入口。

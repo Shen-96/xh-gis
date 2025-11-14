@@ -20,7 +20,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
-      "@xh-gis/engine": resolve(__dirname, "../engine/dist/index.js"),
+      "@xh-gis/engine": resolve(__dirname, "../engine/dist"),
       "@xh-gis/widgets": resolve(__dirname, "../widgets/dist/index.js"),
     },
     // 去重 React 相关包，确保仅打入一个版本
@@ -30,9 +30,7 @@ export default defineConfig({
     // 显式为 Cesium 设置资源基础路径，适配子路径部署
     CESIUM_BASE_URL: JSON.stringify((process.env.BASE || "/").replace(/\/$/, "") + "/cesium"),
   },
-  optimizeDeps: {
-    include: ["scheduler"],
-  },
+  // optimizeDeps: {},
   server: {
     port: 5000,
     open: true,
