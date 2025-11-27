@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2025-02-21 03:07:44
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:42:28
  */
 import { Cartesian3, createGuid } from "cesium";

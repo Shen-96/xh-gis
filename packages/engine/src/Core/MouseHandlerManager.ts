@@ -1,9 +1,9 @@
 // /*
 //  * @Descripttion:
-//  * @Author: EV-申小虎
+//  * @Author: Xiaohu.Shen
 //  * @version: 1.0.0
 //  * @Date: 2021-05-19 15:15:45
-//  * @LastEditors: EV-申小虎
+//  * @LastEditors: Xiaohu.Shen
 //  * @LastEditTime: 2025-01-22 07:18:39
 //  */
 
@@ -20,7 +20,7 @@
 
 // /**
 //  * @descripttion: 监听管理器
-//  * @author: EV-申小虎
+//  * @author: Xiaohu.Shen
 //  */
 // class MouseHandlerManager extends AbstractManager {
 //   readonly #handlerArr: Array<MouseEventHandler>;
@@ -29,7 +29,7 @@
 //   /**
 //    * @descripttion:
 //    * @param {Viewer} viewer 视图
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   constructor(viewer: Viewer) {
 //     super(viewer);
@@ -42,7 +42,7 @@
 //    * @param {string} key 事件监听标识
 //    * @param {ScreenSpaceEventHandler} handler 事件监听对象
 //    * @return {object} 添加结果
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   #add(id: string, handler: ScreenSpaceEventHandler): boolean {
 //     if (this.isExists(id) && !handler) return false;
@@ -54,7 +54,7 @@
 //    * @descripttion: 获取事件监听
 //    * @param {string} key 标识
 //    * @return {object|undefined} 返回结果
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   #get(id: string) {
 //     if (!id) return undefined;
@@ -76,7 +76,7 @@
 //    * @param {string} guid 唯一索引
 //    * @param {object} timer 计时器
 //    * @return {boolean} 结果
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   #addClickTimer(id: string, timer: NodeJS.Timeout) {
 //     if (!id || timer) return false;
@@ -93,7 +93,7 @@
 //    * @descripttion: 根据guid获取计时器
 //    * @param {string} guid 唯一索引
 //    * @return {*} 结果
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   #getClickTimer(id: string) {
 //     if (!id) return undefined;
@@ -105,7 +105,7 @@
 //    * @descripttion: 根据guid清除计时器
 //    * @param {string} guid 唯一索引
 //    * @return {*} 结果
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   #clearClickTimer(id: string) {
 //     const clickTimer = this.#getClickTimer(id);
@@ -125,7 +125,7 @@
 //    * @descripttion: 判断是否存在该监听
 //    * @param {string} key 外部唯一标识
 //    * @return {Index|Undefined} 索引值或undefined
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   isExists(id: string) {
 //     if (!id) return true;
@@ -137,7 +137,7 @@
 //    * @param {string} key 标识标
 //    * @param {function} callback
 //    * @return {string|undefined} 监听对象或者undefined(未创建成功)
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addMouseWheelHandler(
 //     id = createGuid(),
@@ -171,7 +171,7 @@
 //    * @param {string} key 索引
 //    * @param {function} callback 回调函数
 //    * @return {string|undefined} 监听对象或者undefined
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addLeftMouseClickHandler(
 //     id = createGuid(),
@@ -231,7 +231,7 @@
 //    * @param {string} key 索引
 //    * @param {function} callback 回调函数
 //    * @return {string|undefined} 监听对象或者undefined
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addLeftMouseDownHandler(
 //     id = createGuid(),
@@ -280,7 +280,7 @@
 //    * @param {string} key 索引
 //    * @param {function} callback 回调函数
 //    * @return {string|undefined} 监听对象或者undefined
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addLeftMouseUpHandler(
 //     id = createGuid(),
@@ -326,7 +326,7 @@
 //    * @param {string} key 索引
 //    * @param {Function} callback 回调函数
 //    * @return {object|undefined} 监听对象或者undefined
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addLeftMouseDoubleClickHandler(
 //     id = createGuid(),
@@ -380,7 +380,7 @@
 //    * @param {string} key 索引
 //    * @param {Function} callback 回调函数
 //    * @return {object|undefined} 监听对象或者undefined
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addRightMouseClickHandler(
 //     id = createGuid(),
@@ -428,7 +428,7 @@
 //    * @param {string} key 索引
 //    * @param {Function} callback 回调函数
 //    * @return {*} 唯一索引
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addMouseClickHandler(
 //     id = createGuid(),
@@ -459,7 +459,7 @@
 //    * @param {string} key 索引
 //    * @param {Function} callback 回调函数
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   addMouseMoveHandler(
 //     id = createGuid(),
@@ -503,7 +503,7 @@
 //    * @descripttion: 销毁处理器
 //    * @param {ScreenSpaceEventHandler} handler 处理器
 //    * @return {result|Boolean} 处理结果
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   #destroyHandler(handler: ScreenSpaceEventHandler) {
 //     let result = false;
@@ -519,7 +519,7 @@
 //    * @descripttion: 销毁处理器(byKey)
 //    * @param {string} key 索引
 //    * @return {*} 结果
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   destroyHandlerById(id: string) {
 //     let result = false;

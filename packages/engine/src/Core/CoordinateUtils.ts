@@ -1,9 +1,9 @@
 /*
  * @Descripttion: 坐标转化工具
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2020-11-17 09:55:50
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:34:10
  */
 import {
@@ -50,7 +50,7 @@ const ee = 0.006693421622965943;
 
 /**
  * @descripttion: 转化工具
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class CoordinateUtils {
   static alignedAxisOptionsToCar3(val: AlignedAxisOptions) {
@@ -133,7 +133,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer 视图
    * @param {Cartesian3} cartesian3 笛卡尔坐标
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ToGeographic(cartesian3: Cartesian3, ellipsoid = Ellipsoid.WGS84) {
     const cartographic = ellipsoid.cartesianToCartographic(cartesian3),
@@ -150,7 +150,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer 视图
    * @param {Cartesian3} cartesian3 笛卡尔坐标
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ArrToGeographicArr(
     arr: Cartesian3[],
@@ -164,7 +164,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer 视图
    * @param {Cartesian3} cartesian3 笛卡尔坐标
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ToPoint3Deg(
     cartesian3: Cartesian3,
@@ -190,7 +190,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer 视图
    * @param {Cartesian3} cartesian3 笛卡尔坐标
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ToPoint(
     cartesian3: Cartesian3,
@@ -209,7 +209,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer 视图
    * @param {Cartesian3} cartesian3 笛卡尔坐标
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ArrToPointArr(
     arr: Cartesian3[],
@@ -223,7 +223,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer
    * @param {Cartesian3} cartesian3
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ToProjectionPnt(
     cartesian3: Cartesian3,
@@ -262,7 +262,7 @@ class CoordinateUtils {
    * @descripttion:
    * @param {Array} arr
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ToCartesian3Value(cartesian: Cartesian3): Cartesian3Value {
     return [cartesian.x, cartesian.y, cartesian.z];
@@ -272,7 +272,7 @@ class CoordinateUtils {
    * @descripttion:
    * @param {Array} arr
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ArrToCartesian3ListValue(arr: Array<Cartesian3>) {
     const result: Array<number> = [];
@@ -292,7 +292,7 @@ class CoordinateUtils {
    * @descripttion:
    * @param {Array} arr
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ArrToCartographicDegreesListValue(arr: Array<Cartesian3>) {
     const result: Array<number> = [];
@@ -311,7 +311,7 @@ class CoordinateUtils {
    * @descripttion:
    * @param {Array} arr
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ArrToCartographicRectangleDegreesValue(
     wsen: [Cartesian3, Cartesian3]
@@ -343,7 +343,7 @@ class CoordinateUtils {
    * @param {number} figure 小数位数
    * @param {boolean} isString 是否字符串
    * @return {string}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static car3ToGeographicInCHN(
     cartesian3: Cartesian3,
@@ -409,7 +409,7 @@ class CoordinateUtils {
    * @param {Geographic} gcs 地理坐标
    * @param {Ellipsoid} ellipsoid 椭球体
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static gcsToCartesian3(gcs: Geographic, ellipsoid = Ellipsoid.WGS84) {
     return Cartesian3.fromDegrees(
@@ -435,7 +435,7 @@ class CoordinateUtils {
    * @param {Geographic} gcs 地理坐标
    * @param {Ellipsoid} ellipsoid 椭球体
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static gcs2ProjPnt(
     gcs: Geographic,
@@ -458,7 +458,7 @@ class CoordinateUtils {
    * @param {ProjectionPoint} projPnt
    * @param {Ellipsoid} ellipsoid
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static projPnt2Cartesian3(
     projPnt: ProjectionPoint,
@@ -483,7 +483,7 @@ class CoordinateUtils {
    * @param {ProjectionPoint} projPnt
    * @param {Ellipsoid} ellipsoid
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static projPntArr2Cartesian3Arr(
     projPnt: ProjectionPoint[],
@@ -501,7 +501,7 @@ class CoordinateUtils {
    * @param {ProjectionPoint} projPnt
    * @param {Ellipsoid} ellipsoid
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static projPnt2Geographic(
     projPnt: ProjectionPoint,
@@ -523,7 +523,7 @@ class CoordinateUtils {
    * @param {ProjectionPoint} projPnt
    * @param {Ellipsoid} ellipsoid
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static projPnt2Point(
     projPnt: ProjectionPoint,
@@ -545,7 +545,7 @@ class CoordinateUtils {
    * @param {ProjectionPoint} projPnt
    * @param {Ellipsoid} ellipsoid
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static projPntArr2PointArr(
     projPntArr: ProjectionPoint[],
@@ -590,7 +590,7 @@ class CoordinateUtils {
    * @param {ProjectionPoint} projPnt
    * @param {Ellipsoid} ellipsoid
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static projectionsToCartesian3Arr(
     projections: Array<number>,
@@ -628,7 +628,7 @@ class CoordinateUtils {
    * @param {Globe} globe
    * @param {Point2Deg} point
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getTerrainHeight(globe: Globe, point: Point2Deg) {
     const cartographic = Cartographic.fromDegrees(point[0], point[1]),
@@ -641,7 +641,7 @@ class CoordinateUtils {
    * @param {Cartesian3} relCar3
    * @param {Globe} globe
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static relative2AbsoluteCar3(relCar3: Cartesian3, globe: Globe) {
     const cartographic = Cartographic.fromCartesian(relCar3),
@@ -676,7 +676,7 @@ class CoordinateUtils {
    * @param {T} enumType
    * @param {T} value
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getKeyByEnumValue<T>(
     enumType: T,
@@ -694,7 +694,7 @@ class CoordinateUtils {
    * @descripttion: 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换（即 百度 转 谷歌、高德）
    * @param {Geographic} gcs
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static bd09ToGCJ02(gcs: Geographic) {
     const xpi = (Math.PI * 3000.0) / 180.0;
@@ -729,7 +729,7 @@ class CoordinateUtils {
    * @descripttion: WGS84转GCj02
    * @param {Geographic} gcs 地理坐标
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static wgs84ToGCJ02(gcs: Geographic) {
     if (outofchina(gcs)) {
@@ -760,7 +760,7 @@ class CoordinateUtils {
    * @descripttion: GCJ02 转换为 WGS84
    * @param {Geographic} gcs
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static gcj02ToWGS84(gcs: Geographic) {
     if (outofchina(gcs)) {
@@ -790,7 +790,7 @@ class CoordinateUtils {
    * @descripttion: 度转度°分′秒″
    * @param {number} degree 角度（-180-180）
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static toDMS(degree: number) {
     if (typeof degree == "undefined") {
@@ -835,7 +835,7 @@ class CoordinateUtils {
    * // 78.982145° -----> 78°58'55.722''N
    * @param {ProjectionPoint} point
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static pointToDMS(point: Point2Deg, CHN = false) {
     const lon = MathUtils.toDMS(point[0]),
@@ -864,7 +864,7 @@ class CoordinateUtils {
    * // 78.982145° -----> 78°58'55.722''N
    * @param {ProjectionPoint} point
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static pointToStr(point: Point2Deg, CHN = false) {
     const lon = point[0],
@@ -917,7 +917,7 @@ class CoordinateUtils {
    * @param {number} second 秒（0-60）
    * @param {number} precision 数值精度（默认为最高精度6）
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static toDegree(
     degree: number,
@@ -944,7 +944,7 @@ class CoordinateUtils {
    * @param {Scene} scene
    * @param {Cartesian3} position
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static isPointOnBackside(scene: Scene, position: Cartesian3) {
     const camera = scene.camera;
@@ -970,7 +970,7 @@ class CoordinateUtils {
    * @param {Scene} scene
    * @param {Cartesian2} screenPosition
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getSceneCartesian3(
     scene: Scene,
@@ -1002,7 +1002,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer
    * @param {Cartesian2} screenPosition
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getViewCartesian3(
     viewer: Viewer,
@@ -1037,7 +1037,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer
    * @param {Cartesian2} screenPosition
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getSurfaceCartesian3(
     viewer: Viewer,
@@ -1062,7 +1062,7 @@ class CoordinateUtils {
    * @param {Viewer} viewer
    * @param {Cartesian2} screenPosition
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getPickedObject(viewer: Viewer, screenPosition: Cartesian2) {
     let result: { id?: Entity } | undefined = undefined;
@@ -1277,7 +1277,7 @@ function transformGeographic(gcs: Geographic) {
  * @descripttion:
  * @param {Geographic} gcs
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 function outofchina(gcs: Geographic) {
   return (

@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2023-06-06 14:13:47
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:36:58
  */
 import { Entity, JulianDate } from "cesium";
@@ -19,7 +19,7 @@ type Options = {
 /**
  * @descripttion: XG一体化
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 export default class XgIntegrated {
   #map?: XgMap;
@@ -28,7 +28,7 @@ export default class XgIntegrated {
   /**
    * @descripttion:
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(options?: Options) {
     this.#map = options?.map;
@@ -40,7 +40,7 @@ export default class XgIntegrated {
    * @param {string} mapContainer
    * @param {string} earthContainer
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   create(mapContainer: string | Element, earthContainer: string | Element) {
     this.createMap(mapContainer);
@@ -50,7 +50,7 @@ export default class XgIntegrated {
   /**
    * @descripttion: 释放
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   destroy() {
     this.#map?.destroy();
@@ -61,7 +61,7 @@ export default class XgIntegrated {
    * @descripttion:
    * @param {string} container
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createMap(container: string | Element) {
     if (this.#map) throw "map资源已占用，请先释放。";
@@ -83,7 +83,7 @@ export default class XgIntegrated {
    * @descripttion: 创建earth对象
    * @param {string} container
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createEarth(container: string | Element) {
     if (this.#earth) throw "earth资源已占用，请先释放。";
@@ -130,7 +130,7 @@ export default class XgIntegrated {
    * @descripttion: 是否为私有实体
    * @param {Entity} entity
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isPrivateEntity(entity: Entity) {
     return entity.properties?.hasProperty("private") ?? false;
@@ -141,7 +141,7 @@ export default class XgIntegrated {
    * @param {Entity} entity
    * @param {JulianDate} time
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getEntityProps<T = object>(entity: Entity, time: JulianDate) {
     const properties: EntityPropertyDict<T> | undefined =
@@ -155,7 +155,7 @@ export default class XgIntegrated {
    * @param {string} flag
    * @param {Entity} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createPrivateEntity(
     options: Entity.ConstructorOptions | undefined,
@@ -184,7 +184,7 @@ export default class XgIntegrated {
    * @descripttion: 获取父链上的所有实体
    * @param {Entity} entity
    * @return {*} 索引为0的是实体的父级，后依次为父级的父级...
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getParentChainEntities(
     entity: Entity,

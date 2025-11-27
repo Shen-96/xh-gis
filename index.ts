@@ -1,9 +1,9 @@
 /*
  * @Descripttion: XH-GIS 统一导出入口
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2025-08-18 15:41:57
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-18 15:49:08
  */
 

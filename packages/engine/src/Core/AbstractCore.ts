@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2020-11-11 11:30:13
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-18 17:26:46
  */
 import {
@@ -163,7 +163,7 @@ Camera.DEFAULT_VIEW_RECTANGLE = Rectangle.fromDegrees(30, -20, 180, 70);
 
 /**
  * @descripttion: 定制化视图
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 export default abstract class AbstractCore<T extends CoreType = any> {
   /// 版本号
@@ -225,7 +225,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @descripttion: cesium视图初始化
    * @param {Viewer.ConstructorOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   #initViewer(
     container: Element | string,
@@ -325,7 +325,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @param {string} flag
    * @param {Entity} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createPrivateEntity(
     options: Entity.ConstructorOptions | undefined,
@@ -344,7 +344,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @descripttion: 是否为私有实体
    * @param {Entity} entity
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isPrivateEntity(entity: Entity) {
     return entity.properties?.hasProperty("private") ?? false;
@@ -355,7 +355,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @param {Entity} entity
    * @param {JulianDate} time
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getEntityProps<T = object>(entity: Entity, time: JulianDate) {
     const properties: EntityPropertyDict<T> | undefined =
@@ -368,7 +368,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @descripttion: 获取父链上的所有实体
    * @param {Entity} entity
    * @return {*} 索引为0的是实体的父级，后依次为父级的父级...
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getParentChainEntities(
     entity: Entity,
@@ -400,7 +400,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @param {string} tip
    * @param {CSSStyleDeclaration} style
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   renderMouseTip(
     handler: ScreenSpaceEventHandler,
@@ -459,7 +459,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @descripttion: 移除鼠标跟随框
    * @param {string} id
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeMouseTip() {
     const id = "xh-gis-mouse-tip-container";
@@ -519,7 +519,7 @@ export default abstract class AbstractCore<T extends CoreType = any> {
    * @param {AbstractCore} xgCore - xg-core实例
    * @param {number} factor - 距离系数，默认值为30
    * @return {number}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   calculateClusterDistance(
     factor = 30,

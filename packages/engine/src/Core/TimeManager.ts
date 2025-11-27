@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-04-09 14:16:42
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-05-20 17:13:58
  */
 import {
@@ -18,7 +18,7 @@ import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 时间系统管理器
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class TimeManager extends AbstractManager {
   readonly clock: Clock;
@@ -28,7 +28,7 @@ class TimeManager extends AbstractManager {
   /**
    * @descripttion: 时间管理器
    * @param {*} viewer cesium视图管理器
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(core: AbstractCore, localizable = true) {
     super(core);
@@ -49,7 +49,7 @@ class TimeManager extends AbstractManager {
    * @param {*} viewModel 视图
    * @param {*} ignoredate 忽略日期
    * @return {String} null
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   #dateTimeFormatter(
     date: JulianDate,
@@ -109,7 +109,7 @@ class TimeManager extends AbstractManager {
    * @param {*} time 时间
    * @param {*} viewModel 视图
    * @return {String} 时间串
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   timeFormatter = (time: JulianDate, viewModel: AnimationViewModel) =>
     this.#dateTimeFormatter(time, viewModel, true);
@@ -117,7 +117,7 @@ class TimeManager extends AbstractManager {
   /**
    * @descripttion: 初始化本地时间
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   localizeTime() {
     //格式化显示时间
@@ -138,7 +138,7 @@ class TimeManager extends AbstractManager {
    * @descripttion: 改变时间速率
    * @param {Number} speed 速率
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   updateTimeSpeed(speed: number) {
     if (Number(speed)) this.viewer.clock.multiplier = speed;
@@ -147,7 +147,7 @@ class TimeManager extends AbstractManager {
   /**
    * @descripttion: 设置为当前时间
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   updateTimeToNow() {
     //恢复正常时间
@@ -165,7 +165,7 @@ class TimeManager extends AbstractManager {
    * @descripttion: 更新当前时间
    * @param {JulianDate} time
    * @return {null}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   updateCurrentTime(time: JulianDate) {
     //设置时钟当前时间
@@ -176,7 +176,7 @@ class TimeManager extends AbstractManager {
    * @descripttion: 隐藏时间控件
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   hiddenTimeWidget() {
     /// 动画控件隐藏

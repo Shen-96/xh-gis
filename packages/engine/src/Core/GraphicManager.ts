@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2022-01-18 13:04:45
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-18 17:27:22
  */
 import type { GraphicOptions, Point3Deg } from "../types";
@@ -84,7 +84,7 @@ type GraphicManagerListenerMap = {
 /**
  * @descripttion: 标绘管理器
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 export default class GraphicManager extends AbstractManager {
   /// 标绘集合
@@ -318,7 +318,7 @@ export default class GraphicManager extends AbstractManager {
    * @descripttion: 绘制
    * @param {AbstractGraphic} PlotSymbol
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   add(plotSymbol: AbstractGraphic<GeometryType>) {
     try {
@@ -426,7 +426,7 @@ export default class GraphicManager extends AbstractManager {
    * @param {GraphicType | SymbolType} type
    * @param {boolean} clampToGround 是否贴地（默认true）
    * @return {Entity | null}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   create(type: GraphicType | SymbolType, param1?: any, param2?: any) {
     let plot: AbstractGraphic<GeometryType>;
@@ -718,7 +718,7 @@ export default class GraphicManager extends AbstractManager {
    * @descripttion: 根据标绘类型获取实体类
    * @param {SymbolType} type
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getSymbolClass(type: SymbolType) {
     const ctor = registry.getSymbol(type);
@@ -736,7 +736,7 @@ export default class GraphicManager extends AbstractManager {
   /**
    * @descripttion: 获取所有标绘
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getAll() {
     return [...this.graphicCollection.values()];
@@ -907,7 +907,7 @@ export default class GraphicManager extends AbstractManager {
    * @descripttion: 清除标绘
    * @param {string} id 标绘id
    * @return {null}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeById(id: string) {
     const symbol = this.graphicCollection.get(id);
@@ -922,7 +922,7 @@ export default class GraphicManager extends AbstractManager {
   /**
    * @descripttion: 清除所有标绘
    * @return {null}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeAll() {
     this.graphicCollection.forEach((i) => {

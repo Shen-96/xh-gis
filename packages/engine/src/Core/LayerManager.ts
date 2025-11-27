@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-03-26 20:05:36
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:35:30
  */
 import {
@@ -58,14 +58,14 @@ const tdtTKList = [
 
 /**
  * @descripttion: 图层记录管理器
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class LayerManager extends AbstractManager {
   readonly #layerMap: Map<string, Layer<LayerItem>>;
 
   /**
    * @descripttion: 图层记录管理器
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(core: AbstractCore) {
     super(core);
@@ -78,7 +78,7 @@ class LayerManager extends AbstractManager {
    * @param {LayerType} type 图层类型
    * @param {T} layer 图层数据
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   #registerLayer<T extends LayerItem>(
     id: string,
@@ -97,7 +97,7 @@ class LayerManager extends AbstractManager {
    * @descripttion: 获取当前层级
    * @param {Viewer} viewer
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   get currentLevel() {
     const height = Math.ceil(this.viewer.camera.positionCartographic.height),
@@ -113,7 +113,7 @@ class LayerManager extends AbstractManager {
    * @param {Cartesian3} car3 笛卡尔坐标
    * @param {number} level 层级
    * @return {Promise} 回调
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getTerrainHeightByLevel(longitude: number, latitude: number, level: number) {
     const cartographic = Cartographic.fromDegrees(longitude, latitude),
@@ -326,7 +326,7 @@ class LayerManager extends AbstractManager {
    * @descripttion: 是否存在图层
    * @param {string} id 图层唯一标识
    * @return {boolean} 查询结果
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isExists(id: string) {
     return this.#layerMap.has(id);
@@ -336,7 +336,7 @@ class LayerManager extends AbstractManager {
    * @descripttion: 获取图层
    * @param {string} id 图层唯一标识
    * @return {LayerRecord} 图层记录
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getById<T extends LayerItem>(id: string): T | undefined {
     const layerRecord = this.#layerMap.get(String(id));
@@ -347,7 +347,7 @@ class LayerManager extends AbstractManager {
    * @descripttion: 获取图层记录（包含 id/type/item/pid）
    * @param {string} id 图层唯一标识
    * @return {Layer<LayerItem> | undefined} 图层记录
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getLayerRecord(id: string): Layer<LayerItem> | undefined {
     return this.#layerMap.get(String(id));
@@ -357,7 +357,7 @@ class LayerManager extends AbstractManager {
    * @descripttion: 按类型列出图层记录
    * @param {LayerType} type 图层类型
    * @return {Array<Layer<LayerItem>>} 图层记录列表
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   listByType(type: LayerType): Array<Layer<LayerItem>> {
     const list: Array<Layer<LayerItem>> = [];
@@ -370,7 +370,7 @@ class LayerManager extends AbstractManager {
   /**
    * @descripttion: 列出所有图层记录
    * @return {Array<Layer<LayerItem>>} 全部图层记录
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   listAll(): Array<Layer<LayerItem>> {
     return Array.from(this.#layerMap.values());
@@ -380,7 +380,7 @@ class LayerManager extends AbstractManager {
    * @descripttion: 按分组（pid）列出图层记录
    * @param {string} pid 分组标识
    * @return {Array<Layer<LayerItem>>} 图层记录列表
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   listByPid(pid: string): Array<Layer<LayerItem>> {
     const list: Array<Layer<LayerItem>> = [];
@@ -395,7 +395,7 @@ class LayerManager extends AbstractManager {
    * @param {string} id 图层唯一标识
    * @param {boolean} visible 是否可见
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   setLayerVisible(id: string, visible: boolean): void {
     const record = this.#layerMap.get(String(id));
@@ -408,7 +408,7 @@ class LayerManager extends AbstractManager {
    * @param {LayerType} type 图层类型
    * @param {boolean} destroy 是否销毁（默认false）
    * @return {number} 删除数量
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeByType(type: LayerType, destroy = false): number {
     const toRemove: string[] = [];
@@ -427,7 +427,7 @@ class LayerManager extends AbstractManager {
    * @param {string} pid 分组标识
    * @param {boolean} destroy 是否销毁（默认false）
    * @return {number} 删除数量
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeByPid(pid: string, destroy = false): number {
     const toRemove: string[] = [];
@@ -474,7 +474,7 @@ class LayerManager extends AbstractManager {
    * @param {string} id 唯一标识
    * @param {LayerType} layerType 图层类型
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getOrCreate(id: string, layerType: LayerType) {
     /// 实体
@@ -579,7 +579,7 @@ class LayerManager extends AbstractManager {
   /**
    * @descripttion: 加载基础图层
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   async addPublicLayer(
     options: {
@@ -598,7 +598,7 @@ class LayerManager extends AbstractManager {
   /**
    * @descripttion: 加载基础图层
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   async addTdtLayer(
     layer: "img" | "cia" | "vec" | "cva" | "ter" | "cta",
@@ -628,7 +628,7 @@ class LayerManager extends AbstractManager {
    * @param {string} id 图层唯一索引
    * @param {*} destroy 是否销毁（默认false）
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeById(id: string, destroy = false) {
     let result = false;

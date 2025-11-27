@@ -1,9 +1,9 @@
 /*
  * @Descripttion: Cesium系统天气
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-03-18 09:02:03
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:36:48
  */
 import { Cartesian3, Viewer } from "cesium";
@@ -13,7 +13,7 @@ import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 天气管理器
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class WeatherManager extends AbstractManager {
   //私有属性
@@ -24,7 +24,7 @@ class WeatherManager extends AbstractManager {
    * @descripttion: 构造函数
    * @param {WindDirectionType} direction 风向
    * @param {number} level 风力
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(
     core: AbstractCore,
@@ -40,7 +40,7 @@ class WeatherManager extends AbstractManager {
    * @descripttion: 设置风向
    * @param {WindDirectionType} direction 风向
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   setDirection(direction: WindDirectionType) {
     this.#direction = direction;
@@ -49,7 +49,7 @@ class WeatherManager extends AbstractManager {
   /**
    * @descripttion: 获取当前风向
    * @return {WindDirectionType}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getDirection() {
     return this.#direction;
@@ -59,7 +59,7 @@ class WeatherManager extends AbstractManager {
    * @descripttion: 设置当前风力
    * @param {number} level 风力
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   setLevel(level: number) {
     this.#level = level;
@@ -68,7 +68,7 @@ class WeatherManager extends AbstractManager {
   /**
    * @descripttion: 获取当前风力
    * @return {number}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getLevel() {
     return this.#level;
@@ -77,7 +77,7 @@ class WeatherManager extends AbstractManager {
   /**
    * @descripttion: 根据风力、风向计算向量
    * @return {Cartesian3} 向量
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getWindForceVector() {
     let vectory: Cartesian3;

@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2025-05-22 15:27:39
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-07-21 17:11:30
  */
 import { Math as CesiumMath } from "cesium";
@@ -365,7 +365,7 @@ export default class GeometryUtils {
    * @param {ProjectionPoint} center
    * @param {number} radius
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generateCirclePoints(center: ProjectionPoint, radius: number) {
     const pnts: Array<ProjectionPoint> = [];

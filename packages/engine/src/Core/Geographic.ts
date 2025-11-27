@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-05-27 13:37:36
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-04-17 09:57:01
  */
 
@@ -13,7 +13,7 @@ class Geographic {
    * @param {number} longitude 经度
    * @param {number} latitude 纬度
    * @param {number} altitude 高程
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(longitude: number, latitude: number, altitude = 0) {
     this.longitude = longitude;

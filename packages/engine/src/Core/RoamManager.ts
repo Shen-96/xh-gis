@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-04-08 16:26:10
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-04-18 03:10:17
  */
 import {
@@ -40,7 +40,7 @@ import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 漫游管理器
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 export default class RoamManager extends AbstractManager {
   // pathManager: PartialPrivate<PathManager>;
@@ -53,7 +53,7 @@ export default class RoamManager extends AbstractManager {
   /**
    * @descripttion: 系统漫游
    * @param {*} viewer cesium视图
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(core: AbstractCore) {
     super(core);
@@ -83,7 +83,7 @@ export default class RoamManager extends AbstractManager {
    * @descripttion: 初始化视图框
    * @param {callback} callback 返回值
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   initFullExtend(
     position: Cartesian3 = Cartesian3.fromDegrees(
@@ -122,7 +122,7 @@ export default class RoamManager extends AbstractManager {
   /**
    * @descripttion: 获取相机当前朝向
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   get orientation() {
     /// 相机参数
@@ -137,7 +137,7 @@ export default class RoamManager extends AbstractManager {
   /**
    * @descripttion: 获取相机当前朝向(度)
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   get orientationDegree() {
     /// 相机参数
@@ -156,7 +156,7 @@ export default class RoamManager extends AbstractManager {
    * @descripttion: 获取相机视点位置
    * @param {*} viewer cesium视图
    * @return {Cartesian3} 视点
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   get viewPosition() {
     //相机方向
@@ -192,7 +192,7 @@ export default class RoamManager extends AbstractManager {
    * @param {BoundingSphere} boundingSphere 包围盒
    * @param {object} options 参数
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   flyToBoundingSphere(
     boundingSphere: BoundingSphere,
@@ -219,7 +219,7 @@ export default class RoamManager extends AbstractManager {
    * @descripttion: 相机飞行
    * @param {object} options 参数
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   flyTo(options: {
     destination: Cartesian3 | Rectangle;
@@ -243,7 +243,7 @@ export default class RoamManager extends AbstractManager {
    * @descripttion: 根据目标飞行
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   flyToTarget(
     target:
@@ -356,7 +356,7 @@ export default class RoamManager extends AbstractManager {
    * @param {AbstractCore} xgCore - xg-core实例
    * @param {number} factor - 距离系数，默认值为30
    * @return {number}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   calculateClusterDistance(
     factor = 30,
@@ -398,7 +398,7 @@ export default class RoamManager extends AbstractManager {
    * @param {HeadingPitchRange} headingPitchRange 相机姿态
    * @param {number} time 变化时间
    * @return {*} path
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // initRoamFrame(
   //     roamType: RoamType = RoamType.FLYTO,
@@ -424,7 +424,7 @@ export default class RoamManager extends AbstractManager {
    * @param {MouseHandlerManager} manager 事件监听管理器
    * @param {function} callback 回调
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // applyRoam(
   //     code: string,
@@ -454,7 +454,7 @@ export default class RoamManager extends AbstractManager {
   //     /**
   //      * @descripttion: canvas点击方法
   //      * @return {void}
-  //      * @author: EV-申小虎
+  //      * @author: Xiaohu.Shen
   //      */
   //     const canvasClick = () => {
   //         this.exitRoam();
@@ -474,7 +474,7 @@ export default class RoamManager extends AbstractManager {
   /**
    * @descripttion: 暂停当前漫游
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // pauseRoam() {
   //     if (this.#isStarted) {
@@ -486,7 +486,7 @@ export default class RoamManager extends AbstractManager {
   /**
    * @descripttion: 退出当前漫游
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // exitRoam() {
   //     if (this.#isStarted) {
@@ -500,7 +500,7 @@ export default class RoamManager extends AbstractManager {
   /**
    * @descripttion: 获取当前漫游状态
    * @return {boolean} 状态
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // isRoaming = () => this.#isStarted;
 
@@ -510,7 +510,7 @@ export default class RoamManager extends AbstractManager {
    * @param {number} index 漫游索引
    * @param {function} callback 回调
    * @return {Promise} 执行结果
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // #applyRoamFrame(
   //     path: Array<any>,
@@ -562,7 +562,7 @@ export default class RoamManager extends AbstractManager {
    * @param {HeadingPitchRange} headingPitchRange 相机姿态
    * @param {number} time 持续时间
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // #flyRoam(
   //     position: Cartesian3,
@@ -622,7 +622,7 @@ export default class RoamManager extends AbstractManager {
   //  * @param {*} viewPosition 视点
   //  * @param {*} rotation 旋转角度
   //  * @return {Promise} 结果
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // #rotateRoam = async (viewPosition: Cartesian3, rotation: number) => {
   //     let index = 1;
@@ -650,7 +650,7 @@ export default class RoamManager extends AbstractManager {
   // /**
   //  * @descripttion:清除漫游信息
   //  * @return {void}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // clearRoamInfo() {
   //     this.#currentRoam = {
@@ -687,14 +687,14 @@ export default class RoamManager extends AbstractManager {
 
 /**
  * @descripttion: 路径管理器
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 // class PathManager {
 //     #roamPathArr: Array<Roam>;
 
 //     /**
 //      * @descripttion: 路径管理器
-//      * @author: EV-申小虎
+//      * @author: Xiaohu.Shen
 //      */
 //     constructor() {
 //         this.#roamPathArr = [];
@@ -704,7 +704,7 @@ export default class RoamManager extends AbstractManager {
 //      * @descripttion: 查找漫游路径（根据code）
 //      * @param {string} code 唯一标识
 //      * @return {object} 漫游对象
-//      * @author: EV-申小虎
+//      * @author: Xiaohu.Shen
 //      */
 //     get(code: string) {
 //         const index = this.isExists(code);
@@ -714,7 +714,7 @@ export default class RoamManager extends AbstractManager {
 //     /**
 //      * @descripttion: 获取所有漫游对象
 //      * @return {Array} 所有漫游对象
-//      * @author: EV-申小虎
+//      * @author: Xiaohu.Shen
 //      */
 //     getAll() {
 //         return this.#roamPathArr;
@@ -725,7 +725,7 @@ export default class RoamManager extends AbstractManager {
 //      * @param {string} code 唯一标识
 //      * @param {*} path 漫游路径
 //      * @return {*} 结果
-//      * @author: EV-申小虎
+//      * @author: Xiaohu.Shen
 //      */
 //     add(
 //         code: string,
@@ -743,7 +743,7 @@ export default class RoamManager extends AbstractManager {
 //      * @descripttion: 是否存在
 //      * @param {string} code 唯一标识
 //      * @return {boolean} 存在返回索引，不存在undefined
-//      * @author: EV-申小虎
+//      * @author: Xiaohu.Shen
 //      */
 //     isExists(code = "") {
 //         return this.#roamPathArr.findIndex((item) => item.code === code);
@@ -753,7 +753,7 @@ export default class RoamManager extends AbstractManager {
 //      * @descripttion: 删除漫游对象
 //      * @param {string} code 唯一索引
 //      * @return {boolean} 结果
-//      * @author: EV-申小虎
+//      * @author: Xiaohu.Shen
 //      */
 //     deleteByCode(code = "") {
 //         let result = false;
@@ -768,7 +768,7 @@ export default class RoamManager extends AbstractManager {
 //     /**
 //      * @descripttion: 删除所有漫游对象
 //      * @return {void}
-//      * @author: EV-申小虎
+//      * @author: Xiaohu.Shen
 //      */
 //     deleteAll() {
 //         this.#roamPathArr = [];

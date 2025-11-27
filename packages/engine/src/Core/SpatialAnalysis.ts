@@ -1,9 +1,9 @@
 // /*
 //  * @Descripttion: xxx
-//  * @Author: EV-申小虎
+//  * @Author: Xiaohu.Shen
 //  * @version: 1.0.0
 //  * @Date: 2022-07-19 10:29:27
-//  * @LastEditors: EV-申小虎
+//  * @LastEditors: Xiaohu.Shen
 //  * @LastEditTime: 2025-02-27 08:03:21
 //  */
 // import {
@@ -112,7 +112,7 @@
 //    * @descripttion: 地表距离测量
 //    * @param {function} callback 测量结果回调
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   surfaceDistance(
 //     callback?: SpatialAnalysisCallback<Array<number>, Array<Cartesian3>>
@@ -232,7 +232,7 @@
 //    * @descripttion: 多边形面积
 //    * @param {void} callback 测量结果回调
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   polygonArea(callback?: SpatialAnalysisCallback<number, Array<Cartesian3>>) {
 //     /// 数据源id
@@ -320,7 +320,7 @@
 //    * @descripttion: 根据id移除测量结果
 //    * @param {string} id
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   removeById(id: string) {
 //     const index = this.#dataSourceList.findIndex((item) => item.id == id);
@@ -336,7 +336,7 @@
 //   /**
 //    * @descripttion: 清除所有量算结果
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   removeAll() {
 //     this.#dataSourceList.forEach((item) => {

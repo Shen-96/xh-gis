@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2025-02-21 02:54:16
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:42:32
  */
 import { GeometryDrawEventCallbackMap } from "../types";
@@ -91,7 +91,7 @@ export default class KidneyShaped extends AbstractPolygon {
    * @param {*} a 控制宽长比
    * @param {*} b 控制腰部凹陷程度（建议 0.2 < c < 0.5）
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   generateKidneyShape(
     point1: ProjectionPoint,

@@ -1,6 +1,6 @@
 /*
  * @Descripttion: 根包构建后压缩脚本
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2025-08-25
  */

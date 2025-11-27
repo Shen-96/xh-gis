@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-01-29 09:55:17
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-02-27 07:57:05
  */
 import {
@@ -33,7 +33,7 @@ import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 事件模拟
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class AnimationManager extends AbstractManager {
   /// 动画集合
@@ -51,7 +51,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 构造函数
    * @param {Viewer} viewer 视窗
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(core: AbstractCore) {
     super(core);
@@ -66,7 +66,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 是否已存在动画组
    * @param {string} id 组id
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isExists(id: string) {
     if (!id) return true;
@@ -78,7 +78,7 @@ class AnimationManager extends AbstractManager {
    * @param {string} groupId 组id
    * @param {string} animationId 动画id
    * @return {boolean}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isExistsInGroup(groupId: string, animationId: string) {
     const group = this.getAnimationGroup(groupId),
@@ -92,7 +92,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 创建动画组
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createAnimationGroup = (
     id: string,
@@ -213,7 +213,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 渲染动画组
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   renderAnimationGroup = (
     object: string | AnimationGroup,
@@ -258,7 +258,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 移除动画组
    * @param {*} dispatch 参数
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeAnimationGroup(id: string, destroy = true) {
     const animationGroup = this.getAnimationGroup(id);
@@ -287,7 +287,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 根据id获取动画组
    * @param {string} id
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getAnimationGroup(id: string) {
     return this.#animationGroups.find((item) => item._id == id);
@@ -297,7 +297,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 创建动画对象
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createAnimation(
     entity: Entity,
@@ -317,7 +317,7 @@ class AnimationManager extends AbstractManager {
    * @descripttion: 计算一个从4x4变换矩阵
    * @param {Cartesian3} cartesian3 笛卡尔坐标
    * @return {Matrix4} 4*4变换矩阵
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   computeModelMatrix = (cartesian3: Cartesian3) => {
     const modelMatrix = Transforms.eastNorthUpToFixedFrame(
@@ -333,7 +333,7 @@ class AnimationManager extends AbstractManager {
    * @param {Cartesian3} eventPosition 事件位置
    * @param {Cartesian3} modelPosition 模型位置
    * @return {null} null
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   computeEmitterModelMatrix = (
     eventPosition: Cartesian3,
@@ -382,7 +382,7 @@ class AnimationManager extends AbstractManager {
   /**
    * @descripttion:
    * @return {null} null
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   addTickListener() {
     // this.viewer.clock.onTick.addEventListener(() => {

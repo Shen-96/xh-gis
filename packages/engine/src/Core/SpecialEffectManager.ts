@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2022-10-26 16:46:08
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:36:32
  */
 import LayerManager from "./LayerManager";
@@ -34,7 +34,7 @@ export default class SpecialEffectManager extends AbstractManager {
    * @descripttion: 构造函数
    * @param {Viewer} viewer 视窗
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(core: AbstractCore) {
     super(core);
@@ -157,7 +157,7 @@ export default class SpecialEffectManager extends AbstractManager {
   // /**
   //  * @descripttion: 创建圆锥特效
   //  * @return {*}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // #createCylinderEffect(
   //     id = createGuid(),
@@ -498,7 +498,7 @@ export default class SpecialEffectManager extends AbstractManager {
    * @descripttion: 是否存在图层
    * @param {string} id 图层唯一标识
    * @return {boolean} 查询结果
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isExists(id: string) {
     return this.#specialEffectArr.findIndex((item) => item.id === id) >= 0;
@@ -528,7 +528,7 @@ export default class SpecialEffectManager extends AbstractManager {
   /**
    * @descripttion: 清除所有特效
    * @return {null}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   clearAll() {
     this.#specialEffectArr.forEach((fx) => {

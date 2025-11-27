@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2020-11-11 11:30:13
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-04-14 09:22:25
  */
 
@@ -19,7 +19,7 @@ const viewerOptions: Viewer.ConstructorOptions = {
 
 /**
  * @descripttion: 二维视图
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 export default class XgMap extends AbstractCore<CoreType.MAP> {
   coreType: CoreType.MAP = CoreType.MAP;

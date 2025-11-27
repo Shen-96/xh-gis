@@ -1,9 +1,9 @@
 /*
  * @Descripttion: 粒子系统
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-01-28 18:26:00
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:35:58
  */
 import {
@@ -31,7 +31,7 @@ import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 粒子系统
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class ParticleManager extends AbstractManager {
   readonly #particlerArr: Array<Particle>;
@@ -40,7 +40,7 @@ class ParticleManager extends AbstractManager {
   /**
    * @descripttion: 粒子系统管理器
    * @param {*} viewer cesium视图
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(core: AbstractCore) {
     super(core);
@@ -54,7 +54,7 @@ class ParticleManager extends AbstractManager {
    * @descripttion: 是否存在
    * @param {string} id 唯一标识
    * @return {boolean|undefined} 存在返回索引，不存在undefined
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isExists(id: string) {
     if (!id) return true;
@@ -65,7 +65,7 @@ class ParticleManager extends AbstractManager {
    * @descripttion: 添加粒子记录
    * @param {Particler} particler
    * @return {boolean}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   #addParticleToRecords(particler: Particle) {
     const result = false;
@@ -79,7 +79,7 @@ class ParticleManager extends AbstractManager {
   /**
    * @descripttion: 帧监听
    * @return {null} null
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   #addTickListener() {
     this.viewer.clock.onTick.addEventListener(() => {
@@ -109,7 +109,7 @@ class ParticleManager extends AbstractManager {
    * @param {ParticleType} particleType 粒子类型
    * @param {Cartesian3} cartesian3 笛卡尔坐标
    * @return {ParticleModel|undefined} 结果
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   create(
     id: string,
@@ -125,7 +125,7 @@ class ParticleManager extends AbstractManager {
        * @descripttion: 计算一个从4x4变换矩阵
        * @param {Cartesian3} cartesian3 笛卡尔坐标
        * @return {Matrix4} 4*4变换矩阵
-       * @author: EV-申小虎
+       * @author: Xiaohu.Shen
        */
       const computeModelMatrix = (cartesian3: Cartesian3) => {
         if (!defined(cartesian3)) return undefined;
@@ -340,7 +340,7 @@ class ParticleManager extends AbstractManager {
    * @param {string} id 唯一索引
    * @param {ParticleSystem} particle 粒子
    * @return {boolean}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   add(particle: Particle) {
     if (this.isExists(particle.id)) {
@@ -359,7 +359,7 @@ class ParticleManager extends AbstractManager {
    * @descripttion: 根据索引获取粒子动画
    * @param {string} id 索引
    * @return {ParticleModel|undefined}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getById(id: string) {
     let result: Array<Particle> = [];
@@ -372,7 +372,7 @@ class ParticleManager extends AbstractManager {
    * @descripttion: 根据类型获取粒子动画
    * @param {ParticleType} type 粒子类型
    * @return {ParticleModel[]}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   getByType(type: ParticleType) {
     let result: Array<Particle> = [];
@@ -383,7 +383,7 @@ class ParticleManager extends AbstractManager {
   /**
    * @descripttion: 添加消防水枪
    * @return {ParticleSystem} 粒子对象
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   #addFireWaterGun() {
     // const { id, rescueTime: { startDate, startTime }, rescueSecond, eventTime } = entity;
@@ -394,7 +394,7 @@ class ParticleManager extends AbstractManager {
      * @descripttion: 计算一个从4x4变换矩阵
      * @param {Cartesian3} cartesian3 笛卡尔坐标
      * @return {Matrix4} 4*4变换矩阵
-     * @author: EV-申小虎
+     * @author: Xiaohu.Shen
      */
     // const computeModelMatrix = (cartesian3) => {
     //     if (!Cesium.defined(cartesian3))
@@ -406,7 +406,7 @@ class ParticleManager extends AbstractManager {
     /**
      * @descripttion: 计算发射器偏移矩阵
      * @return {null} null
-     * @author: EV-申小虎
+     * @author: Xiaohu.Shen
      */
     // const computeEmitterModelMatrix = () => {
     //     // const gcsA = CoordinateCon.Car3toDegrees(this.viewer, eventPosition);
@@ -427,7 +427,7 @@ class ParticleManager extends AbstractManager {
             //  * @descripttion: 
             //  * @param {*} updateMatrix
             //  * @return {*}
-            //  * @author: EV-申小虎
+            //  * @author: Xiaohu.Shen
             //  */
     // const updateMatrix = () => {
     //     let guns = this.particles.filter(item => item.id === id);
@@ -459,7 +459,7 @@ class ParticleManager extends AbstractManager {
      * @param {*} p
      * @param {*} dt
      * @return {*}
-     * @author: EV-申小虎
+     * @author: Xiaohu.Shen
      */
     function applyGravity(p: any, dt: any) {
       // We need to compute a local up vector for each particle in geocentric space.
@@ -507,7 +507,7 @@ class ParticleManager extends AbstractManager {
    * @descripttion: 添加消防水枪
    * @param {Entity} entity 跟随模型
    * @return {null} null
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // addFireWaterGun2(eventPosition, modelPosition) {
 
@@ -515,7 +515,7 @@ class ParticleManager extends AbstractManager {
   //     * @descripttion: 计算一个从4x4变换矩阵
   //     * @param {Cartesian3} cartesian3 笛卡尔坐标
   //     * @return {Matrix4} 4*4变换矩阵
-  //     * @author: EV-申小虎
+  //     * @author: Xiaohu.Shen
   //     */
   //     const computeModelMatrix = (cartesian3) => {
   //         if (!Cesium.defined(cartesian3))
@@ -527,7 +527,7 @@ class ParticleManager extends AbstractManager {
   //     /**
   //      * @descripttion: 计算发射器偏移矩阵
   //      * @return {null} null
-  //      * @author: EV-申小虎
+  //      * @author: Xiaohu.Shen
   //      */
   //     const computeEmitterModelMatrix = () => {
   //         const gcsA = CoordinateCon.Car3toDegrees(this.viewer, eventPosition);
@@ -551,7 +551,7 @@ class ParticleManager extends AbstractManager {
   //      * @descripttion:
   //      * @param {*} forceUpdate
   //      * @return {*}
-  //      * @author: EV-申小虎
+  //      * @author: Xiaohu.Shen
   //      */
   //     // const forceUpdate = (particle, dt) => {
   //     //     //particle是当前粒子对象，
@@ -611,7 +611,7 @@ class ParticleManager extends AbstractManager {
    * @descripttion: 根据索引清除粒子动画
    * @param {string} id 索引
    * @return {boolean}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeById(id: string) {
     let result = false;
@@ -634,7 +634,7 @@ class ParticleManager extends AbstractManager {
   /**
    * @descripttion: 清除所有粒子动画
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeAll() {
     this.#particlerArr.forEach((particler) => {
@@ -650,7 +650,7 @@ class ParticleManager extends AbstractManager {
    * @param {ParticleSystem} particle 粒子对象
    * @param {WeatherManager} weatherManager 天气系统
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   addWindForce(
     particle: ParticleSystem,

@@ -1,9 +1,9 @@
 /*
  * @Descripttion: XH-GIS Widgets 导出入口
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2023-06-27 10:51:14
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-04-14 07:09:13
  */
 

@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-06-30 18:14:17
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:36:15
  */
 
@@ -30,7 +30,7 @@ class SceneListenerManager extends AbstractManager {
    * @descripttion: 添加监听
    * @param {IListener} listener
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   add(
     id: string,
@@ -62,7 +62,7 @@ class SceneListenerManager extends AbstractManager {
    * @descripttion: 是否存在监听
    * @param {string} id 唯一标识
    * @return {boolean} 查询结果
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   isExists(id: string) {
     return this.#listenerArr.findIndex((item) => item.id === id) >= 0;
@@ -72,7 +72,7 @@ class SceneListenerManager extends AbstractManager {
    * @descripttion: 获取图层
    * @param {string} id 图层唯一标识
    * @return {LayerRecord} 图层记录
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   get(id: string) {
     if (this.isExists(id))
@@ -83,7 +83,7 @@ class SceneListenerManager extends AbstractManager {
    * @descripttion: 删除图层
    * @param {string} id 图层唯一索引
    * @return {void}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   removeById(id: string) {
     let result = false;

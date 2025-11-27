@@ -1,9 +1,9 @@
 /*
  * @Descripttion: XH-GIS 核心组件
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2024-09-14 15:21:25
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-10-09 17:35:57
  */
 

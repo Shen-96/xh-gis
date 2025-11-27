@@ -1,9 +1,9 @@
 /*
  * @Descripttion:
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-05-19 15:15:45
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-02-20 01:32:08
  */
 
@@ -18,7 +18,7 @@ import type { ScreenWheelCallback, ScreenClickCallback } from "../types";
 
 /**
  * @descripttion: 监听管理器
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class MouseEventUtils {
   /**
@@ -26,7 +26,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {function} callback
    * @return {string|undefined} 监听对象或者undefined(未创建成功)
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setWheelListener(
     handler: ScreenSpaceEventHandler,
@@ -43,7 +43,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {function} callback 回调函数
    * @return {string|undefined} 监听对象或者undefined
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setLeftClickListener(
     handler: ScreenSpaceEventHandler,
@@ -76,7 +76,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {function} callback 回调函数
    * @return {string|undefined} 监听对象或者undefined
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setLeftDownListener(
     handler: ScreenSpaceEventHandler,
@@ -105,7 +105,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {function} callback 回调函数
    * @return {string|undefined} 监听对象或者undefined
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setLeftUpListener(
     handler: ScreenSpaceEventHandler,
@@ -134,7 +134,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {Function} callback 回调函数
    * @return {object|undefined} 监听对象或者undefined
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setLeftDoubleClickListener(
     handler: ScreenSpaceEventHandler,
@@ -163,7 +163,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {Function} callback 回调函数
    * @return {object|undefined} 监听对象或者undefined
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setRightClickListener(
     handler: ScreenSpaceEventHandler,
@@ -192,7 +192,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {Function} callback 回调函数
    * @return {*} 唯一索引
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setClickListener(
     handler: ScreenSpaceEventHandler,
@@ -209,7 +209,7 @@ class MouseEventUtils {
    * @param {ScreenSpaceEventHandler} handler 监听器
    * @param {Function} callback 回调函数
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static setMoveListener(
     handler: ScreenSpaceEventHandler,

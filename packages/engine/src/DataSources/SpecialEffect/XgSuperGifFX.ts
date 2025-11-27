@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2023-11-02 09:59:43
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-03-25 06:59:02
  */
 // @ts-nocheck
@@ -165,7 +165,7 @@ export default class XgSuperGifFX extends AbstractSpecialEffect<XgSuperGifFxStyl
    * @param {string} frames 帧数组
    * @param {number} interval 时间周期(毫秒)
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   async #createFramesFromGIF(url: string) {
     // 创建图片元素

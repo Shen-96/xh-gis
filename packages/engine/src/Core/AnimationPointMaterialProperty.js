@@ -1,9 +1,9 @@
 /*
  * @Descripttion: 
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-06-27 18:08:35
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2022-10-24 11:24:54
  */
 import * as Cesium from '@/Cesium/Source/Cesium';

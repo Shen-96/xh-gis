@@ -1,9 +1,9 @@
 /*
  * @Descripttion: 
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-06-27 18:43:25
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2022-05-19 10:42:12
  */
 import * as Cesium from 'cesium';

@@ -1,9 +1,9 @@
 // /*
 //  * @Descripttion:
-//  * @Author: EV-申小虎
+//  * @Author: Xiaohu.Shen
 //  * @version: 1.0.0
 //  * @Date: 2020-11-11 11:30:13
-//  * @LastEditors: EV-申小虎
+//  * @LastEditors: Xiaohu.Shen
 //  * @LastEditTime: 2023-11-02 11:17:16
 //  */
 
@@ -125,7 +125,7 @@
 
 // /**
 //  * @descripttion: 定制化视图
-//  * @author: EV-申小虎
+//  * @author: Xiaohu.Shen
 //  */
 // export default class CustomViewer {
 //   /// 视图对象
@@ -194,7 +194,7 @@
 //    * @descripttion: cesium视图初始化
 //    * @param {Viewer.ConstructorOptions} options
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   #initViewer(
 //     container: Element | string,
@@ -237,7 +237,7 @@
 //    * @descripttion: 初始化视图框
 //    * @param {callback} callback 返回值
 //    * @return {void}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   initFullExtend(
 //     position: Cartesian3 = Cartesian3.fromDegrees(
@@ -262,7 +262,7 @@
 //    * @descripttion: 获取当前层级
 //    * @param {Viewer} viewer
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   getCurrentLevel(viewer: Viewer) {
 //     const height = Math.ceil(viewer.camera.positionCartographic.height),
@@ -278,7 +278,7 @@
 //    * @param {Cartesian3} car3 笛卡尔坐标
 //    * @param {number} level 层级
 //    * @return {Promise} 回调
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   getTerrainHeightByLevel(
 //     viewer: Viewer,
@@ -314,7 +314,7 @@
 //   /**
 //    * @descripttion: 获取相机当前朝向
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   getCameraOrientation() {
 //     /// 相机参数
@@ -329,7 +329,7 @@
 //   /**
 //    * @descripttion: 获取相机当前朝向(度)
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   getCameraOrientationInDeg() {
 //     /// 相机参数
@@ -348,7 +348,7 @@
 //    * @descripttion: 获取相机视点位置
 //    * @param {*} viewer cesium视图
 //    * @return {Cartesian3} 视点
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   getViewPosition(viewer: Viewer) {
 //     //相机方向
@@ -374,7 +374,7 @@
 //    * @param {Color} color 颜色
 //    * @param {boolean} reverse 是否反向
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   drawCircleImage(
 //     radius: number,
@@ -434,7 +434,7 @@
 //    * @param {string} frames 帧数组
 //    * @param {number} interval 时间周期(毫秒)
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   async drawImagefromGIF(url: string) {
 //     // let index = 0;
@@ -485,7 +485,7 @@
 //    * @param {string} text
 //    * @param {Color} fontColor
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   drawTextImagefromImg(url: string, text: string, fontColor: Color) {
 //     const img = new Image();
@@ -522,7 +522,7 @@
 //    * @param {string} frames 序列帧
 //    * @param {number} interval 周期
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   drawImagefromSequenceFrame(frames: string[], interval = 5000) {
 //     let index = 0;
@@ -546,7 +546,7 @@
 //    * @param {string} id 元素id
 //    * @param {object} style 元素样式
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   createPopupElement(
 //     id: string,
@@ -625,7 +625,7 @@
 //    * @param {Cartesian2} offset 偏移量
 //    * @param {number} visualDistance
 //    * @return {*} 监听索引
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   renderElement2Scene(
 //     viewer: Viewer,
@@ -689,7 +689,7 @@
 //    * @descripttion: 销毁元素
 //    * @param {string} id
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   destroySceneElement(id: string) {
 //     let result = false;
@@ -713,7 +713,7 @@
 //    * @param {number} interval 扩散周期(ms)
 //    * @param {HTMLCanvasElement} canvas 画布
 //    * @return {Entity}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   createDiffuseEllipse(
 //     gcs: Geographic,
@@ -775,7 +775,7 @@
 //    * @param {number} interval 扩散周期(ms)
 //    * @param {HTMLCanvasElement} canvas 画布
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   renderRippleDiffuseCircle(
 //     name: string,
@@ -842,7 +842,7 @@
 //    * @param {number} interval 扩散周期(ms)
 //    * @param {boolean} reverse 是否反转
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   batchCreationDiffuseEllipse(
 //     arr: ICircleWithPosition[],
@@ -906,7 +906,7 @@
 //    * @param {string} flag
 //    * @param {Entity} options
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   createPrivateEntity(
 //     options: Entity.ConstructorOptions | undefined,
@@ -925,7 +925,7 @@
 //    * @descripttion: 是否为私有实体
 //    * @param {Entity} entity
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   isPrivateEntity(entity: Entity) {
 //     return entity.properties?.hasProperty('pteFlag') ?? false;
@@ -935,7 +935,7 @@
 //    * @descripttion: 获取父链上的所有实体
 //    * @param {Entity} entity
 //    * @return {*} 索引为0的是实体的父级，后依次为父级的父级...
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   getParentChainEntities(
 //     entity: Entity,
@@ -953,7 +953,7 @@
 //    * @descripttion: 创建选择框
 //    * @param {Cartesian3} position
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   // private createSelectedEntity(position: Cartesian3) {
 //   //     return new Entity({
@@ -986,7 +986,7 @@
 //    * @descripttion: 设置当前选中实体
 //    * @param {*}
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   //   setSelectedEntity(position: Cartesian3) {
 //   //     /// 移除上一个选择框
@@ -1001,7 +1001,7 @@
 //    * @descripttion: 移除选则框
 //    * @param {*}
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   //   removeSelectedEntity() {
 //   //     this.viewer.entities.removeById("selected");
@@ -1013,7 +1013,7 @@
 //    * @param {string} tip
 //    * @param {CSSStyleDeclaration} style
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   renderMouseTip(
 //     id: string = createGuid(),
@@ -1065,7 +1065,7 @@
 //    * @descripttion: 移除鼠标跟随框
 //    * @param {string} id
 //    * @return {*}
-//    * @author: EV-申小虎
+//    * @author: Xiaohu.Shen
 //    */
 //   removeMouseTipByID(id: string) {
 //     this.mouseHandlerManager.destroyHandlerById?.(id);

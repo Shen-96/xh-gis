@@ -1,9 +1,9 @@
 /*
  * @Descripttion: 可视域分析
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2021-01-05 14:50:26
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2024-12-22 06:04:17
  */
 import Cesium from "cesium";
@@ -11,7 +11,7 @@ import Cesium from "cesium";
 /**
  * @descripttion:
  * @return {Class} 类
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class VisualAnalysis {
   /**
@@ -31,7 +31,7 @@ class VisualAnalysis {
    * @param {Boolean} options.softShadows 是否启用柔和阴影。
    * @param {Boolean} options.size 每个阴影贴图的大小。
    * @return {*} null
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   constructor(viewer, options) {
     this.viewer = viewer;
@@ -63,7 +63,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   add() {
     this.createLightCamera();
@@ -77,7 +77,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   update() {
     this.clear();
@@ -88,7 +88,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   clear() {
     if (this.sketch) {
@@ -109,7 +109,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createLightCamera() {
     this.lightCamera = new Cesium.Camera(this.viewer.scene);
@@ -145,7 +145,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createShadowMap() {
     this.shadowMap = new Cesium.ShadowMap({
@@ -167,7 +167,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   createPostStage() {
     const fs = `#define USE_CUBE_MAP_SHADOW true
@@ -366,7 +366,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   drawFrustumOutline() {
     const scratchRight = new Cesium.Cartesian3();
@@ -416,7 +416,7 @@ class VisualAnalysis {
    * @descripttion:
    * @param {*}
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   drawSketch() {
     this.sketch = this.viewer.entities.add({
@@ -459,7 +459,7 @@ export default VisualAnalysis;
  * @param {*} fromPosition
  * @param {*} toPosition
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 function getHeading(fromPosition, toPosition) {
   let finalPosition = new Cesium.Cartesian3();
@@ -475,7 +475,7 @@ function getHeading(fromPosition, toPosition) {
  * @param {*} fromPosition
  * @param {*} toPosition
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 function getPitch(fromPosition, toPosition) {
   let finalPosition = new Cesium.Cartesian3();

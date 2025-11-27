@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2023-01-11 14:13:10
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2023-09-07 13:21:10
  */
 
@@ -13,7 +13,7 @@ import { Attitude } from '..';
 /**
  * @descripttion: 计算模型矩阵
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 // function computeModelMatrix(
 //     modelMatrix = Matrix4.IDENTITY,
@@ -67,7 +67,7 @@ import { Attitude } from '..';
 /**
  * @descripttion: 更新模型矩阵
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 function computeModelMatrix(
   modelMatrix = Matrix4.IDENTITY,

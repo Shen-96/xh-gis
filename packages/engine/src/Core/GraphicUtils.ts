@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2022-06-14 17:07:39
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:35:14
  */
 
@@ -156,7 +156,7 @@ export default class GraphicUtils {
    * @descripttion: 根据样式创建点图形
    * @param {PointStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generatePointGraphicsOptionsFromStyle(
     options: PointStyleOptions
@@ -190,7 +190,7 @@ export default class GraphicUtils {
    * @descripttion: 根据样式创建点图形
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generateLabelGraphicsOptionsFromStyle(
     options?: Partial<LabelStyleOptions>
@@ -256,7 +256,7 @@ export default class GraphicUtils {
    * @descripttion: 根据样式创建点图形
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generateBillboardGraphicsOptionsFromStyle(
     options: Partial<BillboardStyleOptions>
@@ -310,7 +310,7 @@ export default class GraphicUtils {
    * @descripttion: 根据样式创建点图形
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generatePolylineGraphicsOptionsFromStyle(
     options?: Partial<PolylineStyleOptions>
@@ -330,7 +330,7 @@ export default class GraphicUtils {
    * @descripttion: 根据样式创建点图形
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generatePolylineGraphicsOptionsFromGraphic(
     options?: Partial<PolylineGraphicOptions>
@@ -353,7 +353,7 @@ export default class GraphicUtils {
    * @param {SpecialEffectMaterial} material
    * @param {object} params
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions>,
@@ -449,7 +449,7 @@ export default class GraphicUtils {
    * @descripttion:
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // static generateRectangleGraphicsOptionsFromStyle(
   //   options: RectangleGraphicOptions
@@ -472,7 +472,7 @@ export default class GraphicUtils {
    * @descripttion: 根据样式创建点图形
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generateOutlineGraphicsOptionsFromStyle(
     options?: Partial<PolygonStyleOptions>
@@ -514,7 +514,7 @@ export default class GraphicUtils {
    * @descripttion:
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generatePolygonGraphicsOptionsFromStyle(
     options: Partial<PolygonStyleOptions>
@@ -531,7 +531,7 @@ export default class GraphicUtils {
    * @descripttion:
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static generatePolygonGraphicsOptionsFromGraphic(
     options: Partial<PolygonGraphicOptions>
@@ -550,7 +550,7 @@ export default class GraphicUtils {
    * @descripttion:
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // static generateCircleGraphicsOptionsFromStyle(
   //   options: CircleGraphicOptions
@@ -573,7 +573,7 @@ export default class GraphicUtils {
    * @descripttion:
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // static generateSectorGraphicsOptionsFromStyle(
   //   options: Partial<SectorGraphicOptions>

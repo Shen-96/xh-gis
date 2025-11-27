@@ -1,9 +1,9 @@
 /*
  * @Descripttion: xxx
- * @Author: EV-申小虎
+ * @Author: Xiaohu.Shen
  * @version: 1.0.0
  * @Date: 2023-03-08 12:47:23
- * @LastEditors: EV-申小虎
+ * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-08-14 18:32:07
  */
 
@@ -24,7 +24,7 @@ export default abstract class AbstractManager {
    * @descripttion: 初始化
    * @param {Viewer} viewer 视图
    * @return {Viewer} 视图
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   #init(viewer: Viewer): Viewer {
     if (!defined(viewer)) throw new Error("无效的视图对象！");
@@ -37,7 +37,7 @@ export default abstract class AbstractManager {
   //  * @param {string} tip
   //  * @param {CSSStyleDeclaration} style
   //  * @return {*}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // protected renderMouseTip(
   //   tip = "请在场景中，选择发生位置",
@@ -110,7 +110,7 @@ export default abstract class AbstractManager {
   //  * @descripttion: 移除鼠标跟随框
   //  * @param {string} id
   //  * @return {*}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // protected removeMouseTip() {
   //   const id = "xh-gis-mouse-tip-container";
@@ -127,7 +127,7 @@ export default abstract class AbstractManager {
   //  * @param {string} flag
   //  * @param {Entity} options
   //  * @return {*}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // protected createPrivateEntity(
   //   options: Entity.ConstructorOptions | undefined,
@@ -147,7 +147,7 @@ export default abstract class AbstractManager {
   //  * @param {Entity} entity
   //  * @param {JulianDate} time
   //  * @return {*}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // protected getEntityProps<T = object>(entity: Entity, time: JulianDate) {
   //   const properties: EntityPropertyDict<T> | undefined =
@@ -161,7 +161,7 @@ export default abstract class AbstractManager {
   //  * @param {Viewer} viewer
   //  * @param {Cartesian2} screenPosition
   //  * @return {*}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // protected getPickedObject(viewer: Viewer, screenPosition: Cartesian2) {
   //   let result: { id?: Entity } | undefined = undefined;

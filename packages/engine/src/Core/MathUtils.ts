@@ -21,7 +21,7 @@ const FITTING_COUNT = 100;
 
 /**
  * @descripttion: 转化工具
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 class MathUtils {
   /**
@@ -30,7 +30,7 @@ class MathUtils {
    * @param {number} max 最大值
    * @param {boolean} isInt 是否整型(默认true)
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static randomWithRange(min: number, max: number, isInt = true) {
     const Range = max - min,
@@ -44,7 +44,7 @@ class MathUtils {
    * @param {Cartesian3} left 左边点
    * @param {Cartesian3} right 右边点
    * @return {Cartesian3} 单位向量
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getVector(left: Cartesian3, right: Cartesian3) {
     if (!defined(left) || !defined(right)) return undefined;
@@ -60,7 +60,7 @@ class MathUtils {
    * @param {IPoint} target
    * @param {IPoint} origin
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static projectionDistance(target: ProjectionPoint, origin: ProjectionPoint) {
     return Math.sqrt(
@@ -83,7 +83,7 @@ class MathUtils {
    * @param {Point} t
    * @param {Point} o
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static mid(t: Point, o: Point): Point {
     return [(t[0] + o[0]) / 2, (t[1] + o[1]) / 2];
@@ -93,7 +93,7 @@ class MathUtils {
    * @descripttion: 各点间的距离累计和（二维）
    * @param {Array<IPoint>} path
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static wholeProjectionDistance(path: Array<Point>) {
     let distance = 0;
@@ -108,7 +108,7 @@ class MathUtils {
    * @param {Point} point2
    * @param {Point} point3
    * @return {Point} 圆心
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getCircleCenterOfThreePoints = (
     point1: Point,
@@ -139,7 +139,7 @@ class MathUtils {
    * @param {array} lineA
    * @param {array} lineB
    * @return {Point} 交点
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getIntersectPoint(
     lineA: [Point, Point],
@@ -178,7 +178,7 @@ class MathUtils {
    * @param {ProjectionPoint} origin
    * @param {ProjectionPoint} target
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getAzimuth(origin: ProjectionPoint, target: ProjectionPoint): number {
     const dx = target[0] - origin[0];
@@ -194,7 +194,7 @@ class MathUtils {
   //  * @param {IPoint} target 目标点位
   //  * @param {IPoint} origin 源点位
   //  * @return {*}
-  //  * @author: EV-申小虎
+  //  * @author: Xiaohu.Shen
   //  */
   // static getAzimuth(target: ProjectionPoint, origin: ProjectionPoint) {
   //   let azimuth = 0;
@@ -243,7 +243,7 @@ class MathUtils {
    * @param {number} distance 距离
    * @param {boolean} clockwise 顺时针
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getThirdPoint(
     origin: ProjectionPoint,
@@ -302,7 +302,7 @@ class MathUtils {
    * @param {ProjectionPoint} pnt2
    * @param {ProjectionPoint} pnt3
    * @return {ProjectionPoint} 法向量
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getCircleTangentNormalAtPoint2(
     pnt1: ProjectionPoint,
@@ -331,7 +331,7 @@ class MathUtils {
    * @param {ProjectionPoint} pnt2 中间点
    * @param {ProjectionPoint} pnt3 第二个点
    * @return {[ProjectionPoint, ProjectionPoint]} [右法向量, 左法向量]
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getBisectorNormals(
     t: number,
@@ -386,7 +386,7 @@ class MathUtils {
    * @param {array} controlPoints
    * @param {number} t
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getLeftMostControlPoint(
     controlPoints: ProjectionPoint[],
@@ -429,7 +429,7 @@ class MathUtils {
    * @param {array} controlPoints
    * @param {number} t
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getRightMostControlPoint = (
     controlPoints: ProjectionPoint[],
@@ -477,7 +477,7 @@ class MathUtils {
    * @param {number} t
    * @param {ProjectionPoint[]} controlPoints
    * @return {ProjectionPoint[]}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getCurvePoints(t: number, controlPoints: ProjectionPoint[]) {
     const leftControl = MathUtils.getLeftMostControlPoint(controlPoints, t);
@@ -527,7 +527,7 @@ class MathUtils {
    * @param {number} distance 距离
    * @param {boolean} clockwise 顺时针
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getSymmetricalPoint(
     basicPnt1: ProjectionPoint,
@@ -567,7 +567,7 @@ class MathUtils {
    * @descripttion: 阶乘
    * @param {*} t
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getFactorial(origin: number) {
     if (1 >= origin) return 1;
@@ -585,7 +585,7 @@ class MathUtils {
    * @param {number} x
    * @param {number} y
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getBinomialFactor(x: number, y: number) {
     const res =
@@ -597,7 +597,7 @@ class MathUtils {
    * @descripttion: 二次B样条曲线插值
    * @param {ProjectionPoint} t
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   // static computeQuadraticBSplinePoints(t: ProjectionPoint[]) {
   //   if (t.length <= 2) return t;
@@ -650,7 +650,7 @@ class MathUtils {
    * @param {number} t
    * @param {number} o
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static computeQuadraticBSplineFactor(t: number, o: number) {
     return 0 == t
@@ -666,7 +666,7 @@ class MathUtils {
    * @descripttion: 二次贝塞尔插值
    * @param {ProjectionPoint} points
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getQuadricBezierPoints(points: ProjectionPoint[]) {
     if (points.length <= 2) {
@@ -694,7 +694,7 @@ class MathUtils {
    * @param {Array} points 轨迹关键点
    * @param {*} numberOfPoints 插值点数
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getCubicBezierPoints(
     points: Array<ProjectionPoint>,
@@ -735,7 +735,7 @@ class MathUtils {
    * @param {*} o
    * @param {*} e
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getAngleOfThreePoints(
     left: ProjectionPoint,
@@ -773,7 +773,7 @@ class MathUtils {
    * @param {Point} cPnt2
    * @param {Point} endPnt
    * @return {Point}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getPointOnCubicBezier(
     t: number,
@@ -806,7 +806,7 @@ class MathUtils {
    * @param {ProjectionPoint} pointB 路径中间点
    * @param {ProjectionPoint} pointC 路径终点
    * @return {boolean} true 表示顺时针，false 表示逆时针或共线
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static isPathClockwise(
     pointA: ProjectionPoint,
@@ -830,7 +830,7 @@ class MathUtils {
    * @param {Geographic} posA A点坐标
    * @param {Geographic} posB B点坐标
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static getHeading(posA: Geographic, posB: Geographic) {
     //地理坐标A,B
@@ -881,7 +881,7 @@ class MathUtils {
    * @descripttion: 度转度°分′秒″
    * @param {number} degree 角度（-180-180）
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static toDMS(degree: number) {
     if (typeof degree == "undefined") {
@@ -926,7 +926,7 @@ class MathUtils {
    * @param {number} second 秒（0-60）
    * @param {number} precision 数值精度（默认为最高精度6）
    * @return {*}
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   static toDegree(
     degree: number,
@@ -1217,7 +1217,7 @@ function transformGeographic(gcs: Geographic) {
  * @descripttion:
  * @param {Geographic} gcs
  * @return {*}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 function outofchina(gcs: Geographic) {
   return (

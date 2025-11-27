@@ -236,22 +236,22 @@ export enum SpecialEffectType {
 /**
  * @descripttion: 漫游类型
  * @enum {Number}
- * @author: EV-申小虎
+ * @author: Xiaohu.Shen
  */
 export enum RoamType {
   /**
    * @descripttion: 飞行
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   FLYTO,
   /**
    * @descripttion: 平移
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   TRANSLATION,
   /**
    * @descripttion: 旋转
-   * @author: EV-申小虎
+   * @author: Xiaohu.Shen
    */
   ROTATION,
 }
