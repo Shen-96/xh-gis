@@ -4,12 +4,13 @@
  * @version: 1.0.0
  * @Date: 2025-04-15 06:13:52
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-05-20 14:30:30
+ * @LastEditTime: 2025-11-27 15:52:55
  */
 import "./index.css";
 import React, { ReactNode, RefObject, useMemo, useReducer } from "react";
 import { AbstractCore, CoreType } from "@xh-gis/engine";
-import { GraphicTools } from "../GraphicsTools";
+import GraphicTools from "../GraphicsTools";
+import LayersPanel from "../LayersPanel";
 
 // 使用Unicode字符替代react-icons
 const IoLayersSharpIcon = () => <span>🗂️</span>;
@@ -60,7 +61,7 @@ function reducer(state: InitialState, action: Action) {
   }
 }
 
-export default function Toolbar({
+export default function Toolbox({
   coreRef,
   initialState = defaultState,
 }: ToolBarProps) {
@@ -77,6 +78,7 @@ export default function Toolbar({
         key: "layer",
         icon: <IoLayersSharpIcon />,
         label: "图层",
+        panel: () => <LayersPanel coreRef={coreRef} />,
       },
       {
         key: "graphic",
@@ -112,7 +114,11 @@ export default function Toolbar({
         if (!state[button.key]) return null;
         // 正确调用 panel 函数以返回 React 节点，避免把函数对象/元素对象当作子节点
         const PanelNode = button.panel();
-        return <React.Fragment key={"panel_" + button.key}>{PanelNode}</React.Fragment>;
+        return (
+          <React.Fragment key={"panel_" + button.key}>
+            {PanelNode}
+          </React.Fragment>
+        );
       })}
     </>
   );

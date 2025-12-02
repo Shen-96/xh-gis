@@ -1,8 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import {
-  WidgetEarth as Earth,
-  WidgetToolBar as ToolBar,
-} from "@xh-gis/widgets";
+import { WidgetEarth as Earth } from "@xh-gis/widgets";
 import {
   AbstractCore,
   CoreType,
@@ -414,11 +411,14 @@ const LayerManagerExample: React.FC = () => {
 
   const clearGraphics = useCallback(() => {
     if (!earth) return;
-    const removed = earth.layerManager.removeByType(
+    // 先清空标绘（GraphicManager），面板通过桥接事件同步移除“标绘”分组下的实体记录
+    // earth.graphicManager?.removeAll();
+    // 再移除通过配置添加的图形数据源（CustomDataSource）
+    const removedDs = earth.layerManager.removeByType(
       LayerType.CUSTOM_DATASOURCE,
       false
     );
-    setMessage(`已移除图形数据源数量：${removed}`);
+    setMessage(`已清空标绘并移除图形数据源数量：${removedDs}`);
   }, [earth]);
 
   return (
@@ -436,13 +436,6 @@ const LayerManagerExample: React.FC = () => {
             <div className={styles.mapContainer}>
               <Earth onInit={handleInit} />
             </div>
-            {earth && (
-              <div style={{ marginTop: 12 }}>
-                <ToolBar
-                  coreRef={coreRef as React.RefObject<AbstractCore<CoreType>>}
-                />
-              </div>
-            )}
           </div>
 
           <div className={styles.panel}>

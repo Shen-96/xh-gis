@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2021-03-26 20:05:36
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-08-14 18:35:30
+ * @LastEditTime: 2025-11-27 17:44:33
  */
 import {
   GeoJsonDataSource,
@@ -56,12 +56,35 @@ const tdtTKList = [
   "65a414ddff616a2671130b254abb47ef",
 ];
 
+// 事件类型（字符串联合）
+type LayerManagerEvent =
+  | "added"
+  | "removed"
+  | "cleared"
+  | "visibleChanged"
+  | "sizeChanged"
+  | "collectionChanged";
+
 /**
  * @descripttion: 图层记录管理器
  * @author: Xiaohu.Shen
  */
 class LayerManager extends AbstractManager {
   readonly #layerMap: Map<string, Layer<LayerItem>>;
+  /**
+   * 事件监听集合（轻量版）。
+   * 支持的事件：
+   * - added: 有图层记录被添加
+   * - removed: 有图层记录被移除
+   * - cleared: 图层记录被批量清除（当前未使用，预留）
+   * - visibleChanged: 某图层的可见性发生变化
+   * - sizeChanged: 图层记录数量发生变化
+   * - collectionChanged: 图层记录集合发生变化
+   */
+  private listeners: Record<
+    LayerManagerEvent,
+    Set<(payload: any) => void>
+  >;
 
   /**
    * @descripttion: 图层记录管理器
@@ -70,7 +93,94 @@ class LayerManager extends AbstractManager {
   constructor(core: AbstractCore) {
     super(core);
     this.#layerMap = new Map();
+    this.listeners = {
+      added: new Set(),
+      removed: new Set(),
+      cleared: new Set(),
+      visibleChanged: new Set(),
+      sizeChanged: new Set(),
+      collectionChanged: new Set(),
+    };
+
+    // 桥接 GraphicManager 事件，使标绘纳入图层记录（分组：标绘）
+    try {
+      const gm = (core as any).graphicManager as GraphicManager;
+      gm?.on("added", (graphic) => {
+        // 标绘统一以 ENTITY 记录，分组 pid 设为“标绘”
+        this.#registerLayer(graphic.id, LayerType.ENTITY, graphic.entity, "标绘");
+      });
+      gm?.on("removed", (id) => {
+        const rec = this.#layerMap.get(id);
+        if (rec?.pid === "标绘") {
+          this.#layerMap.delete(id);
+          // 同步派发移除与派生事件
+          this.emit("removed", rec);
+        }
+      });
+      gm?.on("cleared", () => {
+        let changed = false;
+        for (const [id, record] of this.#layerMap.entries()) {
+          if (record.pid === "标绘") {
+            this.#layerMap.delete(id);
+            changed = true;
+          }
+        }
+        if (changed) this.emit("cleared");
+      });
+    } catch (e) {
+      console.warn("LayerManager: bridge graphic events failed", e);
+    }
   }
+
+  /** LayerManager 事件类型 */
+  public on(event: LayerManagerEvent, listener: (payload: any) => void) {
+    this.listeners[event]?.add(listener);
+  }
+
+  public off(event: LayerManagerEvent, listener: (payload: any) => void) {
+    this.listeners[event]?.delete(listener);
+  }
+
+  /** 内部分发事件，并派发派生事件保证集合与数量同步 */
+  private emit(event: LayerManagerEvent, payload?: any) {
+    const set = this.listeners[event];
+    set?.forEach((fn) => {
+      try {
+        fn(payload);
+      } catch (e) {
+        console.error("LayerManager listener error:", e);
+      }
+    });
+    if (event === "added" || event === "removed" || event === "cleared") {
+      const sizeSet = this.listeners["sizeChanged"];
+      sizeSet?.forEach((fn) => {
+        try {
+          fn(this.#layerMap.size);
+        } catch (e) {
+          console.error("LayerManager sizeChanged listener error:", e);
+        }
+      });
+      const colSet = this.listeners["collectionChanged"];
+      const list = this.listAll();
+      colSet?.forEach((fn) => {
+        try {
+          fn(list);
+        } catch (e) {
+          console.error("LayerManager collectionChanged listener error:", e);
+        }
+      });
+    }
+  }
+
+  /** 事件字面量类型定义（字符串联合） */
+  public static Events = {
+    added: "added",
+    removed: "removed",
+    cleared: "cleared",
+    visibleChanged: "visibleChanged",
+    sizeChanged: "sizeChanged",
+    collectionChanged: "collectionChanged",
+  } as const;
 
   /**
    * @descripttion: 添加图层记录
@@ -88,7 +198,9 @@ class LayerManager extends AbstractManager {
   ) {
     if (id && layer) {
       if (!this.isExists(id)) {
-        this.#layerMap.set(id, { id, type, item: layer, pid });
+        const record = { id, type, item: layer, pid } as Layer<LayerItem>;
+        this.#layerMap.set(id, record);
+        this.emit("added", record);
       }
     }
   }
@@ -401,6 +513,7 @@ class LayerManager extends AbstractManager {
     const record = this.#layerMap.get(String(id));
     if (!record) return;
     this.setVisible(id, record.type, visible);
+    this.emit("visibleChanged", { id, type: record.type, visible });
   }
 
   /**
@@ -662,7 +775,7 @@ class LayerManager extends AbstractManager {
           break;
       }
       this.#layerMap.delete(id);
-
+      this.emit("removed", record);
       result = true;
     }
     return result;

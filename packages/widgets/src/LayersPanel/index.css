@@ -1,0 +1,130 @@
+/* 图层管理面板样式（与 GraphicsTools 保持视觉一致性） */
+.xh-gis-layers-panel {
+  --lp-bg: var(--wg-bg, #ffffff);
+  --lp-text: var(--wg-text, #1f1f1f);
+  --lp-muted: var(--wg-muted, #666666);
+  --lp-border: var(--wg-border, #e5e5e5);
+  --lp-shadow: rgba(0, 0, 0, 0.12);
+  --lp-panel-bg: var(--wg-panel-bg, #fafafa);
+  --lp-panel-hover-bg: var(--wg-panel-hover-bg, #f5f5f5);
+  --lp-primary-bg: var(--wg-primary-bg, #1677ff);
+  --lp-primary-text: var(--wg-primary-text, #ffffff);
+
+  position: absolute;
+  top: 0;
+  left: 0px; /* 更贴近左侧显示 */
+  pointer-events: all;
+  width: 360px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--lp-bg);
+  color: var(--lp-text);
+  border: 1px solid var(--lp-border);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px var(--lp-shadow);
+  overflow: hidden;
+  z-index: 2;
+}
+
+.lp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--lp-border);
+  gap: 8px 12px;
+  flex-wrap: wrap;
+}
+
+.lp-title {
+  font-weight: 600;
+}
+
+.lp-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lp-search {
+  flex: 1;
+  min-width: 120px;
+  padding: 6px 8px;
+  border: 1px solid var(--lp-border);
+  border-radius: 4px;
+  background: var(--lp-bg);
+  color: var(--lp-text);
+}
+
+.lp-body {
+  padding: 10px 12px;
+  overflow: auto;
+}
+
+.lp-filter {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--lp-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.lp-filter-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--lp-muted);
+}
+
+/* 折叠时不占空间（通过条件渲染保证移除DOM，这里保留可扩展性） */
+.lp-filter[hidden] {
+  display: none !important;
+}
+
+.lp-group {
+  border: 1px solid var(--lp-border);
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.lp-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--lp-panel-bg);
+}
+
+.lp-group-title { font-weight: 600; }
+.lp-group-tools { display: flex; align-items: center; gap: 6px; }
+
+.lp-items { display: flex; flex-direction: column; }
+
+.lp-item {
+  display: grid;
+  grid-template-columns: 20px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-top: 1px solid var(--lp-border);
+}
+
+.lp-item:first-child { border-top: none; }
+
+.lp-item-name { font-weight: 500; }
+.lp-item-type { font-size: 12px; color: var(--lp-muted); }
+
+.lp-button {
+  padding: 4px 8px;
+  border: 1px solid var(--lp-border);
+  border-radius: 4px;
+  background: var(--lp-panel-bg);
+  color: var(--lp-text);
+  cursor: pointer;
+}
+.lp-button:hover { background: var(--lp-panel-hover-bg); }
+
+.lp-empty { color: var(--lp-muted); text-align: center; padding: 10px 0; }

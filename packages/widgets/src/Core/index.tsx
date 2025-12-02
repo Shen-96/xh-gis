@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2024-09-14 15:21:25
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-10-09 17:35:57
+ * @LastEditTime: 2025-11-27 15:28:04
  */
 
 import "../index.css";
@@ -13,7 +13,7 @@ import { CoreType, XgEarth, XgMap } from "@xh-gis/engine";
 import { memo, PropsWithRef, useEffect, useRef, useState } from "react";
 import Statusbar from "../Statusbar";
 import Timeline from "../Timeline";
-import Toolbar from "../Toolbox";
+import Toolbox from "../Toolbox";
 
 type CoreTypeMap = {
   [CoreType.MAP]: XgMap;
@@ -115,7 +115,7 @@ const Core = <T extends CoreType>({
         </div>
       ) : null}
       {statusbar ? <Statusbar coreRef={xgCoreRef} /> : null}
-      {toolbar ? <Toolbar coreRef={xgCoreRef} /> : null}
+      {toolbar ? <Toolbox coreRef={xgCoreRef} /> : null}
       {timeline ? <Timeline coreRef={xgCoreRef} {...timelineProps} /> : null}
       <div className={"xh-gis-popup-container"}></div>
     </div>

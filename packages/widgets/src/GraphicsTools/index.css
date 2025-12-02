@@ -264,5 +264,12 @@
 }
 .gt-inline-actions button {
   padding: 4px 8px;
+  border: 1px solid var(--gt-button-border);
+  border-radius: 4px;
+  background: var(--gt-button-bg);
   color: var(--gt-text);
+  cursor: pointer;
+}
+.gt-inline-actions button:hover {
+  background: var(--gt-button-hover-bg);
 }
