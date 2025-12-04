@@ -54,13 +54,15 @@ function createFrustumPrimitive(
     appearance: new MaterialAppearance({
       flat: true,
       translucent: true,
-      // material: Material.fromType('Color', {
-      //   color: Color.fromCssColorString(
-      //     material?.fillColor ?? 'rgba(255,255,0,0.3)'
-      //   )
-      // })
+      material: Material.fromType('Color', {
+        color: Color.fromCssColorString(
+          material?.color ?? 'rgba(255,255,0,0.3)'
+        )
+      })
     }),
-    modelMatrix
+    modelMatrix,
+    allowPicking: false,
+    releaseGeometryInstances: true
   });
 
   return primitive;

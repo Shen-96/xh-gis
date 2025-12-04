@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2022-01-11 17:11:44
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-08-14 18:59:34
+ * @LastEditTime: 2025-12-03 10:39:03
  */
 
 // 导入所有图元和符号的自注册模块（副作用导入）
@@ -29,7 +29,10 @@ import GraphicUtils from "./Core/GraphicUtils";
 import GeometryUtils from "./Core/GeometryUtils";
 import Constant from "./Core/Constant";
 // import SpatialAnalysis from "./Core/SpatialAnalysis";
-import SpecialEffectManager from "./Core/SpecialEffectManager";
+// FX 模块兼容层导出（统一从 FX 入口 re-export）
+export { FxManager, FxType, AbstractFx } from "./FX";
+// 提供命名空间导出，便于以 FX.XgFrustumFX 等方式访问现有特效类
+export * as FX from "./FX";
 import AbstractCore from "./Core/AbstractCore";
 import XgEarth from "./Core/XgEarth";
 import XgMap from "./Core/XgMap";
@@ -66,7 +69,8 @@ export {
   GeometryUtils,
   Constant,
   // SpatialAnalysis,
-  SpecialEffectManager,
+  // 兼容导出：FX 管理器（命名导出）
+  // 已在顶部统一导出，避免重复
   setResourceConfig,
   getResourceUrl,
   getResourceConfig,

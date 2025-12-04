@@ -17,14 +17,13 @@ import {
 } from "cesium";
 import {
   HorizontalOriginValueType,
-  SpecialEffectOptions,
+  FxOptions,
   VerticalOriginValueType,
   XgSuperGifFxStyleOptions,
 } from "../../types";
-import { SpecialEffectType } from "../../enum";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import GraphicUtils from "../../Core/GraphicUtils";
-import AbstractSpecialEffect from "./AbstractSpecialEffect";
+import AbstractSceneFx from "../Core/AbstractSceneFx";
 // import SuperGif from "libgif";
 // 轻量深拷贝：优先使用 structuredClone，回退到 JSON 方法
 const deepClone = (obj: any) => {
@@ -39,7 +38,7 @@ const deepClone = (obj: any) => {
   }
 };
 
-export default class XgSuperGifFX extends AbstractSpecialEffect<XgSuperGifFxStyleOptions> {
+export default class XgSuperGifFX extends AbstractSceneFx<XgSuperGifFxStyleOptions> {
   #frames: Array<string>;
   #timer?: NodeJS.Timeout;
   readonly ready: Promise<XgSuperGifFX>;
@@ -50,14 +49,13 @@ export default class XgSuperGifFX extends AbstractSpecialEffect<XgSuperGifFxStyl
     availability,
     show,
     graphics,
-  }: SpecialEffectOptions<XgSuperGifFxStyleOptions>) {
+  }: FxOptions<XgSuperGifFxStyleOptions>) {
     super({
       id,
       name,
       availability,
       show,
       graphics,
-      type: SpecialEffectType.SUPERGIF,
     });
     // this.init();
     this.#frames = [];

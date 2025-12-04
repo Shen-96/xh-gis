@@ -50,7 +50,7 @@ function createFrustumOutlinePrimitive(
       geometry: geometry,
       attributes: {
         color: ColorGeometryInstanceAttribute.fromColor(
-          Color.fromCssColorString("#ffff")
+          Color.fromCssColorString(style.material?.outlineColor ?? "#ffff")
         ),
       },
     });
@@ -62,13 +62,15 @@ function createFrustumOutlinePrimitive(
     appearance: new PerInstanceColorAppearance({
       flat: true,
       renderState: {
-        // lineWidth: Math.min(
-        //   maximumAliasedLineWidth,
-        //   style.material?.outlineWidth ?? maximumAliasedLineWidth
-        // ),
+        lineWidth: Math.min(
+          maximumAliasedLineWidth,
+          style.material?.outlineWidth ?? maximumAliasedLineWidth
+        ),
       },
     }),
     modelMatrix,
+    allowPicking: false,
+    releaseGeometryInstances: true,
   });
 
   return primitive;

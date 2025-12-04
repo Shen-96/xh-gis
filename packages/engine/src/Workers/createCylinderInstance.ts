@@ -4,16 +4,19 @@
  * @version: 1.0.0
  * @Date: 2023-01-10 10:36:24
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2023-10-30 18:37:07
+ * @LastEditTime: 2025-12-04 16:30:05
  */
 import {
   CylinderGeometry,
   Cartesian3,
   createGuid,
   Matrix4,
-  GeometryInstance
-} from 'cesium';
-import { CylinderGraphicOptions } from '..';
+  GeometryInstance,
+  VertexFormat,
+  Color,
+  ColorGeometryInstanceAttribute,
+} from "cesium";
+import { CylinderGraphicOptions } from "..";
 
 function createCylinderInstance(
   id = createGuid(),
@@ -24,7 +27,8 @@ function createCylinderInstance(
 ): GeometryInstance | undefined {
   try {
     /// 初始参数
-    const { length, slices, topRadius, bottomRadius } = style;
+    const { length, slices, topRadius, bottomRadius, material } = style;
+    const color = material?.color;
     /// 局部偏移量
     /// 将原点平移到底面中心
     // localTranslation = new Cartesian3(0, 0, length * 0.5);
@@ -34,7 +38,7 @@ function createCylinderInstance(
         topRadius,
         bottomRadius,
         length,
-        slices
+        slices,
       }),
       // const geometry = createConeGeometry({
       //     radius,
@@ -44,7 +48,12 @@ function createCylinderInstance(
       // lastModelMx = computeModelMatrix(modelMatrix, attitude, localTranslation),
       instance = new GeometryInstance({
         id,
-        geometry
+        geometry,
+        attributes: {
+          color: ColorGeometryInstanceAttribute.fromColor(
+            Color.fromCssColorString(color ?? "#a8eb0e8a")
+          ),
+        },
         // modelMatrix: Matrix4.fromTranslation(localTranslation)
         // modelMatrix
       });

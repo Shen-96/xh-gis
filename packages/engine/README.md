@@ -167,12 +167,22 @@ earth.particleManager.add('fire', {
   position: [120, 30, 0]
 });
 
-// 特效管理
-earth.specialEffectManager.add('cone', {
-  type: 'CONE',
-  position: [120, 30, 0],
-  style: { radius: 1000, height: 2000 }
+// 特效管理（已迁移至 FX 命名空间）
+// 旧的 DataSources/SpecialEffect 已废弃，请使用 FxManager + Xg*FX
+import { FxManager, XgConeFX } from '@xh-gis/engine/FX';
+const fxManager = new FxManager(earth);
+const cone = fxManager.create(XgConeFX, {
+  id: 'cone-1',
+  graphics: {
+    position: { cartographicDegrees: [120, 30, 0] },
+    style: { length: 2000, bottomRadius: 1000, material: { fill: true, outline: true } },
+    orientation: [1, 0, 0, 0],
+    attitude: { azimuth: 30, elevation: -10, roll: 0 }
+  },
+  show: true
 });
+// 绑定到实体/模型（可选）
+// fxManager.attach(cone.id, entity, { mode: 'position_and_orientation' });
 ```
 
 ### XgPopup 弹窗使用
@@ -600,3 +610,35 @@ layer.remove();
 - 数据分布不均：使用 `quantile` 改善视觉均衡。
 - 业务特定阈值：使用 `custom` 并提供 `customThresholds`。
 - 线条对比度不足：设置统一 `color`（如 `#fff`），保持可见性增强逻辑。
+## 绑定规则（选项 A）
+
+当 FX 绑定到目标（实体/模型/图元）后，位姿计算遵循以下约定，以减少心智负担并避免双重旋转：
+
+- 忽略图形参数中的 `orientation`（它仅用于未绑定情况下的初始姿态）。
+- 微调与偏移统一通过绑定选项中的 `anchor` 完成：
+  - `anchor.rotation`：局部旋转（支持 `Quaternion` 或 `HeadingPitchRoll`）。
+  - `anchor.translation`：沿局部坐标系的偏移（米）。
+- 扫角动画通过 `sweep` 控制，按 `axis/speed/min/max` 进行累积或往返旋转。
+- FX 层的放置策略（`getPlacementRotation`）用于规范化默认放置姿态，保持视觉直觉；各 FX 可按需覆盖。
+
+此外：
+
+- `graphics.attitude` 已废弃（deprecated），请改用 `anchor.rotation` 作为微调入口。
+- 绑定时，如果 FX 在创建时设置了 `orientation` 且未显式提供 `anchor.rotation`，管理器会将该初始 `orientation` 迁移为 `anchor.rotation`，作为一次性种子值；之后仍遵循“绑定后忽略 orientation”的规则。
+
+示例（伪代码）：
+
+```ts
+// 创建 FX（未绑定时 orientation 用作初始姿态）
+const fx = fxManager.create(XgConeFX, { graphics: { position, orientation } });
+
+// 绑定到目标后：最终姿态来自目标 + anchor + sweep，忽略 graphics.orientation
+fxManager.attach(fx.id, target, {
+  mode: "position_and_orientation",
+  anchor: {
+    rotation: new Quaternion(...),
+    translation: new Cartesian3(0, 0, 2),
+  },
+  sweep: { axis: "z", speed: 0.5 },
+});
+```

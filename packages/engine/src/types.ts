@@ -784,9 +784,8 @@ export type SpecialEffectGraphicOptions<T = XgFxStyleOptions> = Omit<
 
 export type SpecialEffectStereoStyleOptions<
   T = ConeStyleOptions | EllipsoidStyleOptions | FrustumStyleOptions
-> = T & {
+> = Omit<T, "orientation"> & {
   orientation?: UnitQuaternionValue;
-  attitude?: Attitude;
 };
 
 export type SpecialEffectOptions<T = XgFxStyleOptions> = {
@@ -830,6 +829,11 @@ export type XgFxGraphicOptions =
   | XgEllipsoidFxGraphicOptions
   | XgFrustumFxGraphicOptions
   | XgSuperGifFxGraphicOptions;
+
+export type FxStereoStyleOptions<T = ConeStyleOptions | EllipsoidStyleOptions | FrustumStyleOptions> =
+  SpecialEffectStereoStyleOptions<T>;
+export type FxGraphicOptions<T = XgFxStyleOptions> = SpecialEffectGraphicOptions<T>;
+export type FxOptions<T = XgFxStyleOptions> = SpecialEffectOptions<T>;
 /// 特效实例
 // export type SpecialEffect<T = CustomGraphicOptions> = {
 //     // availability?: TimeIntervalCollection;

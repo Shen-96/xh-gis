@@ -17,39 +17,39 @@ import {
 } from "cesium";
 import {
   EllipsoidStyleOptions,
-  SpecialEffectOptions,
+  FxOptions,
   XgEllipsoidFxStyleOptions,
+  FxGraphicOptions,
 } from "../../types";
-import { SpecialEffectType } from "../../enum";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import MathUtils from "../../Core/MathUtils";
 import createEllipsoidPrimitive from "../../Workers/createEllipsoidPrimitive";
 import createEllipsoidOutlinePrimitive from "../../Workers/createEllipsoidOutlinePrimitive";
-import AbstractStereoSpecialEffect from "./AbstractStereoSpecialEffect";
+import AbstractStereoSceneFx from "../Core/AbstractStereoSceneFx";
 
-export default class XgEllipsoidFX extends AbstractStereoSpecialEffect<EllipsoidStyleOptions> {
+export default class XgEllipsoidFX extends AbstractStereoSceneFx<EllipsoidStyleOptions> {
   constructor({
     id,
     name,
     availability,
     show,
     graphics,
-  }: SpecialEffectOptions<XgEllipsoidFxStyleOptions>) {
+  }: FxOptions<XgEllipsoidFxStyleOptions>) {
     super({
       id,
       name,
       availability,
       show,
       graphics,
-      type: SpecialEffectType.ELLIPSOID,
     });
     this.init();
   }
 
   protected init() {
-    const { radii, material } = this.graphics,
-      fill = true,
-      outline = true;
+    const gfx = this._getGraphics() as FxGraphicOptions<XgEllipsoidFxStyleOptions>,
+      { radii, material } = gfx,
+      fill = material?.fill ?? true,
+      outline = material?.outline ?? true;
 
     if (!defined(radii))
       throw new Error(
@@ -61,12 +61,12 @@ export default class XgEllipsoidFX extends AbstractStereoSpecialEffect<Ellipsoid
     const modelMatrix = this.computeModelMatrix(),
       fillPrimitive = createEllipsoidPrimitive(
         this.geometryInstanceIdType["3d-fill"],
-        this.graphics,
+        gfx,
         modelMatrix
       ),
       outlinePrimitive = createEllipsoidOutlinePrimitive(
         this.geometryInstanceIdType["3d-outline"],
-        this.graphics,
+        gfx,
         modelMatrix
       );
 
@@ -83,14 +83,15 @@ export default class XgEllipsoidFX extends AbstractStereoSpecialEffect<Ellipsoid
   }
 
   computeModelMatrix(): Matrix4 {
-    const { position, orientation, attitude } = this.graphics,
-      { azimuth, elevation, roll } = attitude ?? {},
+    const gfx = this._getGraphics() as FxGraphicOptions<XgEllipsoidFxStyleOptions>,
+      { position, orientation } = gfx,
       /// 初始坐标
       originPos = position
         ? CoordinateUtils.positionOptionsToCar3(position)
-        : Cartesian3.ZERO;
+        : undefined;
 
-    if (!originPos) throw `无有效坐标，${this.graphics}`;
+    if (!position || !originPos)
+      throw new Error(`create ellipsoid effect failed: invalid position`);
 
     /// 初始旋转量
     const originRotation = Matrix3.fromQuaternion(
@@ -146,16 +147,8 @@ export default class XgEllipsoidFX extends AbstractStereoSpecialEffect<Ellipsoid
         new Matrix4()
       ),
       /// 计算旋转量
-      addZRotation = Matrix3.fromRotationZ(CesiumMath.toRadians(azimuth ?? 0)),
-      addYRotation = Matrix3.fromRotationY(
-        CesiumMath.toRadians(-(elevation ?? 0))
-      ),
-      addXRotation = Matrix3.fromRotationX(CesiumMath.toRadians(roll ?? 0)),
-      addRotation = Matrix3.multiply(
-        addZRotation,
-        Matrix3.multiply(addXRotation, addYRotation, new Matrix3()),
-        new Matrix3()
-      ),
+      // 注：移除 attitude 的附加旋转，局部样式旋转请改由绑定侧 anchor/sweep 控制
+      addRotation = Matrix3.IDENTITY,
       /// 世界变换
       transformMx = Matrix4.multiplyByMatrix3(
         originModelMx,

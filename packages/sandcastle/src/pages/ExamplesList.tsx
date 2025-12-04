@@ -69,6 +69,16 @@ const ExamplesList: React.FC = () => {
       difficulty: 'beginner',
       tags: ['弹窗', '交互', 'UI']
     }
+    ,
+    {
+      id: 'model-fx-binding',
+      title: '模型与FX绑定',
+      description: '加载 J-15.glb 并绑定视锥特效，演示扫描效果',
+      category: 'basic',
+      path: '/examples/basic/model-fx-binding',
+      difficulty: 'beginner',
+      tags: ['模型', '特效', '绑定']
+    }
   ];
 
   const categories = {

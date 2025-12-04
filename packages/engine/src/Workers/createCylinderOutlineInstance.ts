@@ -4,16 +4,16 @@
  * @version: 1.0.0
  * @Date: 2023-01-10 10:36:24
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-03-25 09:11:21
+ * @LastEditTime: 2025-12-04 16:29:51
  */
 import {
   createGuid,
   GeometryInstance,
   CylinderOutlineGeometry,
   ColorGeometryInstanceAttribute,
-  Color
-} from 'cesium';
-import { CylinderGraphicOptions } from '..';
+  Color,
+} from "cesium";
+import { CylinderGraphicOptions } from "..";
 
 function createCylinderOutlineInstance(
   id = createGuid(),
@@ -25,10 +25,11 @@ function createCylinderOutlineInstance(
   try {
     /// 初始参数
     const { length, slices, topRadius, bottomRadius, material } = style;
-      // height = range,
-      // radius = Math.tan(CesiumMath.toRadians(angle)) * height,
-      // outlineColor = material?.outlineColor;
-      // outlineColor = material?.outlineColor;
+    const outlineColor = material?.outlineColor;
+    // height = range,
+    // radius = Math.tan(CesiumMath.toRadians(angle)) * height,
+    // outlineColor = material?.outlineColor;
+    // outlineColor = material?.outlineColor;
     /// 局部偏移量
     /// 将原点平移到底面中心
     // localTranslation = translation?.clone() ?? new Cartesian3(length * 0.5 + 20, 0, 0),
@@ -41,18 +42,16 @@ function createCylinderOutlineInstance(
         topRadius,
         bottomRadius,
         length,
-        slices
+        slices,
       }),
       instance = new GeometryInstance({
         id,
         geometry,
-        // modelMatrix: Matrix4.fromTranslation(localTranslation),
-        // modelMatrix,
-        // attributes: {
-        //   color: ColorGeometryInstanceAttribute.fromColor(
-        //     Color.fromCssColorString(outlineColor ?? '#ffff')
-        //   )
-        // }
+        attributes: {
+          color: ColorGeometryInstanceAttribute.fromColor(
+            Color.fromCssColorString(outlineColor ?? "#fffb00ff")
+          ),
+        },
       });
 
     return instance;

@@ -34,6 +34,5 @@
 
 export * from "./Graphics";
 export * from "./Materials";
-export * from "./SpecialEffect";
 export * from "./XgPopup";
 export * from "./Heatmap";

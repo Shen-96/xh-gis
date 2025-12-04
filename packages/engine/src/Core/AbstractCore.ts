@@ -38,7 +38,7 @@ import RoamManager from "./RoamManager";
 import SceneListenerManager from "./SceneListenerManager";
 import WeatherManager from "./WeatherManager";
 import GraphicManager from "./GraphicManager";
-import SpecialEffectManager from "./SpecialEffectManager";
+import FxManager from "../FX/Core/FxManager";
 import MouseEventUtils from "./MouseEventUtils";
 import AbstractPopup from "../DataSources/XgPopup/AbstractPopup";
 import { getResourceUrl } from "./ResourceConfig";
@@ -193,8 +193,8 @@ export default abstract class AbstractCore<T extends CoreType = any> {
   readonly heatmapManager: PartialPrivate<HeatmapManager>;
   /// 空间分析
   // readonly spatialAnalysis: PartialPrivate<SpatialAnalysis>;
-  /// 特效管理器
-  readonly specialEffectManager: PartialPrivate<SpecialEffectManager>;
+  /// 特效管理器（新命名：fxManager）
+  readonly fxManager: PartialPrivate<FxManager>;
   readonly popupManager = new Map<string, AbstractPopup>();
 
   /**
@@ -218,7 +218,8 @@ export default abstract class AbstractCore<T extends CoreType = any> {
     this.graphicManager = new GraphicManager(this); /// 绘图管理器
     this.heatmapManager = new HeatmapManager(this); /// 热度图管理器
     // this.spatialAnalysis = new SpatialAnalysis(this); /// 空间分析
-    this.specialEffectManager = new SpecialEffectManager(this); /// 特效管理器
+    // 使用 FxManager 作为特效管理器实现
+    this.fxManager = new FxManager(this); /// 特效管理器
   }
 
   /**
