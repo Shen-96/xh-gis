@@ -10,7 +10,7 @@ import {
   HeadingPitchRoll,
   createGuid,
 } from "cesium";
-import type { Attitude, SectorGraphicOptions } from "../types";
+import type { Attitude, SectorGraphicOptions } from "../../types";
 
 function computeModelMatrix(
   modelMatrix: Matrix4,

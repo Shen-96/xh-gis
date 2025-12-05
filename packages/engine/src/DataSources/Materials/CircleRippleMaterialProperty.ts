@@ -15,7 +15,7 @@ import {
   Color,
   MaterialProperty,
 } from "cesium";
-import CircleRippleFS from "../../Shaders/CircleRippleFS";
+import CircleRippleFS from "../../Rendering/Shaders/CircleRippleFS";
 
 type Options = {
   color?: Color;

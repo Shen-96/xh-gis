@@ -23,8 +23,8 @@ import {
 } from "../../types";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import MathUtils from "../../Core/MathUtils";
-import createEllipsoidPrimitive from "../../Workers/createEllipsoidPrimitive";
-import createEllipsoidOutlinePrimitive from "../../Workers/createEllipsoidOutlinePrimitive";
+import createEllipsoidPrimitive from "../../Rendering/Primitives/createEllipsoidPrimitive";
+import createEllipsoidOutlinePrimitive from "../../Rendering/Primitives/createEllipsoidOutlinePrimitive";
 import AbstractStereoSceneFx from "../Core/AbstractStereoSceneFx";
 
 export default class XgEllipsoidFX extends AbstractStereoSceneFx<EllipsoidStyleOptions> {

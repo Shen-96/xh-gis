@@ -6,16 +6,10 @@
  * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-03-25 09:11:37
  */
-import {
-  Matrix4,
-  createGuid,
-  Primitive,
-  Color,
-  MaterialAppearance,
-  Material
-} from 'cesium';
+import { Matrix4, createGuid, Primitive } from 'cesium';
 import createCylinderInstance from './createCylinderInstance';
-import { CylinderGraphicOptions } from '..';
+import type { CylinderGraphicOptions } from '../../types';
+import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
 
 function createCylinderPrimitive(
   id = createGuid(),
@@ -32,15 +26,7 @@ function createCylinderPrimitive(
 
   const primitive = new Primitive({
     geometryInstances: instance,
-    appearance: new MaterialAppearance({
-      flat: true,
-      translucent: true,
-      // material: Material.fromType('Color', {
-      //   color: Color.fromCssColorString(
-      //     material?.fillColor ?? 'rgba(255,255,0,0.3)'
-      //   )
-      // })
-    }),
+    appearance: createCustomMaterialAppearance(style),
     modelMatrix
   });
 

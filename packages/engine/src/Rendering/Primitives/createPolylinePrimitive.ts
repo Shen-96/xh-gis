@@ -11,12 +11,10 @@ import {
   GeometryInstance,
   createGuid,
   Primitive,
-  Color,
   PolylineGeometry,
-  PolylineMaterialAppearance,
-  Material
 } from 'cesium';
-import { PolylineGraphicOptions } from '..';
+import type { PolylineGraphicOptions } from '../../types';
+import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
 
 function createPolylinePrimitive(
   this: any,
@@ -50,22 +48,10 @@ createPolylinePrimitive.prototype.update = function (
   }
 
   /// 初始参数
-  const { dashLength, dashPattern, color, gapColor } = this.style ?? {},
-    appearance = new PolylineMaterialAppearance({
-      material: new Material({
-        fabric: {
-          type:
-            dashLength == undefined && dashPattern == undefined
-              ? Material.PolylineOutlineType
-              : Material.PolylineDashType,
-          color: Color.fromCssColorString(color ?? '#ffff00'),
-          gapColor: Color.fromCssColorString(gapColor ?? 'transparent'),
-          dashLength: dashLength ?? 16,
-          dashPattern:
-            dashPattern != undefined ? parseInt(String(dashPattern), 2) : 255
-        }
-      })
-    });
+  const appearance = createCustomMaterialAppearance(
+    this.style,
+    { startPosition: this.positions?.[0] }
+  );
 
   const geometryInstance = new GeometryInstance({
     id: this.id,

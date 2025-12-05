@@ -13,7 +13,7 @@ import {
   ColorGeometryInstanceAttribute,
   Color,
 } from "cesium";
-import { CylinderGraphicOptions } from "..";
+import type { CylinderGraphicOptions } from "../../types";
 
 function createCylinderOutlineInstance(
   id = createGuid(),

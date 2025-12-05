@@ -16,8 +16,8 @@ import {
 } from "../../types";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import MathUtils from "../../Core/MathUtils";
-import createCylinderOutlinePrimitive from "../../Workers/createCylinderOutlinePrimitive";
-import createCylinderPrimitive from "../../Workers/createCylinderPrimitive";
+import createCylinderOutlinePrimitive from "../../Rendering/Primitives/createCylinderOutlinePrimitive";
+import createCylinderPrimitive from "../../Rendering/Primitives/createCylinderPrimitive";
 import AbstractStereoSceneFx from "../Core/AbstractStereoSceneFx";
 
 export default class XgConeFX extends AbstractStereoSceneFx<ConeStyleOptions> {

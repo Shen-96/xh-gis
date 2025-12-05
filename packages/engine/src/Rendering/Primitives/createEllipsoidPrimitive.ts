@@ -8,8 +8,8 @@
  */
 import { Matrix4, createGuid, Primitive } from 'cesium';
 import createEllipsoidInstance from './createEllipsoidInstance';
-import { createCustomMaterialAppearance } from './createCustomMaterialAppearance';
-import { EllipsoidGraphicOptions } from '..';
+import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
+import type { EllipsoidGraphicOptions } from '../../types';
 
 function createEllipsoidPrimitive(
   id = createGuid(),

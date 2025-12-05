@@ -15,7 +15,7 @@ import {
   Property,
   Material,
 } from "cesium";
-import DynamicWallFS from "../../Shaders/DynamicWallFS";
+import DynamicWallFS from "../../Rendering/Shaders/DynamicWallFS";
 import { getResourceUrl } from "../../Core/ResourceConfig";
 
 type Options = {

@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2023-01-10 10:36:24
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2023-10-13 10:05:11
+ * @LastEditTime: 2025-03-25 09:10:08
  */
 import {
   Matrix4,
@@ -12,18 +12,20 @@ import {
   Primitive,
   PerInstanceColorAppearance
 } from 'cesium';
-import createCylinderOutlineInstance from './createCylinderOutlineInstance';
-import { CylinderGraphicOptions } from '..';
+import type { EllipsoidGraphicOptions } from '../../types';
+import createEllipsoidOutlineInstance from './createEllipsoidOutlineInstance';
 
-function createCylinderOutlinePrimitive(
+function createEllipsoidOutlinePrimitive(
   id = createGuid(),
-  style: CylinderGraphicOptions,
+  style: EllipsoidGraphicOptions,
   modelMatrix = Matrix4.IDENTITY,
   // attitude?: Attitude,
-  // translation?: Cartesian3,
+  // translation?: Cartesian3
   maximumAliasedLineWidth = 1
 ) {
-  const instance = createCylinderOutlineInstance(id, style);
+  /// 初始参数
+
+  const instance = createEllipsoidOutlineInstance(id, style);
   if (!instance) return undefined;
 
   const primitive = new Primitive({
@@ -33,7 +35,7 @@ function createCylinderOutlinePrimitive(
       renderState: {
         // lineWidth: Math.min(
         //   maximumAliasedLineWidth,
-        //   style.?.outlineWidth ?? maximumAliasedLineWidth
+        //   style.material?.outlineWidth ?? maximumAliasedLineWidth
         // )
       }
     }),
@@ -43,4 +45,4 @@ function createCylinderOutlinePrimitive(
   return primitive;
 }
 
-export default createCylinderOutlinePrimitive;
+export default createEllipsoidOutlinePrimitive;

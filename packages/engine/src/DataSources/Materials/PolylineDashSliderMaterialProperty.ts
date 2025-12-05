@@ -16,7 +16,7 @@ import {
   Color,
   Cartesian3,
 } from "cesium";
-import PolylineDashSliderFS from "../../Shaders/PolylineDashSliderFS";
+import PolylineDashSliderFS from "../../Rendering/Shaders/PolylineDashSliderFS";
 
 type Options = {
   color?: Color;

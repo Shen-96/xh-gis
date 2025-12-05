@@ -14,7 +14,7 @@ import {
   Property,
   Material,
 } from "cesium";
-import FlowPointFS from "../../Shaders/PolylineDashSliderFS";
+import FlowPointFS from "../../Rendering/Shaders/PolylineDashSliderFS";
 
 type Options = {
   background: string;

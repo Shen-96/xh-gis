@@ -21,7 +21,7 @@ import {
   ColorGeometryInstanceAttribute,
   createGuid,
 } from "cesium";
-import type { FrustumGraphicOptions } from "../types";
+import type { FrustumGraphicOptions } from "../../types";
 
 function createFrustumOutlinePrimitive(
   id = createGuid(),

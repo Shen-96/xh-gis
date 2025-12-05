@@ -11,16 +11,14 @@ import {
   Matrix4,
   createGuid,
   Primitive,
-  Color,
-  MaterialAppearance,
-  Material,
   FrustumGeometry,
   Cartesian3,
   GeometryInstance,
   PerspectiveFrustum,
   Quaternion
 } from 'cesium';
-import { FrustumGraphicOptions } from '..';
+import type { FrustumGraphicOptions } from '../../types';
+import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
 
 function createFrustumPrimitive(
   id = createGuid(),
@@ -51,15 +49,7 @@ function createFrustumPrimitive(
 
   const primitive = new Primitive({
     geometryInstances: instance,
-    appearance: new MaterialAppearance({
-      flat: true,
-      translucent: true,
-      material: Material.fromType('Color', {
-        color: Color.fromCssColorString(
-          material?.color ?? 'rgba(255,255,0,0.3)'
-        )
-      })
-    }),
+    appearance: createCustomMaterialAppearance(style),
     modelMatrix,
     allowPicking: false,
     releaseGeometryInstances: true

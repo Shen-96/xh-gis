@@ -22,8 +22,8 @@ import {
 } from "../../types";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import MathUtils from "../../Core/MathUtils";
-import createFrustumOutlinePrimitive from "../../Workers/createFrustumOutlinePrimitive";
-import createFrustumPrimitive from "../../Workers/createFrustumPrimitive";
+import createFrustumOutlinePrimitive from "../../Rendering/Primitives/createFrustumOutlinePrimitive";
+import createFrustumPrimitive from "../../Rendering/Primitives/createFrustumPrimitive";
 import AbstractStereoSceneFx from "../Core/AbstractStereoSceneFx";
 
 export default class XgFrustumFX extends AbstractStereoSceneFx<FrustumStyleOptions> {

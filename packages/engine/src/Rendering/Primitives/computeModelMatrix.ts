@@ -8,7 +8,7 @@
  */
 
 import { Cartesian3, Matrix3, Matrix4, HeadingPitchRoll } from 'cesium';
-import { Attitude } from '..';
+import type { Attitude } from '../../types';
 
 /**
  * @descripttion: 计算模型矩阵

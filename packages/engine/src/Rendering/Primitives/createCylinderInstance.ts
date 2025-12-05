@@ -16,7 +16,7 @@ import {
   Color,
   ColorGeometryInstanceAttribute,
 } from "cesium";
-import { CylinderGraphicOptions } from "..";
+import type { CylinderGraphicOptions } from "../../types";
 
 function createCylinderInstance(
   id = createGuid(),

@@ -14,7 +14,7 @@ import {
   Color,
   Cartesian3
 } from 'cesium';
-import { EllipsoidGraphicOptions } from '..';
+import type { EllipsoidGraphicOptions } from '../../types';
 
 function createEllipsoidOutlineInstance(
   id = createGuid(),

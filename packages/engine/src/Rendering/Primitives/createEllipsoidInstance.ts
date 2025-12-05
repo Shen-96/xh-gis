@@ -12,7 +12,7 @@ import {
   EllipsoidGeometry,
   Cartesian3
 } from 'cesium';
-import { EllipsoidGraphicOptions } from '..';
+import type { EllipsoidGraphicOptions } from '../../types';
 
 function createEllipsoidInstance(
   id = createGuid(),

@@ -15,7 +15,7 @@ import {
   Material,
   Cartesian2,
 } from "cesium";
-import FlowLineFS from "../../Shaders/FlowLineFS";
+import FlowLineFS from "../../Rendering/Shaders/FlowLineFS";
 
 type Options = {
   image: string;

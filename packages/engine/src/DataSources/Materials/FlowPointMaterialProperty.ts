@@ -14,7 +14,7 @@ import {
   Property,
   Material,
 } from "cesium";
-import FlowPointFS from "../../Shaders/FlowPointFS";
+import FlowPointFS from "../../Rendering/Shaders/FlowPointFS";
 
 type Options = {
   background: string;
