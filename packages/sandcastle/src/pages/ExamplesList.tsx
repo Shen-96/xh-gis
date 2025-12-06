@@ -1,114 +1,69 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './ExamplesList.module.css';
-
-interface Example {
-  id: string;
-  title: string;
-  description: string;
-  category: 'basic' | 'advanced' | 'integration';
-  path: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  tags: string[];
-}
+import { categories as registryCategories, getExamplesByCategory } from '../examples/registry';
 
 const ExamplesList: React.FC = () => {
-  const examples: Example[] = [
-    {
-      id: 'basic-map',
-      title: '基础地图',
-      description: '创建一个基本的3D地球，展示XH-GIS Engine的核心功能',
-      category: 'basic',
-      path: '/examples/basic/map',
-      difficulty: 'beginner',
-      tags: ['地图', '3D', '基础']
-    },
-    {
-      id: 'polyline-effects',
-      title: '线型特效',
-      description: '集中展示折线材质特效：点流动、线流动、虚线滑动、虚线对流',
-      category: 'basic',
-      path: '/examples/basic/polyline-effects',
-      difficulty: 'beginner',
-      tags: ['折线', '材质', '动态']
-    },
-    {
-      id: 'drawing',
-      title: '图形绘制',
-      description: '演示点、线、面等几何图形的绘制功能',
-      category: 'basic',
-      path: '/examples/basic/drawing',
-      difficulty: 'beginner',
-      tags: ['绘制', '几何', '交互']
-    },
-    {
-      id: 'widgets',
-      title: 'UI组件',
-      description: '展示XH-GIS Widgets包中的各种React组件',
-      category: 'basic',
-      path: '/examples/basic/widgets',
-      difficulty: 'beginner',
-      tags: ['组件', 'UI', 'React']
-    },
-    {
-      id: 'layer-manager',
-      title: '图层管理',
-      description: '演示 LayerManager 添加底图组合与配置图层',
-      category: 'basic',
-      path: '/examples/basic/layer-manager',
-      difficulty: 'beginner',
-      tags: ['图层', '底图', '配置']
-    },
-    {
-      id: 'heatmap',
-      title: '热度图',
-      description: '演示基于 Cesium 的热度图渲染与等值线',
-      category: 'basic',
-      path: '/examples/basic/heatmap',
-      difficulty: 'beginner',
-      tags: ['热力图', '分析', 'Cesium']
-    }
-    ,
-    {
-      id: 'xg-popup',
-      title: '弹窗（XgPopup）',
-      description: '展示 XgPopup 在字符串、DOM、React 三种内容形态下的使用',
-      category: 'basic',
-      path: '/examples/basic/xg-popup',
-      difficulty: 'beginner',
-      tags: ['弹窗', '交互', 'UI']
-    }
-    ,
-    {
-      id: 'model-fx-binding',
-      title: '模型与FX绑定',
-      description: '加载 J-15.glb 并绑定视锥特效，演示扫描效果',
-      category: 'basic',
-      path: '/examples/basic/model-fx-binding',
-      difficulty: 'beginner',
-      tags: ['模型', '特效', '绑定']
-    }
-  ];
+  const [filter, setFilter] = useState('');
+  const [highlightSection, setHighlightSection] = useState<string | null>(null);
+  const [highlightExample, setHighlightExample] = useState<string | null>(null);
 
-  const categories = {
-    basic: { name: '基础示例', icon: '🎯', color: '#3b82f6' },
-    advanced: { name: '高级示例', icon: '🚀', color: '#8b5cf6' },
-    integration: { name: '集成示例', icon: '🔗', color: '#10b981' }
-  };
+  useEffect(() => {
+    const applyFromHash = () => {
+      const hash = window.location.hash || '';
+      if (!hash) return;
+      const header = document.querySelector('header') as HTMLElement | null;
+      const filters = document.getElementById('examples-filters') as HTMLElement | null;
+      const base = (header?.offsetHeight || 0) + (filters?.offsetHeight || 0) + 16;
+      const isMobile = window.innerWidth <= 768;
+      const offset = isMobile ? base - 24 : base;
+      if (hash.startsWith('#section-')) {
+        const id = hash.replace('#section-', '');
+        setHighlightSection(id);
+        const el = document.getElementById(`section-${id}`);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+        setTimeout(() => setHighlightSection(null), 1200);
+      } else if (hash.startsWith('#example-')) {
+        const rest = hash.replace('#example-', '');
+        const parts = rest.split('-');
+        const catId = parts[0];
+        const exId = parts.slice(1).join('-');
+        setHighlightSection(catId);
+        setHighlightExample(`${catId}-${exId}`);
+        const el = document.getElementById(`example-${catId}-${exId}`);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+        setTimeout(() => setHighlightExample(null), 1200);
+        setTimeout(() => setHighlightSection(null), 1200);
+      }
+    };
+    applyFromHash();
+    const handler = () => applyFromHash();
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
+  }, []);
 
   const difficulties = {
     beginner: { name: '初级', color: '#10b981' },
     intermediate: { name: '中级', color: '#f59e0b' },
     advanced: { name: '高级', color: '#ef4444' }
-  };
+  } as const;
 
-  const groupedExamples = examples.reduce((acc, example) => {
-    if (!acc[example.category]) {
-      acc[example.category] = [];
-    }
-    acc[example.category].push(example);
-    return acc;
-  }, {} as Record<string, Example[]>);
+  const filteredCategories = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    if (!q) return registryCategories.map((cat) => ({ ...cat, list: getExamplesByCategory(cat.id) }));
+    return registryCategories
+      .map((cat) => ({ ...cat, list: getExamplesByCategory(cat.id).filter((ex) => {
+        const text = `${ex.title} ${ex.description || ''} ${(ex.tags || []).join(' ')}`.toLowerCase();
+        return text.includes(q);
+      }) }))
+      .filter((cat) => cat.list.length > 0);
+  }, [filter]);
 
   return (
     <div className={styles.examplesList}>
@@ -120,56 +75,87 @@ const ExamplesList: React.FC = () => {
           </p>
         </div>
 
-        {Object.entries(groupedExamples).map(([category, categoryExamples]) => {
-          const categoryInfo = categories[category as keyof typeof categories];
-          
+        <div id="examples-filters" className={styles.filters}>
+          <input
+            className={styles.filterInput}
+            placeholder="搜索示例或标签"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          />
+        </div>
+
+        {filteredCategories.map((cat) => {
+          const list = (cat as any).list as ReturnType<typeof getExamplesByCategory>;
           return (
-            <section key={category} className={styles.category}>
+            <section
+              key={cat.id}
+              id={`section-${cat.id}`}
+              className={styles.category}
+              data-highlight={highlightSection === cat.id}
+            >
               <div className={styles.categoryHeader}>
                 <span 
                   className={styles.categoryIcon}
-                  style={{ color: categoryInfo.color }}
+                  style={{ color: '#3b82f6' }}
                 >
-                  {categoryInfo.icon}
+                  {cat.icon || '📁'}
                 </span>
-                <h2 className={styles.categoryTitle}>{categoryInfo.name}</h2>
+                <h2 className={styles.categoryTitle}>{cat.name}</h2>
                 <div className={styles.categoryCount}>
-                  {categoryExamples.length} 个示例
+                  {list.length} 个示例
                 </div>
               </div>
 
               <div className={styles.examplesGrid}>
-                {categoryExamples.map((example) => (
+                {list.map((ex) => (
                   <Link
-                    key={example.id}
-                    to={example.path}
+                    key={ex.id}
+                    id={`example-${cat.id}-${ex.id}`}
+                    to={`/examples/${cat.id}/${ex.id}`}
                     className={styles.exampleCard}
+                    data-highlight={highlightExample === `${cat.id}-${ex.id}`}
                   >
-                    <div className={styles.cardHeader}>
-                      <h3 className={styles.cardTitle}>{example.title}</h3>
-                      <span 
-                        className={styles.difficulty}
-                        style={{ 
-                          color: difficulties[example.difficulty].color,
-                          borderColor: difficulties[example.difficulty].color
+                    <div className={styles.thumb}>
+                      <img
+                        className={styles.thumbImg}
+                        src={(ex.thumbnail && import.meta.env.BASE_URL + ex.thumbnail) || (import.meta.env.BASE_URL + 'xh-gis/Assets/Maps/globe_1.png')}
+                        alt={ex.title}
+                        loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          const base = import.meta.env.BASE_URL + 'xh-gis/Assets/Maps/globe_1.png';
+                          target.src = `${base}?v=${Date.now()}`;
                         }}
-                      >
-                        {difficulties[example.difficulty].name}
-                      </span>
+                      />
                     </div>
-                    
-                    <p className={styles.cardDescription}>
-                      {example.description}
-                    </p>
-                    
-                    <div className={styles.tags}>
-                      {example.tags.map((tag) => (
-                        <span key={tag} className={styles.tag}>
-                          {tag}
+                    <div className={styles.cardHeader}>
+                      <h3 className={styles.cardTitle}>{ex.title}</h3>
+                      {ex.level && (
+                        <span 
+                          className={styles.difficulty}
+                          style={{ 
+                            color: difficulties[ex.level].color,
+                            borderColor: difficulties[ex.level].color
+                          }}
+                        >
+                          {difficulties[ex.level].name}
                         </span>
-                      ))}
+                      )}
                     </div>
-                    
+                    {ex.description && (
+                      <p className={styles.cardDescription}>
+                        {ex.description}
+                      </p>
+                    )}
+                    {ex.tags && ex.tags.length > 0 && (
+                      <div className={styles.tags}>
+                        {ex.tags.map((tag) => (
+                          <span key={tag} className={styles.tag}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div className={styles.cardFooter}>
                       <span className={styles.viewExample}>
                         查看示例 →
@@ -182,7 +168,7 @@ const ExamplesList: React.FC = () => {
           );
         })}
 
-        {Object.keys(groupedExamples).length === 0 && (
+        {filteredCategories.length === 0 && (
           <div className={styles.empty}>
             <div className={styles.emptyIcon}>📝</div>
             <h3>示例正在开发中</h3>

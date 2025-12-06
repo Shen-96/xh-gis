@@ -4,10 +4,9 @@
  * @version: 1.0.0
  * @Date: 2020-11-11 11:30:13
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-05 16:39:45
+ * @LastEditTime: 2025-12-06 10:23:47
  */
 import {
-  Ion,
   Entity,
   Viewer,
   Rectangle,
@@ -44,10 +43,6 @@ import AbstractPopup from "../DataSources/XgPopup/AbstractPopup";
 import { getResourceUrl } from "./ResourceConfig";
 import pkg from "../../package.json" assert { type: "json" };
 import HeatmapManager from "./HeatmapManager";
-/// token
-Ion.defaultAccessToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNTg2OTNhYi1hM2JmLTQyYTItOWE1NS0wMzNjMzAyZDI3NGYiLCJpZCI6MjU5MTAsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODY4MzI4NDV9.2DP9UQowHfxa656C1UZT7vVvMk39xJSPTL83-Ce-Ypg";
-// Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMTYxYjE3Zi0yM2ZjLTQzOTUtOTUyZS0wNGRlYTI0NzZkNWEiLCJpZCI6MjU5LCJpYXQiOjE2MjI1Nzc1NzF9.wBdlWsqCoHM9tpplqxAPCdQWsERtxJc65IFZRf4g0z4';
 
 /**
  * 静态资源路径常量

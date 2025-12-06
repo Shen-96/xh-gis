@@ -1,0 +1,98 @@
+[
+  {
+    "id": "map",
+    "categoryId": "basic",
+    "title": "基础地图",
+    "description": "创建一个基本的3D地球，展示XH-GIS Engine的核心功能",
+    "tags": [
+      "earth",
+      "viewer"
+    ],
+    "level": "beginner",
+    "thumbnail": "xh-gis/Assets/Maps/globe_1.png"
+  },
+  {
+    "id": "widgets",
+    "categoryId": "ui",
+    "title": "组件示例",
+    "description": "展示XH-GIS Widgets包中的各种React组件",
+    "tags": [
+      "toolbar",
+      "timeline",
+      "graphic-tools"
+    ],
+    "level": "beginner",
+    "thumbnail": "thumbnails/ui/widgets.png"
+  },
+  {
+    "id": "drawing",
+    "categoryId": "drawing",
+    "title": "标绘工具",
+    "description": "演示点、线、面等几何图形的绘制功能",
+    "tags": [
+      "graphics",
+      "symbols"
+    ],
+    "level": "intermediate",
+    "thumbnail": "thumbnails/drawing/drawing.png"
+  },
+  {
+    "id": "heatmap",
+    "categoryId": "analysis",
+    "title": "热力图",
+    "description": "演示基于 Cesium 的热度图渲染与等值线",
+    "tags": [
+      "heatmap",
+      "kde"
+    ],
+    "level": "intermediate",
+    "thumbnail": "xh-gis/Assets/Particle/circular.jpg"
+  },
+  {
+    "id": "layer-manager",
+    "categoryId": "layers",
+    "title": "图层管理",
+    "description": "演示 LayerManager 添加底图组合与配置图层",
+    "tags": [
+      "imagery",
+      "geojson"
+    ],
+    "level": "intermediate",
+    "thumbnail": "thumbnails/layers/layer-manager.png"
+  },
+  {
+    "id": "xg-popup",
+    "categoryId": "ui",
+    "title": "弹窗",
+    "description": "展示 XgPopup 在字符串、DOM、React 三种内容形态下的使用",
+    "tags": [
+      "popup"
+    ],
+    "level": "beginner",
+    "thumbnail": "xh-gis/Assets/Textures/Billboard/purple_box.png"
+  },
+  {
+    "id": "model-fx-binding",
+    "categoryId": "advanced",
+    "title": "模型特效绑定",
+    "description": "加载 J-15.glb 并绑定视锥特效，演示扫描效果",
+    "tags": [
+      "fx",
+      "model"
+    ],
+    "level": "advanced",
+    "thumbnail": "thumbnails/advanced/model-fx-binding.png"
+  },
+  {
+    "id": "polyline-effects",
+    "categoryId": "effects",
+    "title": "折线特效",
+    "description": "集中展示折线材质特效：点流动、线流动、虚线滑动、虚线对流",
+    "tags": [
+      "polyline",
+      "material"
+    ],
+    "level": "intermediate",
+    "thumbnail": "xh-gis/Assets/Maps/globe_2.png"
+  }
+]

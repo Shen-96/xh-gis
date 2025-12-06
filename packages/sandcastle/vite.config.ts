@@ -1,8 +1,19 @@
+/*
+ * @Author: Xiaohu.Shen
+ * @WeChat: yingnan55
+ * @Email: trae@example.com
+ * @Version: 1.0.0
+ * @Descripttion: xxx
+ * @Date: 2025-10-10 14:53:03
+ * @LastEditors: Xiaohu.Shen
+ * @LastEditTime: 2025-12-06 12:05:29
+ */
 import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import cesium from "vite-plugin-cesium";
 import { xhgis } from "vite-plugin-xhgis";
 import { resolve } from "path";
+import thumbnailPlugin from "./dev/thumbnailPlugin";
 
 export default defineConfig({
   // 基础路径，用于 GitHub Pages 等子路径部署
@@ -16,6 +27,7 @@ export default defineConfig({
       xhgisPath: "../engine",
       debug: false,
     }),
+    thumbnailPlugin(),
   ],
   resolve: {
     alias: {

@@ -1,0 +1,9 @@
+[
+  { "id": "basic", "name": "基础", "icon": "🧭" },
+  { "id": "layers", "name": "图层", "icon": "🗺️" },
+  { "id": "drawing", "name": "标绘", "icon": "✏️" },
+  { "id": "effects", "name": "特效", "icon": "✨" },
+  { "id": "analysis", "name": "分析", "icon": "📈" },
+  { "id": "ui", "name": "UI组件", "icon": "🧩" },
+  { "id": "advanced", "name": "进阶", "icon": "🚀" }
+]

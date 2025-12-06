@@ -181,12 +181,12 @@ class ResourcePreloader {
   async preloadCriticalResources(basePath: string): Promise<void> {
     const criticalResources = [
       'globe.jpg',
-      'SkyBox/tycho2t3_80_px.jpg',
-      'SkyBox/tycho2t3_80_mx.jpg',
-      'SkyBox/tycho2t3_80_py.jpg',
-      'SkyBox/tycho2t3_80_my.jpg',
-      'SkyBox/tycho2t3_80_pz.jpg',
-      'SkyBox/tycho2t3_80_mz.jpg',
+      'SkyBox/skybox_px.jpg',
+      'SkyBox/skybox_nx.jpg',
+      'SkyBox/skybox_py.jpg',
+      'SkyBox/skybox_ny.jpg',
+      'SkyBox/skybox_pz.jpg',
+      'SkyBox/skybox_nz.jpg',
     ];
 
     const preloadPromises = criticalResources.map(resource => 

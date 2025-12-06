@@ -8,46 +8,43 @@
  * @LastEditTime: 2025-12-05 14:33:57
  */
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import Home from './pages/Home';
 import ExamplesList from './pages/ExamplesList';
+import Sidebar from './components/Sidebar';
+import ExampleDetail from './pages/ExampleDetail';
 import TestingSuite from './pages/TestingSuite';
 import NotFound from './pages/NotFound';
 
-// 导入示例页面
-import BasicMapExample from './examples/basic/BasicMapExample';
-import DrawingExample from './examples/basic/DrawingExample';
-import WidgetsExample from './examples/basic/WidgetsExample';
-import HeatmapExample from './examples/basic/HeatmapExample';
-import LayerManagerExample from './examples/basic/LayerManagerExample';
-import XgPopupExample from './examples/basic/XgPopupExample';
-import ModelFxBindingExample from './examples/basic/ModelFxBindingExample';
-import PolylineEffectsExample from './examples/basic/PolylineEffectsExample';
+// 统一使用 ExampleDetail 动态路由，不再静态导入示例页面
 
 const App: React.FC = () => {
+  const location = useLocation();
+  const isExamplesList = location.pathname === '/examples';
   return (
     <ErrorBoundary>
       <Layout>
-        <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/examples" element={<ExamplesList />} />
-        <Route path="/testing" element={<TestingSuite />} />
-        
-        {/* 基础示例 */}
-        <Route path="/examples/basic/map" element={<BasicMapExample />} />
-        <Route path="/examples/basic/drawing" element={<DrawingExample />} />
-        <Route path="/examples/basic/widgets" element={<WidgetsExample />} />
-        <Route path="/examples/basic/heatmap/*" element={<HeatmapExample />} />
-        <Route path="/examples/basic/layer-manager" element={<LayerManagerExample />} />
-        <Route path="/examples/basic/xg-popup" element={<XgPopupExample />} />
-        <Route path="/examples/basic/model-fx-binding" element={<ModelFxBindingExample />} />
-        <Route path="/examples/basic/polyline-effects" element={<PolylineEffectsExample />} />
-        
-        {/* 404页面 */}
-        <Route path="*" element={<NotFound />} />
-        </Routes>
+        {isExamplesList ? (
+          <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr' }}>
+            <Sidebar />
+            <div>
+              <Routes>
+                <Route path="/examples" element={<ExamplesList />} />
+              </Routes>
+            </div>
+          </div>
+        ) : (
+          <Routes>
+            <Route path="/" element={<Home />} />
+            {/* 示例详情页（不显示左侧 Sidebar） */}
+            <Route path="/examples/:categoryId/:exampleId" element={<ExampleDetail />} />
+            {/* 旧示例路由已移除，统一由 ExampleDetail 按注册表加载 */}
+            <Route path="/testing" element={<TestingSuite />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        )}
       </Layout>
     </ErrorBoundary>
   );

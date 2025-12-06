@@ -292,7 +292,6 @@ const DrawingExample: React.FC = () => {
           });
           break;
         case 'symbol_jg_zx':
-          // @ts-ignore
           graphicManager.setDrawEventHandler(SymbolType['进攻方向（直线/折线）'], (positions, self) => {
             console.log('符号·进攻方向（直线/折线）绘制完成:', positions);
             setDrawnShapes(prev => [...prev, { type: 'symbol_jg_zx', id: Date.now() }]);
