@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2020-11-11 11:30:13
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-08-18 17:26:46
+ * @LastEditTime: 2025-12-05 16:39:45
  */
 import {
   Ion,
@@ -117,7 +117,8 @@ export class ResourceManager {
  */
 function buildViewerOptions(): Viewer.ConstructorOptions {
   // 创建当前资源配置下的单瓦片影像提供者
-  const singleTileImageryProvider = ResourceManager.createGlobeImageryProvider();
+  const singleTileImageryProvider =
+    ResourceManager.createGlobeImageryProvider();
 
   return {
     animation: false,

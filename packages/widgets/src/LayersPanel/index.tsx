@@ -2,8 +2,21 @@
  * 图层管理面板：对齐 Engine LayerManager 的图层记录
  */
 import "./index.css";
-import React, { FC, ReactNode, RefObject, useMemo, useReducer, useState } from "react";
-import { AbstractCore, CoreType, Layer, LayerItem, LayerType } from "@xh-gis/engine";
+import React, {
+  FC,
+  ReactNode,
+  RefObject,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
+import {
+  AbstractCore,
+  CoreType,
+  Layer,
+  LayerItem,
+  LayerType,
+} from "@xh-gis/engine";
 
 type Props = {
   coreRef?: RefObject<AbstractCore<CoreType>>;
@@ -23,12 +36,13 @@ type PanelState = {
   search: string;
   autoRefresh: boolean;
   collapsedGroups: Record<string, boolean>;
-  typeFilter: Record<LayerType, boolean>;
+  // 使用字符串键存储类型筛选，避免依赖枚举是否导出某成员
+  typeFilter: Record<string, boolean>;
   filterOpen: boolean;
 };
 
 // 统一的空类型筛选映射，避免顺序依赖与类型转换警告
-const EMPTY_TYPE_FILTER: Record<LayerType, boolean> = {
+const EMPTY_TYPE_FILTER: Record<string, boolean> = {
   [LayerType.ENTITY]: false,
   [LayerType.CUSTOM_DATASOURCE]: false,
   [LayerType.CZML_DATASOURCE]: false,
@@ -53,7 +67,8 @@ type Action =
   | { type: "autoRefresh"; payload: boolean }
   | { type: "toggleGroup"; payload: { pid: string } }
   | { type: "resetCollapse" }
-  | { type: "toggleType"; payload: { layerType: LayerType } }
+  // 使用字符串类型键，避免枚举成员缺失导致的类型错误
+  | { type: "toggleType"; payload: { layerType: string } }
   | { type: "resetTypeFilter" }
   | { type: "toggleFilterOpen" };
 
@@ -66,14 +81,20 @@ function reducer(state: PanelState, action: Action): PanelState {
     case "toggleGroup": {
       const { pid } = action.payload;
       const prev = state.collapsedGroups[pid];
-      return { ...state, collapsedGroups: { ...state.collapsedGroups, [pid]: !prev } };
+      return {
+        ...state,
+        collapsedGroups: { ...state.collapsedGroups, [pid]: !prev },
+      };
     }
     case "resetCollapse":
       return { ...state, collapsedGroups: {} };
     case "toggleType": {
       const { layerType } = action.payload;
       const prev = state.typeFilter[layerType] ?? false;
-      return { ...state, typeFilter: { ...state.typeFilter, [layerType]: !prev } };
+      return {
+        ...state,
+        typeFilter: { ...state.typeFilter, [layerType]: !prev },
+      };
     }
     case "resetTypeFilter": {
       return { ...state, typeFilter: { ...EMPTY_TYPE_FILTER } };
@@ -85,7 +106,7 @@ function reducer(state: PanelState, action: Action): PanelState {
   }
 }
 
-const TYPE_LABEL: Record<LayerType, string> = {
+const TYPE_LABEL: Record<string, string> = {
   [LayerType.ENTITY]: "实体",
   [LayerType.CUSTOM_DATASOURCE]: "数据源(Custom)",
   [LayerType.CZML_DATASOURCE]: "数据源(CZML)",
@@ -131,15 +152,15 @@ function adaptRecords(records: Array<Layer<LayerItem>>): UiLayerItem[] {
       }
     } catch {}
 
-    const isGraphic = rec.pid === "标绘";
     return {
       id: rec.id,
       name: getRecordName(rec),
       type: rec.type,
-      typeLabel: TYPE_LABEL[rec.type] ?? String(rec.type),
+      typeLabel: TYPE_LABEL[String(rec.type)] ?? String(rec.type),
       visible,
       pid: rec.pid,
-      kind: isGraphic ? "graphic" : "layer",
+      // 标绘已与 LayerManager 解耦，面板仅展示传统图层记录
+      kind: "layer",
     };
   });
 }
@@ -160,14 +181,16 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
     let items = adaptRecords(records);
     const term = state.search.trim();
     if (term) {
-      items = items.filter((it) => it.name.includes(term) || it.id.includes(term));
+      items = items.filter(
+        (it) => it.name.includes(term) || it.id.includes(term)
+      );
     }
-    const selectedTypes: LayerType[] = [];
+    const selectedTypeKeys: string[] = [];
     for (const [k, v] of Object.entries(state.typeFilter)) {
-      if (v) selectedTypes.push(k as LayerType);
+      if (v) selectedTypeKeys.push(k);
     }
-    if (selectedTypes.length > 0) {
-      items = items.filter((it) => selectedTypes.includes(it.type));
+    if (selectedTypeKeys.length > 0) {
+      items = items.filter((it) => selectedTypeKeys.includes(String(it.type)));
     }
     return items;
   }, [coreRef?.current, state.search, state.typeFilter, revision]);
@@ -186,14 +209,8 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
   const handleToggleVisible = (it: UiLayerItem) => {
     const core = coreRef?.current;
     if (!core) return;
-    if (it.kind === "graphic") {
-      // 标绘实体直接控制 entity.show
-      const graphic = core.graphicManager.getById?.(it.id);
-      const entity = (graphic as any)?.entity ?? core.viewer.entities.getById(it.id);
-      if (entity) entity.show = !it.visible;
-    } else {
-      core.layerManager.setLayerVisible(it.id, !it.visible);
-    }
+    // 统一通过 LayerManager 修改可见性，保证事件派发一致
+    core.layerManager.setLayerVisible(it.id, !it.visible);
     // 触发 UI 刷新（简单策略）
     setRevision((r) => r + 1);
   };
@@ -201,11 +218,8 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
   const handleRemove = (it: UiLayerItem) => {
     const core = coreRef?.current;
     if (!core) return;
-    if (it.kind === "graphic") {
-      core.graphicManager.removeById(it.id);
-    } else {
-      core.layerManager.removeById(it.id, true);
-    }
+    // 面板仅管理 LayerManager 的记录，统一走 LayerManager
+    core.layerManager.removeById(it.id, true);
     setRevision((r) => r + 1);
   };
 
@@ -220,7 +234,9 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
     const bindToLm = (lm: any) => {
       // 解绑之前绑定的实例
       if (unbindRef.current) {
-        try { unbindRef.current(); } catch {}
+        try {
+          unbindRef.current();
+        } catch {}
         unbindRef.current = null;
       }
       // 绑定新的实例
@@ -270,7 +286,9 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
       window.clearInterval(tid);
       // 统一解绑
       if (unbindRef.current) {
-        try { unbindRef.current(); } catch {}
+        try {
+          unbindRef.current();
+        } catch {}
         unbindRef.current = null;
       }
     };
@@ -302,24 +320,33 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
         {headerTools}
       </div>
       {state.filterOpen && (
-      <div className="lp-filter" id="lp-filter">
-        {Object.entries(TYPE_LABEL).map(([typeKey, label]) => {
-          const type = typeKey as LayerType;
-          const checked = !!state.typeFilter[type];
-          return (
-            <label key={typeKey} className="lp-filter-item">
-              <input
-                type="checkbox"
-                checked={checked}
-                onChange={() => dispatch({ type: "toggleType", payload: { layerType: type } })}
-                aria-label={`筛选类型-${label}`}
-              />
-              <span>{label}</span>
-            </label>
-          );
-        })}
-        <button className="lp-button" onClick={() => dispatch({ type: "resetTypeFilter" })}>清空</button>
-      </div>
+        <div className="lp-filter" id="lp-filter">
+          {Object.entries(TYPE_LABEL).map(([typeKey, label]) => {
+            const checked = !!state.typeFilter[typeKey];
+            return (
+              <label key={typeKey} className="lp-filter-item">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() =>
+                    dispatch({
+                      type: "toggleType",
+                      payload: { layerType: typeKey },
+                    })
+                  }
+                  aria-label={`筛选类型-${label}`}
+                />
+                <span>{label}</span>
+              </label>
+            );
+          })}
+          <button
+            className="lp-button"
+            onClick={() => dispatch({ type: "resetTypeFilter" })}
+          >
+            清空
+          </button>
+        </div>
       )}
       <div className="lp-body">
         {Object.keys(grouped).length === 0 ? (
@@ -332,10 +359,15 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
                 <div className="lp-group-header">
                   <div className="lp-group-title">{pid}</div>
                   <div className="lp-group-tools">
-                    <button className="lp-button" onClick={() => handleGroupToggle(pid)}>
+                    <button
+                      className="lp-button"
+                      onClick={() => handleGroupToggle(pid)}
+                    >
                       {collapsed ? "展开" : "收起"}
                     </button>
-                    <span style={{ color: "var(--lp-muted)" }}>共 {items.length} 条</span>
+                    <span style={{ color: "var(--lp-muted)" }}>
+                      共 {items.length} 条
+                    </span>
                   </div>
                 </div>
                 {!collapsed && (
@@ -351,7 +383,12 @@ const LayersPanel: FC<Props> = ({ coreRef }) => {
                         <div className="lp-item-name">{it.name}</div>
                         <div className="lp-item-type">{it.typeLabel}</div>
                         <div style={{ display: "flex", gap: 6 }}>
-                          <button className="lp-button" onClick={() => handleRemove(it)}>删除</button>
+                          <button
+                            className="lp-button"
+                            onClick={() => handleRemove(it)}
+                          >
+                            删除
+                          </button>
                         </div>
                       </div>
                     ))}

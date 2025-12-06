@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2021-03-26 20:05:36
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-11-27 17:44:33
+ * @LastEditTime: 2025-12-05 18:03:24
  */
 import {
   GeoJsonDataSource,
@@ -36,8 +36,6 @@ import {
 import { BasemapConfig, Layer, LayerConfig, LayerItem } from "../types";
 import { GraphicType, LayerType } from "../enum";
 import CoordinateUtils from "./CoordinateUtils";
-import GraphicManager from "./GraphicManager";
-import GraphicUtils from "./GraphicUtils";
 import MathUtils from "./MathUtils";
 import AbstractManager from "./AbstractManager";
 import AbstractCore from "./AbstractCore";
@@ -81,10 +79,7 @@ class LayerManager extends AbstractManager {
    * - sizeChanged: 图层记录数量发生变化
    * - collectionChanged: 图层记录集合发生变化
    */
-  private listeners: Record<
-    LayerManagerEvent,
-    Set<(payload: any) => void>
-  >;
+  private listeners: Record<LayerManagerEvent, Set<(payload: any) => void>>;
 
   /**
    * @descripttion: 图层记录管理器
@@ -101,35 +96,6 @@ class LayerManager extends AbstractManager {
       sizeChanged: new Set(),
       collectionChanged: new Set(),
     };
-
-    // 桥接 GraphicManager 事件，使标绘纳入图层记录（分组：标绘）
-    try {
-      const gm = (core as any).graphicManager as GraphicManager;
-      gm?.on("added", (graphic) => {
-        // 标绘统一以 ENTITY 记录，分组 pid 设为“标绘”
-        this.#registerLayer(graphic.id, LayerType.ENTITY, graphic.entity, "标绘");
-      });
-      gm?.on("removed", (id) => {
-        const rec = this.#layerMap.get(id);
-        if (rec?.pid === "标绘") {
-          this.#layerMap.delete(id);
-          // 同步派发移除与派生事件
-          this.emit("removed", rec);
-        }
-      });
-      gm?.on("cleared", () => {
-        let changed = false;
-        for (const [id, record] of this.#layerMap.entries()) {
-          if (record.pid === "标绘") {
-            this.#layerMap.delete(id);
-            changed = true;
-          }
-        }
-        if (changed) this.emit("cleared");
-      });
-    } catch (e) {
-      console.warn("LayerManager: bridge graphic events failed", e);
-    }
   }
 
   /** LayerManager 事件类型 */
@@ -280,8 +246,9 @@ class LayerManager extends AbstractManager {
     show?: boolean,
     index?: number
   ): TerrainProvider | undefined;
+  // 移除对 AbstractGraphic 的重载支持，彻底与 GraphicManager 解耦
 
-  add<T extends LayerItem>(id: string, layer: T, show = true, index?: number) {
+  add(id: string, layer: LayerItem, show: boolean = true, index?: number) {
     /// 判断是否已存在
     if (!id) {
       throw new Error("id 未定义");
@@ -293,7 +260,7 @@ class LayerManager extends AbstractManager {
     if (layer instanceof Entity) {
       this.viewer.entities.add(layer);
 
-      layer.show = show;
+      (layer as Entity).show = show;
 
       this.#registerLayer(id, LayerType.ENTITY, layer);
 
@@ -305,7 +272,7 @@ class LayerManager extends AbstractManager {
         this.viewer.dataSources
           .add(layer)
           .then((dataSource) => {
-            layer.show = show;
+            (layer as GeoJsonDataSource).show = show;
 
             this.#registerLayer(id, LayerType.GEOJSON_DATASOURCE, dataSource);
 
@@ -321,7 +288,7 @@ class LayerManager extends AbstractManager {
         this.viewer.dataSources
           .add(layer)
           .then((dataSource) => {
-            layer.show = show;
+            (layer as CustomDataSource).show = show;
 
             this.#registerLayer(id, LayerType.CUSTOM_DATASOURCE, dataSource);
 
@@ -337,7 +304,7 @@ class LayerManager extends AbstractManager {
         this.viewer.dataSources
           .add(layer)
           .then((dataSource) => {
-            layer.show = show;
+            (layer as KmlDataSource).show = show;
 
             this.#registerLayer(id, LayerType.KML_DATASOURCE, dataSource);
 
@@ -353,7 +320,7 @@ class LayerManager extends AbstractManager {
         this.viewer.dataSources
           .add(layer)
           .then((dataSource) => {
-            layer.show = show;
+            (layer as CzmlDataSource).show = show;
 
             this.#registerLayer(id, LayerType.CZML_DATASOURCE, dataSource);
 
@@ -368,7 +335,7 @@ class LayerManager extends AbstractManager {
     if (layer instanceof Primitive) {
       const primitive: Primitive = this.viewer.scene.primitives.add(layer);
 
-      primitive.show = show;
+      (primitive as Primitive).show = show;
 
       this.#registerLayer(id, LayerType.PRIMITIVE, primitive);
 
@@ -379,7 +346,7 @@ class LayerManager extends AbstractManager {
       const primitiveCollection: PrimitiveCollection =
         this.viewer.scene.primitives.add(layer);
 
-      primitiveCollection.show = show;
+      (primitiveCollection as PrimitiveCollection).show = show;
 
       this.#registerLayer(
         id,
@@ -393,7 +360,7 @@ class LayerManager extends AbstractManager {
     if (layer instanceof ImageryLayer) {
       this.viewer.scene.imageryLayers.add(layer, index);
 
-      layer.show = show;
+      (layer as ImageryLayer).show = show;
 
       this.#registerLayer(id, LayerType.IMAGERY, layer);
 
@@ -425,7 +392,6 @@ class LayerManager extends AbstractManager {
     }
     /// DEM
     if (layer instanceof TerrainProvider) {
-      // this.viewer.terrainProvider = layer;
       this.viewer.scene.terrainProvider = layer;
 
       this.#registerLayer(id, LayerType.TERRAIN, this.viewer.terrainProvider);
@@ -433,6 +399,8 @@ class LayerManager extends AbstractManager {
       return this.viewer.scene.terrainProvider;
     }
   }
+
+  // 已移除对 AbstractGraphic 的支持
 
   /**
    * @descripttion: 是否存在图层
@@ -514,6 +482,19 @@ class LayerManager extends AbstractManager {
     if (!record) return;
     this.setVisible(id, record.type, visible);
     this.emit("visibleChanged", { id, type: record.type, visible });
+  }
+
+  /**
+   * 设置图层分组（pid）。用于在记录展示中显示“标绘”等分组标签。
+   */
+  setLayerGroup(id: string, pid?: string): void {
+    const record = this.#layerMap.get(String(id));
+    if (!record) return;
+    // 更新记录的分组
+    (record as any).pid = pid;
+    this.#layerMap.set(String(id), record);
+    // 分发集合变化事件，便于 UI 刷新
+    this.emit("collectionChanged", this.listAll());
   }
 
   /**

@@ -24,6 +24,15 @@ const ExamplesList: React.FC = () => {
       tags: ['地图', '3D', '基础']
     },
     {
+      id: 'polyline-effects',
+      title: '线型特效',
+      description: '集中展示折线材质特效：点流动、线流动、虚线滑动、虚线对流',
+      category: 'basic',
+      path: '/examples/basic/polyline-effects',
+      difficulty: 'beginner',
+      tags: ['折线', '材质', '动态']
+    },
+    {
       id: 'drawing',
       title: '图形绘制',
       description: '演示点、线、面等几何图形的绘制功能',
