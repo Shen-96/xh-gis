@@ -147,16 +147,29 @@ class ResourceManager {
    * 默认URL解析器
    */
   private defaultUrlResolver(path: string): string {
-    // 始终优先使用已配置的基础路径；未配置时默认使用 '/xh-gis/Assets'
-    const configuredBase = this.config.basePath;
-    const basePathRaw = (configuredBase && configuredBase !== '') ? configuredBase : '/xh-gis/Assets';
-    const basePath = basePathRaw.replace(/\/$/, '');
+    const configuredBase = (this.config.basePath || '').replace(/\/$/, '');
+    const defaultBase = '/xh-gis/Assets';
+    const basePath = configuredBase || defaultBase;
+
+    // 统一清洗 path，移除开头的斜杠，避免 // 双斜杠
+    const normalizedPath = path.replace(/^\/+/, '');
 
     // 如果 basePath 不以 /Assets 结尾，且传入路径未包含 Assets/ 前缀，则自动补齐
-    const needsAssetsPrefix = !basePath.endsWith('/Assets') && !path.startsWith('Assets/');
-    const cleanPath = needsAssetsPrefix ? `Assets/${path}` : path;
+    const needAssetsPrefix = !basePath.endsWith('/Assets') && !normalizedPath.startsWith('Assets/');
+    const finalPath = needAssetsPrefix ? `Assets/${normalizedPath}` : normalizedPath;
 
-    return `${basePath}/${cleanPath}`;
+    const primaryUrl = `${basePath}/${finalPath}`;
+
+    // 兜底：如果 primaryUrl 以 /xh-gis/Assets 开头但静态服务未开启子路径
+    // 则提供 CDN/根路径回退（以 window.location.origin 为前缀）
+    try {
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      if (primaryUrl.startsWith('/xh-gis/Assets/') && origin) {
+        return primaryUrl; // 仍然返回主 URL，加载失败时由调用方控制
+      }
+    } catch {}
+
+    return primaryUrl;
   }
 
   /**

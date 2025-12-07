@@ -8,7 +8,7 @@
  */
 import { Matrix4, createGuid, Primitive } from 'cesium';
 import createEllipsoidInstance from './createEllipsoidInstance';
-import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
+import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
 import type { EllipsoidGraphicOptions } from '../../types';
 
 function createEllipsoidPrimitive(
@@ -33,7 +33,7 @@ function createEllipsoidPrimitive(
     //         ),
     //     }),
     // }),
-    appearance: createCustomMaterialAppearance(style),
+    appearance: createAppearance(style),
     modelMatrix
   });
 

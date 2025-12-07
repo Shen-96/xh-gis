@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2022-01-18 13:04:45
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-06 10:23:28
+ * @LastEditTime: 2025-12-06 18:12:49
  */
 import type { GraphicOptions, Point3Deg } from "../types";
 import { GeometryType, GraphicType, SymbolType } from "../enum";
@@ -304,11 +304,29 @@ export default class GraphicManager extends AbstractManager {
     type: SymbolType.不标示突破地段的作战行动,
     callback?: GeometryDrawEventCallbackMap[GeometryType.LINE]
   ): void;
-  setDrawEventHandler(type: any, callback?: any) {
+  setDrawEventHandler(
+    type: any,
+    callback?: any,
+    opts?: { addAt?: "start" | "end" }
+  ) {
     try {
       const symbol = this.create(type);
+      const addAt = opts?.addAt ?? "end";
 
-      symbol.beginDraw(callback);
+      if (addAt === "start") {
+        this.add(symbol as any);
+      }
+
+      symbol.beginDraw((pos: any, self: any) => {
+        if (addAt === "end") {
+          try {
+            this.add(self as any);
+          } catch {}
+        }
+        try {
+          callback?.(pos, self);
+        } catch {}
+      });
     } catch (error) {
       console.error("drawManager:", error);
     }
@@ -333,92 +351,43 @@ export default class GraphicManager extends AbstractManager {
     }
   }
 
-  create(type: GraphicType.POINT, position?: Point3Deg): XgMark;
-  create(
-    type: GraphicType.FREEHAND_LINE,
-    positions?: Array<Point3Deg>
-  ): XgFreehandLine;
-  create(type: GraphicType.CURVE, positions?: Array<Point3Deg>): XgCurve;
-  create(
-    type: GraphicType.RECTANGLE,
-    positions?: Array<Point3Deg>
-  ): XgRectangle;
-  create(
-    type: GraphicType.FIXED_RATIO_RECTANGLE,
-    positions?: Array<Point3Deg>
-  ): XgFixedRatioRectangle;
-  create(type: GraphicType.POLYGON, positions?: Array<Point3Deg>): XgPolygon;
-  create(
-    type: GraphicType.FREEHAND_POLYGON,
-    positions?: Array<Point3Deg>
-  ): XgFreehandPolygon;
-  create(type: GraphicType.CIRCLE, positions?: Point3Deg[]): XgCircle;
-  create(type: GraphicType.ELLIPSE, positions?: Point3Deg[]): XgEllipse;
-  create(
-    type: GraphicType.KIDNEY_SHAPED,
-    positions?: Point3Deg[]
-  ): XgKidneyShaped;
-  create(type: GraphicType.SECTOR, positions?: Point3Deg[]): XgSector;
-  create(type: GraphicType.LUNE, positions?: Point3Deg[]): XgLune;
-  create(type: GraphicType.TRIANGLE, positions?: Point3Deg[]): XgTriangle;
-  create(
-    type: GraphicType.STRAIGHT_TAIL_ARROW,
-    positions?: Point3Deg[]
-  ): XgStraightTailArrow;
-  create(
-    type: GraphicType.STRAIGHT_TAIL_RIGHT_ARROW,
-    positions?: Point3Deg[]
-  ): XgStraightTailRightArrow;
-  create(type: GraphicType.CURVE_ARROW, positions?: Point3Deg[]): XgCurvedArrow;
-  create(
-    type: GraphicType.STRAIGHT_ARROW,
-    positions?: Point3Deg[]
-  ): XgStraightArrow;
-  create(
-    type: GraphicType.FREE_FLAT_TAIL_ARROW,
-    positions?: Point3Deg[]
-  ): XgFreeFlatTailArrow;
-  create(
-    type: GraphicType.FREE_SWALLOW_TAIL_ARROW,
-    positions?: Point3Deg[]
-  ): XgFreeSwallowTailArrow;
-  create(
-    type: GraphicType.FIXED_FLAT_TAIL_ARROW,
-    positions?: Point3Deg[]
-  ): XgFixedFlatTailArrow;
-  create(
-    type: GraphicType.FIXED_SWALLOW_TAIL_ARROW,
-    positions?: Point3Deg[]
-  ): XgFixedSwallowTailArrow;
-  create(
-    type: GraphicType.DOUBLE_ARROW,
-    positions?: Point3Deg[]
-  ): XgDoubleArrow;
-  create(type: SymbolType.战役突击方向, positions?: Point3Deg[]): ZyTjArrow;
-  create(type: SymbolType.战役反突击方向, positions?: Point3Deg[]): ZyFtjArrow;
-  create(
-    type: SymbolType.联合火力打击方向,
-    positions?: Point3Deg[]
-  ): LhHlDjArrow;
-  create(
-    type: SymbolType.精确火力打击方向,
-    positions?: Point3Deg[]
-  ): JqLhHlDjArrow;
-  create(type: SymbolType.进攻方向, positions?: Point3Deg[]): JgArrow;
+  create(type: GraphicType.POINT): XgMark;
+  create(type: GraphicType.FREEHAND_LINE): XgFreehandLine;
+  create(type: GraphicType.CURVE): XgCurve;
+  create(type: GraphicType.RECTANGLE): XgRectangle;
+  create(type: GraphicType.FIXED_RATIO_RECTANGLE): XgFixedRatioRectangle;
+  create(type: GraphicType.POLYGON): XgPolygon;
+  create(type: GraphicType.FREEHAND_POLYGON): XgFreehandPolygon;
+  create(type: GraphicType.CIRCLE): XgCircle;
+  create(type: GraphicType.ELLIPSE): XgEllipse;
+  create(type: GraphicType.KIDNEY_SHAPED): XgKidneyShaped;
+  create(type: GraphicType.SECTOR): XgSector;
+  create(type: GraphicType.LUNE): XgLune;
+  create(type: GraphicType.TRIANGLE): XgTriangle;
+  create(type: GraphicType.STRAIGHT_TAIL_ARROW): XgStraightTailArrow;
+  create(type: GraphicType.STRAIGHT_TAIL_RIGHT_ARROW): XgStraightTailRightArrow;
+  create(type: GraphicType.CURVE_ARROW): XgCurvedArrow;
+  create(type: GraphicType.STRAIGHT_ARROW): XgStraightArrow;
+  create(type: GraphicType.FREE_FLAT_TAIL_ARROW): XgFreeFlatTailArrow;
+  create(type: GraphicType.FREE_SWALLOW_TAIL_ARROW): XgFreeSwallowTailArrow;
+  create(type: GraphicType.FIXED_FLAT_TAIL_ARROW): XgFixedFlatTailArrow;
+  create(type: GraphicType.FIXED_SWALLOW_TAIL_ARROW): XgFixedSwallowTailArrow;
+  create(type: GraphicType.DOUBLE_ARROW): XgDoubleArrow;
+  create(type: SymbolType.战役突击方向): ZyTjArrow;
+  create(type: SymbolType.战役反突击方向): ZyFtjArrow;
+  create(type: SymbolType.联合火力打击方向): LhHlDjArrow;
+  create(type: SymbolType.精确火力打击方向): JqLhHlDjArrow;
+  create(type: SymbolType.进攻方向): JgArrow;
   create(
     // @ts-ignore
-    type: SymbolType["进攻方向（直线/折线）"],
-    positions?: Point3Deg[]
+    type: SymbolType["进攻方向（直线/折线）"]
   ): JgZxArrow;
   // create(
   //   type: SymbolType.本级地面作战主攻方向,
   //   positions?: Point3Deg[]
   // ): CurvedArrow;
-  create(type: SymbolType.反冲击方向, positions?: Point3Deg[]): FcjArrow;
-  create(
-    type: SymbolType.不标示突破地段的作战行动,
-    positions?: Point3Deg[]
-  ): BbsTpDdArrow;
+  create(type: SymbolType.反冲击方向): FcjArrow;
+  create(type: SymbolType.不标示突破地段的作战行动): BbsTpDdArrow;
   /**
    * @descripttion: 根据绘制类型创建实体
    * @param {string} id
@@ -428,290 +397,41 @@ export default class GraphicManager extends AbstractManager {
    * @return {Entity | null}
    * @author: Xiaohu.Shen
    */
-  create(type: GraphicType | SymbolType, param1?: any, param2?: any) {
+  create(type: GraphicType | SymbolType) {
     let plot: AbstractGraphic<GeometryType>;
 
-    // 先使用注册表进行构造（减少巨型分支）
     const Ctor =
       registry.getGraphic(type as GraphicType) ||
       registry.getSymbol(type as SymbolType);
-    if (Ctor) {
-      const symbol = (plot = new Ctor({
-        core: this.core,
-        style: param2,
-        position: type === GraphicType.POINT ? param1 : undefined,
-        positions: type !== GraphicType.POINT ? param1 : undefined,
-      }));
-      if (type === GraphicType.POINT && (symbol as any).setPosition) {
-        param1 && (symbol as any).setPosition(param1);
-      } else if ((symbol as any).setPositions) {
-        param1 && (symbol as any).setPositions(param1);
-      }
-      // 如果传入了 positions/position，说明是直接创建的静态图形，需纳入管理器
-      if (
-        (type === GraphicType.POINT && !!param1) ||
-        (type !== GraphicType.POINT && !!param1)
-      ) {
-        this.add(symbol as any);
-      }
-      return plot;
+    if (!Ctor) {
+      throw new Error("未注册的标绘类型");
     }
 
-    // switch (type) {
-    // case GraphicType.POINT:
-    //   plot = this.createXgPoint(options);
-    //   break;
-    // case GraphicType.LABEL:
-    //   plot = this.createXgLabel(options);
-    //   break;
-    // case GraphicType.BILLBOARD:
-    //   plot = this.createXgBillboard(options);
-    //   break;
-    if (type === GraphicType.POINT) {
-      const symbol = (plot = new XgMark({ core: this.core }));
-      symbol.setPosition(param1);
-      // 直接创建的对象纳入管理器
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.FREEHAND_LINE) {
-      const symbol = (plot = new XgFreehandLine({
-        core: this.core,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.CURVE) {
-      const symbol = (plot = new XgCurve({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.RECTANGLE) {
-      const symbol = (plot = new XgRectangle({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.POLYGON) {
-      const symbol = (plot = new XgPolygon({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.FREEHAND_POLYGON) {
-      const symbol = (plot = new XgFreehandPolygon({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.CIRCLE) {
-      const symbol = (plot = new XgCircle({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.ELLIPSE) {
-      const symbol = (plot = new XgEllipse({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.KIDNEY_SHAPED) {
-      const symbol = (plot = new XgKidneyShaped({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.SECTOR) {
-      const symbol = (plot = new XgSector({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.LUNE) {
-      const symbol = (plot = new XgLune({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.TRIANGLE) {
-      const symbol = (plot = new XgTriangle({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.STRAIGHT_TAIL_ARROW) {
-      const symbol = (plot = new XgStraightTailArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.STRAIGHT_TAIL_RIGHT_ARROW) {
-      const symbol = (plot = new XgStraightTailRightArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.CURVE_ARROW) {
-      const symbol = (plot = new XgCurvedArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.STRAIGHT_ARROW) {
-      const symbol = (plot = new XgStraightArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.FREE_FLAT_TAIL_ARROW) {
-      const symbol = (plot = new XgFreeFlatTailArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.FREE_SWALLOW_TAIL_ARROW) {
-      const symbol = (plot = new XgFreeSwallowTailArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.FIXED_FLAT_TAIL_ARROW) {
-      const symbol = (plot = new XgFixedFlatTailArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.FIXED_SWALLOW_TAIL_ARROW) {
-      const symbol = (plot = new XgFixedSwallowTailArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === GraphicType.DOUBLE_ARROW) {
-      const symbol = (plot = new XgDoubleArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === SymbolType.战役突击方向) {
-      const symbol = (plot = new ZyTjArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === SymbolType.战役反突击方向) {
-      const symbol = (plot = new ZyFtjArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === SymbolType.联合火力打击方向) {
-      const symbol = (plot = new LhHlDjArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === SymbolType.精确火力打击方向) {
-      const symbol = (plot = new JqLhHlDjArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === SymbolType.进攻方向) {
-      const symbol = (plot = new JgArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === SymbolType["进攻方向（直线/折线）"]) {
-      const symbol = (plot = new JgZxArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    }
-    //  else if (type === SymbolType.本级地面作战主攻方向) {
-    //   const symbol = (plot = new CurvedArrow({
-    //     core: this.core,
-    //     style: param2,
-    //   }));
-    //   param1 && symbol.setPositions(param1);
-    // }
-    else if (type === SymbolType.反冲击方向) {
-      const symbol = (plot = new FcjArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else if (type === SymbolType.不标示突破地段的作战行动) {
-      const symbol = (plot = new BbsTpDdArrow({
-        core: this.core,
-        style: param2,
-      }));
-      param1 && symbol.setPositions(param1);
-      param1 && this.add(symbol);
-    } else {
-      throw Error("无效的标绘类型");
-    }
-
-    // case GraphicType.CIRCLE:
-    //   plot = this.createXgCircle(options);
-    //   break;
-    // case GraphicType.SECTOR:
-    //   plot = this.createXgSector(options);
-    //   break;
-    // case GraphicType.CURVE:
-    //   plot = this.createXgBezierCurve(options);
-    //   break;
-    // case GraphicType.CURVE_ARROW:
-    //   plot = this.createXgBezierCurve(options);
-    //   break;
-    // case GraphicType.ARROW_STRAIGHT:
-    //   plot = this.createXgStraightArrow(options);
-    //   break;
-    // case GraphicType.ARROW_ATTACK_FLAT:
-    //   plot = this.createXgFlatTailArrow(options);
-    //   break;
-    // case GraphicType.ARROW_ATTACK_SWALLOW:
-    //   plot = this.createXgSwallowTailArrow(options);
-    //   break;
-    // case GraphicType.ARROW_PINCER:
-    //   plot = this.createXgPincerArrow(options);
-    //   break;
-    // case GraphicType.STAGING_AREA:
-    //   plot = this.createXgStagingArea(options);
-    //   break;
-
-    //   default:
-    //     break;
-    // }
+    const instance = (plot = new Ctor({
+      core: this.core,
+    }));
 
     return plot;
+  }
+
+  createAndAdd(
+    type: GraphicType | SymbolType,
+    options?: { position?: any; positions?: any; style?: any }
+  ): AbstractGraphic<GeometryType> {
+    const g = this.create(type);
+    try {
+      if (options?.style && (g as any).style !== undefined) {
+        (g as any).style = options.style;
+      }
+      if (options?.position && (g as any).setPosition) {
+        (g as any).setPosition(options.position);
+      }
+      if (options?.positions && (g as any).setPositions) {
+        (g as any).setPositions(options.positions);
+      }
+      this.add(g as any);
+    } catch {}
+    return g;
   }
 
   /**
@@ -786,7 +506,8 @@ export default class GraphicManager extends AbstractManager {
         const symbolType = (g as any).symbolType as SymbolType | undefined;
         // 若 symbolType 缺失，则尝试通过枚举值反查键名；否则直接用枚举值（字符串）
         const codeKey = symbolType
-          ? CoordinateUtils.getKeyByEnumValue(SymbolType, symbolType) ?? symbolType
+          ? CoordinateUtils.getKeyByEnumValue(SymbolType, symbolType) ??
+            symbolType
           : undefined;
         base.code = (codeKey ?? type) as any;
       }
@@ -820,8 +541,15 @@ export default class GraphicManager extends AbstractManager {
 
       const coords: [number, number][] = positions.map((p) => {
         // Point3Deg is [lon, lat, alt]
-        const lon = Array.isArray(p) ? p[0] : (p as any)?.longitude ?? (p as any)?.lon ?? (p as any)?.lng ?? (p as any)?.x;
-        const lat = Array.isArray(p) ? p[1] : (p as any)?.latitude ?? (p as any)?.lat ?? (p as any)?.y;
+        const lon = Array.isArray(p)
+          ? p[0]
+          : (p as any)?.longitude ??
+            (p as any)?.lon ??
+            (p as any)?.lng ??
+            (p as any)?.x;
+        const lat = Array.isArray(p)
+          ? p[1]
+          : (p as any)?.latitude ?? (p as any)?.lat ?? (p as any)?.y;
         return [Number(lon ?? 0), Number(lat ?? 0)] as [number, number];
       });
 
@@ -867,9 +595,15 @@ export default class GraphicManager extends AbstractManager {
 
       // 附加符号 code（若为 SYMBOL 类型）
       if (symbol.graphicType === GraphicType.SYMBOL) {
-        const symbolType = (symbol as any).symbolType as SymbolType | string | undefined;
+        const symbolType = (symbol as any).symbolType as
+          | SymbolType
+          | string
+          | undefined;
         if (symbolType) {
-          const key = CoordinateUtils.getKeyByEnumValue(SymbolType as any, symbolType as any);
+          const key = CoordinateUtils.getKeyByEnumValue(
+            SymbolType as any,
+            symbolType as any
+          );
           props.code = key ?? String(symbolType);
         }
       }

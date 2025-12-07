@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2022-06-14 17:07:39
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-08-14 18:35:14
+ * @LastEditTime: 2025-12-07 19:39:37
  */
 
 import {
@@ -38,6 +38,7 @@ import type {
   PolylineStyleOptions,
   PolylineMaterialOptions,
 } from "../types";
+import type { SerializableUniformsMap } from "../Rendering/Materials/types";
 import {
   LabelStyleValueType,
   VerticalOriginValueType,
@@ -47,11 +48,15 @@ import {
   HeightReferenceValueType,
 } from "../enum";
 import CoordinateUtils from "./CoordinateUtils";
-import ConvectionPointMaterialProperty from "../DataSources/Materials/ConvectionPointMaterialProperty";
-import FlowLineMaterialProperty from "../DataSources/Materials/FlowLineMaterialProperty";
-import FlowPointMaterialProperty from "../DataSources/Materials/FlowPointMaterialProperty";
-import PolylineDashConvectionMaterialProperty from "../DataSources/Materials/PolylineDashConvectionMaterialProperty";
-import PolylineDashSliderMaterialProperty from "../DataSources/Materials/PolylineDashSliderMaterialProperty";
+import ConvectionPointMaterialProperty from "../Rendering/Materials/Properties/ConvectionPointMaterialProperty";
+import FlowLineMaterialProperty from "../Rendering/Materials/Properties/FlowLineMaterialProperty";
+import FlowLineAdaptiveMaterialProperty from "../Rendering/Materials/Properties/FlowLineAdaptiveMaterialProperty";
+import FlowLineMSDFMaterialProperty from "../Rendering/Materials/Properties/FlowLineMSDFMaterialProperty";
+import MSDFStaticMaterialProperty from "../Rendering/Materials/Properties/MSDFStaticMaterialProperty";
+import FlowPointMaterialProperty from "../Rendering/Materials/Properties/FlowPointMaterialProperty";
+import PolylineDashConvectionMaterialProperty from "../Rendering/Materials/Properties/PolylineDashConvectionMaterialProperty";
+import PolylineDashSliderMaterialProperty from "../Rendering/Materials/Properties/PolylineDashSliderMaterialProperty";
+import PolylineDashFlowMaterialProperty from "../Rendering/Materials/Properties/PolylineDashFlowMaterialProperty";
 
 const defaultPointStyle: Pick<
   PointStyleOptions,
@@ -357,7 +362,88 @@ export default class GraphicUtils {
    */
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions>,
-    params?: { startPosition?: Cartesian3 }
+    params?: { startPosition?: [number, number, number] }
+  ): MaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.FlowLine;
+      uniforms?: SerializableUniformsMap[MaterialType.FlowLine];
+    },
+    params?: {}
+  ): FlowLineMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.FlowLineAdaptive;
+      uniforms?: SerializableUniformsMap[MaterialType.FlowLineAdaptive];
+    },
+    params?: {}
+  ): FlowLineAdaptiveMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.FlowLineMSDF;
+      uniforms?: SerializableUniformsMap[MaterialType.FlowLineMSDF];
+    },
+    params?: {}
+  ): FlowLineMSDFMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.MSDFStatic;
+      uniforms?: SerializableUniformsMap[MaterialType.MSDFStatic];
+    },
+    params?: {}
+  ): MSDFStaticMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.FlowPoint;
+      uniforms?: SerializableUniformsMap[MaterialType.FlowPoint];
+    },
+    params?: {}
+  ): FlowPointMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.ConvectionPoint;
+      uniforms?: SerializableUniformsMap[MaterialType.ConvectionPoint];
+    },
+    params?: {}
+  ): ConvectionPointMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.PolylineArrow;
+      uniforms?: { color?: string };
+    },
+    params?: {}
+  ): PolylineArrowMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.PolylineDash;
+      uniforms?: { color?: string; dashPattern?: number };
+    },
+    params?: {}
+  ): PolylineDashMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.PolylineDashConvection;
+      uniforms?: SerializableUniformsMap[MaterialType.PolylineDashConvection];
+    },
+    params?: { startPosition?: [number, number, number] }
+  ): PolylineDashConvectionMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.PolylineDashSlider;
+      uniforms?: SerializableUniformsMap[MaterialType.PolylineDashSlider];
+    },
+    params?: { startPosition?: [number, number, number] }
+  ): PolylineDashSliderMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions> & {
+      materialType?: MaterialType.PolylineDashFlow;
+      uniforms?: SerializableUniformsMap[MaterialType.PolylineDashFlow];
+    },
+    params?: {}
+  ): PolylineDashFlowMaterialProperty;
+  static generatePolylineMaterialPropertyByMaterialOptions(
+    options?: Partial<PolylineMaterialOptions>,
+    params?: { startPosition?: [number, number, number] }
   ) {
     const {
       color,
@@ -368,65 +454,161 @@ export default class GraphicUtils {
       uniforms,
     } = options ?? {};
 
-    let result: MaterialProperty | undefined;
+    const resolvedImage = (uniforms as any)?.image ?? "";
+
+    let result: MaterialProperty;
 
     switch (materialType) {
       case MaterialType.FlowPoint:
-        result = new FlowPointMaterialProperty({
-          speed: uniforms?.speed,
-          background: uniforms?.background,
-          point: uniforms?.point,
-          reverse: uniforms?.reverse,
-        });
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.FlowPoint];
+          result = new FlowPointMaterialProperty({
+            speed: u?.speed,
+            background: u?.background,
+            point: u?.point,
+            reverse: u?.reverse,
+          });
+        }
         break;
       case MaterialType.FlowLine:
-        result = new FlowLineMaterialProperty({
-          speed: uniforms?.speed,
-          image: uniforms?.image ?? "",
-          // image: './assets/class/wd/link_new.png'
-        });
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.FlowLine];
+          result = new FlowLineMaterialProperty({
+            speed: u?.speed,
+            image: resolvedImage,
+            repeat: Array.isArray(u?.repeat)
+              ? new Cartesian2(u.repeat![0], u.repeat![1])
+              : undefined,
+            sample1D: u?.sample1D,
+            vScale: u?.vScale,
+          });
+        }
+        break;
+      case MaterialType.FlowLineAdaptive:
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.FlowLineAdaptive];
+          result = new FlowLineAdaptiveMaterialProperty({
+            speed: u?.speed,
+            image: resolvedImage,
+            repeat: Array.isArray(u?.repeat)
+              ? new Cartesian2(u.repeat![0], u.repeat![1])
+              : undefined,
+            lineWidthPx:
+              typeof (options as any)?.width === "number"
+                ? (options as any)?.width
+                : undefined,
+            imageHeightPx: u?.imageHeightPx,
+            modeIndex: u?.modeIndex,
+          });
+        }
+        break;
+      case MaterialType.FlowLineMSDF:
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.FlowLineMSDF];
+          result = new FlowLineMSDFMaterialProperty({
+            speed: u?.speed,
+            image: resolvedImage,
+            repeat: Array.isArray(u?.repeat)
+              ? new Cartesian2(u.repeat![0], u.repeat![1])
+              : undefined,
+            range: u?.range,
+            smooth: u?.smooth,
+            color: Color.fromCssColorString(u?.color ?? color ?? "#FFF"),
+          } as any);
+        }
+        break;
+      case MaterialType.MSDFStatic:
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.MSDFStatic];
+          result = new MSDFStaticMaterialProperty({
+            image: resolvedImage,
+            repeat: Array.isArray(u?.repeat)
+              ? new Cartesian2(u.repeat![0], u.repeat![1])
+              : undefined,
+            range: u?.range,
+            smooth: u?.smooth,
+            center: u?.center,
+            color: Color.fromCssColorString(u?.color ?? color ?? "#FFF"),
+          } as any);
+        }
         break;
       case MaterialType.ConvectionPoint:
-        result = new ConvectionPointMaterialProperty({
-          speed: uniforms?.speed,
-          background: uniforms?.background,
-          point: uniforms?.point,
-        });
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.ConvectionPoint];
+          result = new ConvectionPointMaterialProperty({
+            speed: u?.speed,
+            background: u?.background,
+            point: u?.point,
+          });
+        }
         break;
       case MaterialType.PolylineArrow:
-        result = new PolylineArrowMaterialProperty(
-          Color.fromCssColorString(uniforms?.color ?? color ?? "#FFF")
-        );
+        {
+          const u = uniforms as { color?: string };
+          result = new PolylineArrowMaterialProperty(
+            Color.fromCssColorString(u?.color ?? color ?? "#FFF")
+          );
+        }
         break;
       case MaterialType.PolylineDash:
-        result = new PolylineDashMaterialProperty({
-          color: Color.fromCssColorString(uniforms?.color ?? color ?? "#FFF"),
-        });
+        {
+          const u = uniforms as { color?: string; dashPattern?: number };
+          result = new PolylineDashMaterialProperty({
+            color: Color.fromCssColorString(u?.color ?? color ?? "#FFF"),
+            dashPattern: typeof u?.dashPattern === "number" ? u.dashPattern : undefined,
+          });
+        }
         break;
       case MaterialType.PolylineDashSlider:
-        result = params?.startPosition
-          ? new PolylineDashSliderMaterialProperty({
-              color: Color.fromCssColorString(uniforms?.color ?? "#FFF"),
-              sliderColor: Color.fromCssColorString(
-                uniforms?.sliderColor ?? "#FFFF00"
-              ),
-              reverse: uniforms?.reverse ?? false,
-              speed: uniforms?.speed,
-              startPosition: params?.startPosition.clone(),
-            })
-          : undefined;
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineDashSlider];
+          result = new PolylineDashSliderMaterialProperty({
+            color: Color.fromCssColorString(u?.color ?? "#FFF"),
+            sliderColor: Color.fromCssColorString(u?.sliderColor ?? "#FFFF00"),
+            reverse: u?.reverse ?? false,
+            speed: u?.speed,
+            startPosition: params?.startPosition
+              ? new Cartesian3(
+                  (params?.startPosition as any)[0],
+                  (params?.startPosition as any)[1],
+                  (params?.startPosition as any)[2]
+                )
+              : undefined,
+          });
+        }
         break;
       case MaterialType.PolylineDashConvection:
-        result = params?.startPosition
-          ? new PolylineDashConvectionMaterialProperty({
-              color: Color.fromCssColorString(uniforms?.color ?? "#FFF"),
-              sliderColor: Color.fromCssColorString(
-                uniforms?.sliderColor ?? "#FFFF00"
-              ),
-              speed: uniforms?.speed,
-              startPosition: params?.startPosition.clone(),
-            })
-          : undefined;
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineDashConvection];
+          result = new PolylineDashConvectionMaterialProperty({
+            color: Color.fromCssColorString(u?.color ?? "#FFF"),
+            sliderColor: Color.fromCssColorString(u?.sliderColor ?? "#FFFF00"),
+            speed: u?.speed,
+            startPosition: params?.startPosition
+              ? new Cartesian3(
+                  (params?.startPosition as any)[0],
+                  (params?.startPosition as any)[1],
+                  (params?.startPosition as any)[2]
+                )
+              : undefined,
+          });
+        }
+        break;
+      case MaterialType.PolylineDashFlow:
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineDashFlow];
+          result = new PolylineDashFlowMaterialProperty({
+            color: Color.fromCssColorString(u?.color ?? "#FFF"),
+            gapColor: Color.fromCssColorString(u?.gapColor ?? "#0000"),
+            sliderColor: Color.fromCssColorString(u?.sliderColor ?? "#FFFF00"),
+            sliderLength: u?.sliderLength ?? 8.0,
+            dashLength: u?.dashLength ?? 16.0,
+            dashPattern:
+              typeof u?.dashPattern === "number" ? u?.dashPattern : 255.0,
+            speed: u?.speed,
+            reverse: (u as any)?.reverse ?? false,
+          } as any);
+        }
         break;
 
       default:

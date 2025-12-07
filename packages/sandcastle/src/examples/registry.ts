@@ -39,6 +39,7 @@ const importerMap: Record<string, () => Promise<{ default: React.ComponentType<a
   'xg-popup': () => import('../examples/basic/XgPopupExample'),
   'model-fx-binding': () => import('../examples/basic/ModelFxBindingExample'),
   'polyline-effects': () => import('../examples/basic/PolylineEffectsExample'),
+  'camera-bookmarks': () => import('../examples/basic/CameraBookmarksExample'),
 };
 
 export const examples: ExampleMeta[] = (rawExamples as any[]).map((e) => ({

@@ -28,8 +28,12 @@ import { GeometryType } from "../../../enum";
 export default abstract class AbstractLine extends AbstractGraphic<GeometryType.LINE> {
   geometryType: GeometryType.LINE;
 
-  set style(val) {
-    this._style = { ...defaultLineStyle, ...val };
+  set style(val: GeometryStyleMap[GeometryType.LINE]) {
+    const merged = {
+      ...defaultLineStyle,
+      ...val,
+    } as GeometryStyleMap[GeometryType.LINE];
+    this._style = merged;
 
     if (this.entity.polyline) {
       // if (val.material) {
@@ -77,7 +81,10 @@ export default abstract class AbstractLine extends AbstractGraphic<GeometryType.
     this.geometryType = GeometryType.LINE;
   
     this.init();
-    this.style = { ...defaultLineStyle, ...style };
+    this.style = {
+      ...defaultLineStyle,
+      ...style,
+    } as GeometryStyleMap[GeometryType.LINE];
   
     if (positions && positions.length) {
       this.setPositions(positions);

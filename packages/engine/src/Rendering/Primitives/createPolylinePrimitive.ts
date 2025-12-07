@@ -14,7 +14,7 @@ import {
   PolylineGeometry,
 } from 'cesium';
 import type { PolylineGraphicOptions } from '../../types';
-import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
+import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
 
 function createPolylinePrimitive(
   this: any,
@@ -48,7 +48,7 @@ createPolylinePrimitive.prototype.update = function (
   }
 
   /// 初始参数
-  const appearance = createCustomMaterialAppearance(
+  const appearance = createAppearance(
     this.style,
     { startPosition: this.positions?.[0] }
   );

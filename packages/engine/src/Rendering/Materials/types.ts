@@ -5,45 +5,48 @@
  * @Email: tigerk96@outlook.com
  * @Date: 2025-12-05 10:18:35
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-05 10:18:56
+ * @LastEditTime: 2025-12-07 17:48:10
  */
 import type { Color, Cartesian2, Cartesian3 } from "cesium";
 import { MaterialType } from "../../enum";
 
-// Common aliases
-export type ColorLike = Color | string;
-
 // Ellipsoid family
 export interface EllipsoidScanUniforms {
-  color?: ColorLike;
+  color?: Color;
   speed?: number;
   smooth?: boolean;
 }
 export interface EllipsoidElectricUniforms {
-  color?: ColorLike;
+  color?: Color;
   speed?: number;
 }
 export interface EllipsoidSpiralUniforms {
-  color?: ColorLike;
+  color?: Color;
   speed?: number;
 }
 export interface EllipsoidWaveUniforms {
-  color?: ColorLike;
+  color?: Color;
   speed?: number;
 }
 
 // Polyline effects
 export interface PolylineDashConvectionUniforms {
-  color?: ColorLike;
-  gapColor?: ColorLike;
-  sliderColor?: ColorLike;
+  color?: Color;
+  gapColor?: Color;
+  sliderColor?: Color;
   sliderLength?: number;
   dashLength?: number;
   dashPattern?: number | string;
   startPosition?: Cartesian3;
   speed?: number;
 }
-export interface PolylineDashSliderUniforms extends PolylineDashConvectionUniforms {
+export interface PolylineDashSliderUniforms
+  extends PolylineDashConvectionUniforms {
+  reverse?: boolean;
+}
+
+export interface PolylineDashFlowUniforms
+  extends PolylineDashConvectionUniforms {
   reverse?: boolean;
 }
 
@@ -52,6 +55,28 @@ export interface FlowLineUniforms {
   image?: string;
   speed?: number;
   repeat?: Cartesian2;
+  sample1D?: boolean;
+  vScale?: number;
+}
+
+export interface FlowLineAdaptiveUniforms {
+  image?: string;
+  speed?: number;
+  repeat?: Cartesian2;
+  lineWidthPx?: number;
+  imageHeightPx?: number;
+  modeIndex?: number;
+  color?: Color;
+}
+
+export interface FlowLineMSDFUniforms {
+  image?: string;
+  color?: Color;
+  speed?: number;
+  repeat?: Cartesian2;
+  range?: number;
+  smooth?: number;
+  center?: number;
 }
 export interface FlowPointUniforms {
   point?: string;
@@ -67,13 +92,13 @@ export interface ConvectionPointUniforms {
 
 // Surface effects
 export interface CircleRippleUniforms {
-  color?: ColorLike;
+  color?: Color;
   speed?: number;
   count?: number;
   gradient?: number;
 }
 export interface DynamicWallUniforms {
-  color?: ColorLike;
+  color?: Color;
   image?: string;
   speed?: number;
 }
@@ -87,6 +112,8 @@ export type MaterialUniforms =
   | PolylineDashConvectionUniforms
   | PolylineDashSliderUniforms
   | FlowLineUniforms
+  | FlowLineAdaptiveUniforms
+  | FlowLineMSDFUniforms
   | FlowPointUniforms
   | ConvectionPointUniforms
   | CircleRippleUniforms
@@ -100,9 +127,107 @@ export type MaterialTypeUniformsMap = {
   [MaterialType.EllipsoidWave]: EllipsoidWaveUniforms;
   [MaterialType.PolylineDashConvection]: PolylineDashConvectionUniforms;
   [MaterialType.PolylineDashSlider]: PolylineDashSliderUniforms;
+  [MaterialType.PolylineDashFlow]: PolylineDashFlowUniforms;
   [MaterialType.FlowLine]: FlowLineUniforms;
+  [MaterialType.FlowLineAdaptive]: FlowLineAdaptiveUniforms;
+  [MaterialType.FlowLineMSDF]: FlowLineMSDFUniforms;
   [MaterialType.FlowPoint]: FlowPointUniforms;
   [MaterialType.ConvectionPoint]: ConvectionPointUniforms;
   [MaterialType.CircleRipple]: CircleRippleUniforms;
   [MaterialType.DynamicWall]: DynamicWallUniforms;
+};
+
+// 序列化 Uniforms（用于公共 API 入参，不含 Cesium 实例）
+export type SerializableUniformsMap = {
+  [MaterialType.PolylineArrow]: { color?: string };
+  [MaterialType.EllipsoidScan]: { color?: string; speed?: number; smooth?: boolean };
+  [MaterialType.EllipsoidElectric]: { color?: string; speed?: number };
+  [MaterialType.EllipsoidSpiral]: { color?: string; speed?: number };
+  [MaterialType.EllipsoidWave]: { color?: string; speed?: number };
+  [MaterialType.PolylineDashConvection]: {
+    color?: string;
+    gapColor?: string;
+    sliderColor?: string;
+    sliderLength?: number;
+    dashLength?: number;
+    dashPattern?: number | string;
+    speed?: number;
+  };
+  [MaterialType.PolylineDashSlider]: {
+    color?: string;
+    gapColor?: string;
+    sliderColor?: string;
+    sliderLength?: number;
+    dashLength?: number;
+    dashPattern?: number | string;
+    speed?: number;
+    reverse?: boolean;
+  };
+  [MaterialType.PolylineDashFlow]: {
+    color?: string;
+    gapColor?: string;
+    sliderColor?: string;
+    sliderLength?: number;
+    dashLength?: number;
+    dashPattern?: number | string;
+    speed?: number;
+    reverse?: boolean;
+  };
+  [MaterialType.FlowLine]: {
+    image?: string;
+    speed?: number;
+    repeat?: [number, number];
+    sample1D?: boolean;
+    vScale?: number;
+  };
+  [MaterialType.FlowLineAdaptive]: {
+    image?: string;
+    speed?: number;
+    repeat?: [number, number];
+    lineWidthPx?: number;
+    imageHeightPx?: number;
+    modeIndex?: number;
+    mode?: number;
+    color?: string;
+  };
+  [MaterialType.FlowLineMSDF]: {
+    image?: string;
+    color?: string;
+    speed?: number;
+    repeat?: [number, number];
+    range?: number;
+    smooth?: number;
+    center?: number;
+  };
+  [MaterialType.MSDFStatic]: {
+    image?: string;
+    color?: string;
+    speed?: number;
+    repeat?: [number, number];
+    range?: number;
+    smooth?: number;
+    center?: number;
+  };
+  [MaterialType.FlowPoint]: {
+    point?: string;
+    background?: string;
+    speed?: number;
+    reverse?: boolean;
+  };
+  [MaterialType.ConvectionPoint]: {
+    point?: string;
+    background?: string;
+    speed?: number;
+  };
+  [MaterialType.CircleRipple]: {
+    color?: string;
+    speed?: number;
+    count?: number;
+    gradient?: number;
+  };
+  [MaterialType.DynamicWall]: {
+    color?: string;
+    image?: string;
+    speed?: number;
+  };
 };

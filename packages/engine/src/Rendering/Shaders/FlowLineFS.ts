@@ -13,7 +13,9 @@ czm_material czm_getMaterial(czm_materialInput materialInput)
     czm_material material = czm_getDefaultMaterial(materialInput);
     vec2 st = materialInput.st;
     float time = fract(czm_frameNumber * 0.01 * speed);
-    vec4 colorImage = texture(image, vec2(fract(st.s - time), st.t));
+    float s = fract(st.s * repeat.x - time);
+    float v = sample1D ? clamp(0.5 + (st.t - 0.5) * vScale, 0.0, 1.0) : fract(st.t * repeat.y);
+    vec4 colorImage = texture(image, vec2(s, v));
     material.alpha = colorImage.a;
     material.diffuse = colorImage.rgb ;
     return material;

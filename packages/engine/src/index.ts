@@ -4,11 +4,13 @@
  * @version: 1.0.0
  * @Date: 2022-01-11 17:11:44
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-03 10:39:03
+ * @LastEditTime: 2025-12-07 11:44:25
  */
 
 // 导入所有图元和符号的自注册模块（副作用导入）
 import "./DataSources/register-all";
+// 导入所有自定义材质的集中注册（副作用导入）
+import "./Rendering/Materials/Appearances/register-builtins";
 
 export * from "./enum";
 export * from "./types";
@@ -39,7 +41,14 @@ import XgMap from "./Core/XgMap";
 // import XgIntegrated from "./Core/XgIntegrated";
 import CoordinateUtils from "./Core/CoordinateUtils";
 import MouseEventUtils from "./Core/MouseEventUtils";
-import { setResourceConfig, getResourceUrl, getResourceConfig, resourceManager, ResourcePreloader, resourcePreloader } from "./Core/ResourceConfig";
+import {
+  setResourceConfig,
+  getResourceUrl,
+  getResourceConfig,
+  resourceManager,
+  ResourcePreloader,
+  resourcePreloader,
+} from "./Core/ResourceConfig";
 import type { ResourceConfig } from "./Core/ResourceConfig";
 import { ResourceManager } from "./Core/AbstractCore";
 import HeatmapManager from "./Core/HeatmapManager";

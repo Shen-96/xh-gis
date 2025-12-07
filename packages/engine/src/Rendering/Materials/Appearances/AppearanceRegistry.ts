@@ -1,30 +1,27 @@
 /*
- * @Descripttion: xxx
  * @Author: Xiaohu.Shen
- * @Wechat: yingnan55
- * @Email: tigerk96@outlook.com
- * @Date: 2025-12-04 17:30:56
+ * @WeChat: yingnan55
+ * @Email: trae@example.com
+ * @Version: 1.0.0
+ * @Descripttion: xxx
+ * @Date: 2025-12-06 19:49:36
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-04 17:37:38
- */
-/*
- * @Descripttion: Material registry for custom shaders
- * @Author: Xiaohu.Shen (refactor by assistant)
+ * @LastEditTime: 2025-12-06 20:22:07
  */
 import { Color, Material, MaterialAppearance, Cartesian3, Appearance } from "cesium";
 
-export type MaterialBuilder = (
+export type AppearanceBuilder = (
   style: any,
   params?: { startPosition?: Cartesian3 }
 ) => Appearance;
 
-const registry = new Map<string, MaterialBuilder>();
+const registry = new Map<string, AppearanceBuilder>();
 
-export function registerMaterial(type: string, builder: MaterialBuilder) {
+export function registerAppearance(type: string, builder: AppearanceBuilder) {
   registry.set(type, builder);
 }
 
-export function getMaterialAppearance(
+export function getAppearance(
   style: any,
   params?: { startPosition?: Cartesian3 }
 ): Appearance | undefined {
@@ -43,3 +40,4 @@ export function defaultColorAppearance(style: any): MaterialAppearance {
     }),
   });
 }
+

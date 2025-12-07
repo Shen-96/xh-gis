@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2025-01-22 07:09:40
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-04-15 02:43:46
+ * @LastEditTime: 2025-12-06 20:55:55
  */
 // export * from "./Materials/DynamicWallMaterialProperty";
 // export * from "./Materials/FlowLineMaterialProperty";
@@ -33,6 +33,5 @@
 // export * from "./SpecialEffect/XgSuperGifFX";
 
 export * from "./Graphics";
-export * from "./Materials";
 export * from "./XgPopup";
 export * from "./Heatmap";

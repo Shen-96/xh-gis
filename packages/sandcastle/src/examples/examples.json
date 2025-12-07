@@ -95,4 +95,17 @@
     "level": "intermediate",
     "thumbnail": "xh-gis/Assets/Maps/globe_2.png"
   }
+  ,
+  {
+    "id": "camera-bookmarks",
+    "categoryId": "basic",
+    "title": "相机书签",
+    "description": "保存并管理常用相机视角，快速飞到预设位置",
+    "tags": [
+      "camera",
+      "bookmarks"
+    ],
+    "level": "beginner",
+    "thumbnail": "thumbnails/basic/camera-bookmarks.png"
+  }
 ]

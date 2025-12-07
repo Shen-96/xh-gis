@@ -16,6 +16,7 @@ import {
   GeoJsonDataSource,
   KmlDataSource,
 } from "cesium";
+import type { SerializableUniformsMap } from "./Rendering/Materials/types";
 import {
   ColorBlendModeValueType,
   HeightReferenceValueType,
@@ -547,17 +548,87 @@ export type PointMaterialOptions = {
   };
 };
 
-export type PolylineMaterialOptions = {
+type BasePolylineMaterialOptions = {
   fill: boolean;
   color: string;
-  materialType: MaterialType;
   outline: boolean;
   outlineColor: string;
   outlineWidth: number;
-  uniforms: {
-    [key: string]: any;
-  };
 };
+
+export type PolylineMaterialOptions =
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.FlowLine;
+      uniforms: SerializableUniformsMap[MaterialType.FlowLine];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.FlowLineAdaptive;
+      uniforms: SerializableUniformsMap[MaterialType.FlowLineAdaptive];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.FlowLineMSDF;
+      uniforms: SerializableUniformsMap[MaterialType.FlowLineMSDF];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.MSDFStatic;
+      uniforms: SerializableUniformsMap[MaterialType.MSDFStatic];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.FlowPoint;
+      uniforms: SerializableUniformsMap[MaterialType.FlowPoint];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.ConvectionPoint;
+      uniforms: SerializableUniformsMap[MaterialType.ConvectionPoint];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.PolylineArrow;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineArrow];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.PolylineDash;
+      uniforms: { color?: string; dashPattern?: number };
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.PolylineDashConvection;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineDashConvection];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.PolylineDashSlider;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineDashSlider];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.PolylineDashFlow;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineDashFlow];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.EllipsoidScan;
+      uniforms: SerializableUniformsMap[MaterialType.EllipsoidScan];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.EllipsoidElectric;
+      uniforms: SerializableUniformsMap[MaterialType.EllipsoidElectric];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.EllipsoidSpiral;
+      uniforms: SerializableUniformsMap[MaterialType.EllipsoidSpiral];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.EllipsoidWave;
+      uniforms: SerializableUniformsMap[MaterialType.EllipsoidWave];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.DynamicWall;
+      uniforms: SerializableUniformsMap[MaterialType.DynamicWall];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.CircleRipple;
+      uniforms: SerializableUniformsMap[MaterialType.CircleRipple];
+    })
+  | (BasePolylineMaterialOptions & {
+      materialType: MaterialType.SolidColor;
+      uniforms: {};
+    });
 
 export type PolygonMaterialOptions = {
   fill: boolean;

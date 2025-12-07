@@ -1,0 +1,77 @@
+.xh-gis-camera-bookmarks {
+  --cb-bg: var(--wg-panel-bg, #fafafa);
+  --cb-text: var(--wg-text, #1f1f1f);
+  --cb-muted: var(--wg-muted, #666666);
+  --cb-border: var(--wg-border, #e5e5e5);
+  --cb-primary-bg: var(--wg-primary-bg, #1677ff);
+  --cb-primary-text: var(--wg-primary-text, #ffffff);
+
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.cb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cb-title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.cb-primary {
+  padding: 8px 12px;
+  background: var(--cb-primary-bg);
+  color: var(--cb-primary-text);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cb-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--cb-border);
+}
+
+.cb-name {
+  font-weight: 600;
+}
+
+.cb-desc {
+  color: var(--cb-muted);
+  font-size: 0.9rem;
+}
+
+.cb-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cb-button {
+  padding: 6px 10px;
+  background: var(--wg-panel-bg, #fafafa);
+  color: var(--cb-text);
+  border: 2px solid var(--cb-border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cb-empty {
+  color: var(--cb-muted);
+}
+
+.cb-footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}

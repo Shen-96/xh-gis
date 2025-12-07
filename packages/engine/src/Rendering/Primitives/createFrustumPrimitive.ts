@@ -18,7 +18,7 @@ import {
   Quaternion
 } from 'cesium';
 import type { FrustumGraphicOptions } from '../../types';
-import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
+import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
 
 function createFrustumPrimitive(
   id = createGuid(),
@@ -49,7 +49,7 @@ function createFrustumPrimitive(
 
   const primitive = new Primitive({
     geometryInstances: instance,
-    appearance: createCustomMaterialAppearance(style),
+    appearance: createAppearance(style),
     modelMatrix,
     allowPicking: false,
     releaseGeometryInstances: true

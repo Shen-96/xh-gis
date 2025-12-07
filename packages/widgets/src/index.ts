@@ -14,6 +14,7 @@ export { default as WidgetStatusBar } from "./Statusbar";
 export { default as WidgetTimeLine } from "./Timeline";
 export { default as WidgetToolBar } from "./Toolbox";
 export { default as WidgetGraphicTools } from "./GraphicsTools";
+export { default as WidgetCameraBookmarks } from "./CameraBookmarks";
 
 // 导出类型
 export type { CoreProps } from "./Core";

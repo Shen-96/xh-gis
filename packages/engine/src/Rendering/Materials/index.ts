@@ -7,11 +7,7 @@
  * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-12-04 17:53:09
  */
-export { createCustomMaterialAppearance } from "./createCustomMaterialAppearance";
-export {
-  registerMaterial,
-  getMaterialAppearance,
-  defaultColorAppearance,
-} from "./MaterialRegistry";
-export * from "./register-default-materials";
+export { createAppearance } from "./Appearances/createCustomMaterialAppearance";
+export { registerAppearance, getAppearance, defaultColorAppearance } from "./Appearances/AppearanceRegistry";
+export * from "./Appearances/register-builtins";
 export * from "./types";

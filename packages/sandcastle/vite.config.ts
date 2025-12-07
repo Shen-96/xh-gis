@@ -6,7 +6,7 @@
  * @Descripttion: xxx
  * @Date: 2025-10-10 14:53:03
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-06 12:05:29
+ * @LastEditTime: 2025-12-07 09:26:11
  */
 import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
@@ -24,8 +24,6 @@ export default defineConfig({
     // 指定 monorepo 中引擎包路径与基础资源 URL，由插件负责拷贝到 public
     xhgis({
       baseUrl: "/xh-gis/Assets",
-      xhgisPath: "../engine",
-      debug: false,
     }),
     thumbnailPlugin(),
   ],
@@ -38,10 +36,7 @@ export default defineConfig({
     // 去重 React 相关包，确保仅打入一个版本
     dedupe: ["react", "react-dom"],
   },
-  define: {
-    // 显式为 Cesium 设置资源基础路径，适配子路径部署
-    CESIUM_BASE_URL: JSON.stringify((process.env.BASE || "/").replace(/\/$/, "") + "/cesium"),
-  },
+  define: {},
   // optimizeDeps: {},
   server: {
     port: 5000,

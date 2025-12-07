@@ -9,7 +9,7 @@
 import { Matrix4, createGuid, Primitive } from 'cesium';
 import createCylinderInstance from './createCylinderInstance';
 import type { CylinderGraphicOptions } from '../../types';
-import { createCustomMaterialAppearance } from '../Materials/createCustomMaterialAppearance';
+import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
 
 function createCylinderPrimitive(
   id = createGuid(),
@@ -26,7 +26,7 @@ function createCylinderPrimitive(
 
   const primitive = new Primitive({
     geometryInstances: instance,
-    appearance: createCustomMaterialAppearance(style),
+    appearance: createAppearance(style),
     modelMatrix
   });
 
