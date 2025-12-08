@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2022-06-14 17:07:39
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-08 13:00:36
+ * @LastEditTime: 2025-12-08 16:14:53
  */
 
 import {
@@ -49,11 +49,11 @@ import {
 } from "../enum";
 import CoordinateUtils from "./CoordinateUtils";
 import ConvectionPointMaterialProperty from "../Rendering/Materials/Properties/ConvectionPointMaterialProperty";
-import FlowLineMaterialProperty from "../Rendering/Materials/Properties/FlowLineMaterialProperty";
-import FlowLineAdaptiveMaterialProperty from "../Rendering/Materials/Properties/FlowLineAdaptiveMaterialProperty";
-import FlowLineMSDFMaterialProperty from "../Rendering/Materials/Properties/FlowLineMSDFMaterialProperty";
+import PolylineFlowMaterialProperty from "../Rendering/Materials/Properties/PolylineFlowMaterialProperty";
+import PolylineFlowAdaptiveMaterialProperty from "../Rendering/Materials/Properties/PolylineFlowAdaptiveMaterialProperty";
+import PolylineFlowMSDFMaterialProperty from "../Rendering/Materials/Properties/PolylineFlowMSDFMaterialProperty";
 import MSDFStaticMaterialProperty from "../Rendering/Materials/Properties/MSDFStaticMaterialProperty";
-import FlowPointMaterialProperty from "../Rendering/Materials/Properties/FlowPointMaterialProperty";
+import PolylineFlowPointMaterialProperty from "../Rendering/Materials/Properties/PolylineFlowPointMaterialProperty";
 import PolylineDashConvectionMaterialProperty from "../Rendering/Materials/Properties/PolylineDashConvectionMaterialProperty";
 import PolylineDashSliderMaterialProperty from "../Rendering/Materials/Properties/PolylineDashSliderMaterialProperty";
 import PolylineDashFlowMaterialProperty from "../Rendering/Materials/Properties/PolylineDashFlowMaterialProperty";
@@ -366,25 +366,25 @@ export default class GraphicUtils {
   ): MaterialProperty;
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions> & {
-      materialType?: MaterialType.FlowLine;
-      uniforms?: SerializableUniformsMap[MaterialType.FlowLine];
+      materialType?: MaterialType.PolylineFlow;
+      uniforms?: SerializableUniformsMap[MaterialType.PolylineFlow];
     },
     params?: {}
-  ): FlowLineMaterialProperty;
+  ): PolylineFlowMaterialProperty;
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions> & {
-      materialType?: MaterialType.FlowLineAdaptive;
-      uniforms?: SerializableUniformsMap[MaterialType.FlowLineAdaptive];
+      materialType?: MaterialType.PolylineFlowAdaptive;
+      uniforms?: SerializableUniformsMap[MaterialType.PolylineFlowAdaptive];
     },
     params?: {}
-  ): FlowLineAdaptiveMaterialProperty;
+  ): PolylineFlowAdaptiveMaterialProperty;
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions> & {
-      materialType?: MaterialType.FlowLineMSDF;
-      uniforms?: SerializableUniformsMap[MaterialType.FlowLineMSDF];
+      materialType?: MaterialType.PolylineFlowMSDF;
+      uniforms?: SerializableUniformsMap[MaterialType.PolylineFlowMSDF];
     },
     params?: {}
-  ): FlowLineMSDFMaterialProperty;
+  ): PolylineFlowMSDFMaterialProperty;
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions> & {
       materialType?: MaterialType.MSDFStatic;
@@ -394,11 +394,11 @@ export default class GraphicUtils {
   ): MSDFStaticMaterialProperty;
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions> & {
-      materialType?: MaterialType.FlowPoint;
-      uniforms?: SerializableUniformsMap[MaterialType.FlowPoint];
+      materialType?: MaterialType.PolylineFlowPoint;
+      uniforms?: SerializableUniformsMap[MaterialType.PolylineFlowPoint];
     },
     params?: {}
-  ): FlowPointMaterialProperty;
+  ): PolylineFlowPointMaterialProperty;
   static generatePolylineMaterialPropertyByMaterialOptions(
     options?: Partial<PolylineMaterialOptions> & {
       materialType?: MaterialType.ConvectionPoint;
@@ -459,10 +459,10 @@ export default class GraphicUtils {
     let result: MaterialProperty;
 
     switch (materialType) {
-      case MaterialType.FlowPoint:
+      case MaterialType.PolylineFlowPoint:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.FlowPoint];
-          result = new FlowPointMaterialProperty({
+          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineFlowPoint];
+          result = new PolylineFlowPointMaterialProperty({
             speed: u?.speed,
             background: u?.background,
             point: u?.point,
@@ -470,10 +470,10 @@ export default class GraphicUtils {
           });
         }
         break;
-      case MaterialType.FlowLine:
+      case MaterialType.PolylineFlow:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.FlowLine];
-          result = new FlowLineMaterialProperty({
+          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineFlow];
+          result = new PolylineFlowMaterialProperty({
             speed: u?.speed,
             image: resolvedImage,
             repeat: Array.isArray(u?.repeat)
@@ -484,11 +484,10 @@ export default class GraphicUtils {
           });
         }
         break;
-      case MaterialType.FlowLineAdaptive:
+      case MaterialType.PolylineFlowAdaptive:
         {
-          const u =
-            uniforms as SerializableUniformsMap[MaterialType.FlowLineAdaptive];
-          result = new FlowLineAdaptiveMaterialProperty({
+          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineFlowAdaptive];
+          result = new PolylineFlowAdaptiveMaterialProperty({
             speed: u?.speed,
             image: resolvedImage,
             repeat: Array.isArray(u?.repeat)
@@ -503,11 +502,10 @@ export default class GraphicUtils {
           });
         }
         break;
-      case MaterialType.FlowLineMSDF:
+      case MaterialType.PolylineFlowMSDF:
         {
-          const u =
-            uniforms as SerializableUniformsMap[MaterialType.FlowLineMSDF];
-          result = new FlowLineMSDFMaterialProperty({
+          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineFlowMSDF];
+          result = new PolylineFlowMSDFMaterialProperty({
             speed: u?.speed,
             image: resolvedImage,
             repeat: Array.isArray(u?.repeat)
@@ -571,8 +569,11 @@ export default class GraphicUtils {
           result = new PolylineDashSliderMaterialProperty({
             color: Color.fromCssColorString(u?.color ?? "#FFF"),
             sliderColor: Color.fromCssColorString(u?.sliderColor ?? "#FFFF00"),
+            sliderLength: u?.sliderLength,
+            sliderHeightRatio: u?.sliderHeightRatio,
             reverse: u?.reverse ?? false,
             speed: u?.speed,
+            useCesiumTime: u?.useCesiumTime ?? false,
           });
         }
         break;

@@ -27,11 +27,11 @@ import EllipsoidScanFS from "../../Shaders/EllipsoidScanFS";
 import EllipsoidElectricFS from "../../Shaders/EllipsoidElectricFS";
 import EllipsoidSpiralFS from "../../Shaders/EllipsoidSpiralFS";
 import EllipsoidWaveFS from "../../Shaders/EllipsoidWaveFS";
-import FlowLineFS from "../../Shaders/FlowLineFS";
-import FlowLineAdaptiveFS from "../../Shaders/FlowLineAdaptiveFS";
-import FlowLineMSDFFS from "../../Shaders/FlowLineMSDFFS";
+import PolylineFlowFS from "../../Shaders/PolylineFlowFS";
+import PolylineFlowAdaptiveFS from "../../Shaders/PolylineFlowAdaptiveFS";
+import PolylineFlowMSDFFS from "../../Shaders/PolylineFlowMSDFFS";
 import MSDFStaticFS from "../../Shaders/MSDFStaticFS";
-import FlowPointFS from "../../Shaders/FlowPointFS";
+import PolylineFlowPointFS from "../../Shaders/PolylineFlowPointFS";
 import ConvectionPointFS from "../../Shaders/ConvectionPointFS";
 import PolylineDashConvectionFS from "../../Shaders/PolylineDashConvectionFS";
 import PolylineDashSliderFS from "../../Shaders/PolylineDashSliderFS";
@@ -41,9 +41,9 @@ import DynamicWallFS from "../../Shaders/DynamicWallFS";
 import { getResourceUrl } from "../../../Core/ResourceConfig";
 
 try {
-  (Material as any)._materialCache.addMaterial(MaterialType.FlowLine, {
+  (Material as any)._materialCache.addMaterial(MaterialType.PolylineFlow, {
     fabric: {
-      type: MaterialType.FlowLine,
+      type: MaterialType.PolylineFlow,
       uniforms: {
         image: "",
         speed: 1,
@@ -51,15 +51,15 @@ try {
         sample1D: true,
         vScale: 1.0,
       },
-      source: FlowLineFS,
+      source: PolylineFlowFS,
     },
   });
 } catch {}
 
 try {
-  (Material as any)._materialCache.addMaterial(MaterialType.FlowLineAdaptive, {
+  (Material as any)._materialCache.addMaterial(MaterialType.PolylineFlowAdaptive, {
     fabric: {
-      type: MaterialType.FlowLineAdaptive,
+      type: MaterialType.PolylineFlowAdaptive,
       uniforms: {
         color: Color.WHITE,
         image: "",
@@ -69,15 +69,15 @@ try {
         imageHeightPx: 64,
         mode: 0,
       },
-      source: FlowLineAdaptiveFS,
+      source: PolylineFlowAdaptiveFS,
     },
   });
 } catch {}
 
 try {
-  (Material as any)._materialCache.addMaterial(MaterialType.FlowLineMSDF, {
+  (Material as any)._materialCache.addMaterial(MaterialType.PolylineFlowMSDF, {
     fabric: {
-      type: MaterialType.FlowLineMSDF,
+      type: MaterialType.PolylineFlowMSDF,
       uniforms: {
         image: "",
         color: Color.WHITE,
@@ -86,7 +86,7 @@ try {
         range: 0.5,
         smooth: 1.0,
       },
-      source: FlowLineMSDFFS,
+      source: PolylineFlowMSDFFS,
     },
   });
 } catch {}
@@ -109,16 +109,16 @@ try {
 } catch {}
 
 try {
-  (Material as any)._materialCache.addMaterial(MaterialType.FlowPoint, {
+  (Material as any)._materialCache.addMaterial(MaterialType.PolylineFlowPoint, {
     fabric: {
-      type: MaterialType.FlowPoint,
+      type: MaterialType.PolylineFlowPoint,
       uniforms: {
         point: "",
         background: "",
         speed: 1,
         reverse: false,
       },
-      source: FlowPointFS,
+      source: PolylineFlowPointFS,
     },
   });
 } catch {}
@@ -176,7 +176,6 @@ try {
           speed: 1,
           reverse: false,
           useCesiumTime: false,
-          moveMode: 0,
           timeSeconds: 0.0,
         },
         source: PolylineDashSliderFS,
@@ -201,26 +200,23 @@ try {
 } catch {}
 
 try {
-  (Material as any)._materialCache.addMaterial(
-    MaterialType.PolylineDashFlow,
-    {
-      fabric: {
-        type: MaterialType.PolylineDashFlow,
-        uniforms: {
-          color: Color.WHITE,
-          gapColor: Color.TRANSPARENT,
-          sliderColor: Color.YELLOW,
-          sliderLength: 8.0,
-          dashLength: 16.0,
-          dashPattern: 255.0,
-          speed: 1.0,
-          reverse: false,
-          timeSeconds: 0.0,
-        } as any,
-        source: PolylineDashFlowFS,
-      },
-    }
-  );
+  (Material as any)._materialCache.addMaterial(MaterialType.PolylineDashFlow, {
+    fabric: {
+      type: MaterialType.PolylineDashFlow,
+      uniforms: {
+        color: Color.WHITE,
+        gapColor: Color.TRANSPARENT,
+        sliderColor: Color.YELLOW,
+        sliderLength: 8.0,
+        dashLength: 16.0,
+        dashPattern: 255.0,
+        speed: 1.0,
+        reverse: false,
+        timeSeconds: 0.0,
+      } as any,
+      source: PolylineDashFlowFS,
+    },
+  });
 } catch {}
 
 try {
@@ -351,7 +347,7 @@ registerAppearance(
 );
 
 registerAppearance(
-  MaterialType.FlowLine,
+  MaterialType.PolylineFlow,
   (style: {
     material?: { customTexture?: { uniforms?: FlowLineUniforms } };
   }) => {
@@ -359,7 +355,7 @@ registerAppearance(
     return new MaterialAppearance({
       material: new Material({
         fabric: {
-          type: MaterialType.FlowLine,
+          type: MaterialType.PolylineFlow,
           uniforms: u,
         },
       }),
@@ -368,7 +364,7 @@ registerAppearance(
 );
 
 registerAppearance(
-  MaterialType.FlowLineAdaptive,
+  MaterialType.PolylineFlowAdaptive,
   (style: {
     material?: { customTexture?: { uniforms?: FlowLineAdaptiveUniforms } };
   }) => {
@@ -377,7 +373,7 @@ registerAppearance(
     return new PolylineMaterialAppearance({
       material: new Material({
         fabric: {
-          type: MaterialType.FlowLineAdaptive,
+          type: MaterialType.PolylineFlowAdaptive,
           uniforms: {
             ...u,
             ...(modeVal !== undefined ? { mode: modeVal } : {}),
@@ -389,7 +385,7 @@ registerAppearance(
 );
 
 registerAppearance(
-  MaterialType.FlowLineMSDF,
+  MaterialType.PolylineFlowMSDF,
   (style: {
     material?: { customTexture?: { uniforms?: FlowLineMSDFUniforms } };
   }) => {
@@ -397,7 +393,7 @@ registerAppearance(
     return new PolylineMaterialAppearance({
       material: new Material({
         fabric: {
-          type: MaterialType.FlowLineMSDF,
+          type: MaterialType.PolylineFlowMSDF,
           uniforms: u,
         },
       }),
@@ -423,7 +419,7 @@ registerAppearance(
 );
 
 registerAppearance(
-  MaterialType.FlowPoint,
+  MaterialType.PolylineFlowPoint,
   (style: {
     material?: { customTexture?: { uniforms?: FlowPointUniforms } };
   }) => {
@@ -431,7 +427,7 @@ registerAppearance(
     return new MaterialAppearance({
       material: new Material({
         fabric: {
-          type: MaterialType.FlowPoint,
+          type: MaterialType.PolylineFlowPoint,
           uniforms: u,
         },
       }),

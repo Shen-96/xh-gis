@@ -558,24 +558,24 @@ type BasePolylineMaterialOptions = {
 
 export type PolylineMaterialOptions =
   | (BasePolylineMaterialOptions & {
-      materialType: MaterialType.FlowLine;
-      uniforms: SerializableUniformsMap[MaterialType.FlowLine];
+      materialType: MaterialType.PolylineFlow;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineFlow];
     })
   | (BasePolylineMaterialOptions & {
-      materialType: MaterialType.FlowLineAdaptive;
-      uniforms: SerializableUniformsMap[MaterialType.FlowLineAdaptive];
+      materialType: MaterialType.PolylineFlowAdaptive;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineFlowAdaptive];
     })
   | (BasePolylineMaterialOptions & {
-      materialType: MaterialType.FlowLineMSDF;
-      uniforms: SerializableUniformsMap[MaterialType.FlowLineMSDF];
+      materialType: MaterialType.PolylineFlowMSDF;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineFlowMSDF];
     })
   | (BasePolylineMaterialOptions & {
       materialType: MaterialType.MSDFStatic;
       uniforms: SerializableUniformsMap[MaterialType.MSDFStatic];
     })
   | (BasePolylineMaterialOptions & {
-      materialType: MaterialType.FlowPoint;
-      uniforms: SerializableUniformsMap[MaterialType.FlowPoint];
+      materialType: MaterialType.PolylineFlowPoint;
+      uniforms: SerializableUniformsMap[MaterialType.PolylineFlowPoint];
     })
   | (BasePolylineMaterialOptions & {
       materialType: MaterialType.ConvectionPoint;

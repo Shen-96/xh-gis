@@ -2,11 +2,7 @@
  * @Descripttion: xxx
  * @Author: Xiaohu.Shen
  * @version: 1.0.0
- * @Date: 2023-03-29 14:44:48
- * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2023-04-14 14:33:55
  */
-
 export default `
 czm_material czm_getMaterial(czm_materialInput materialInput)
 {

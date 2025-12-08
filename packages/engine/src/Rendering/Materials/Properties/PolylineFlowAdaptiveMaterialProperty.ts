@@ -1,13 +1,3 @@
-/*
- * @Author: Xiaohu.Shen
- * @WeChat: yingnan55
- * @Email: trae@example.com
- * @Version: 1.0.0
- * @Descripttion: xxx
- * @Date: 2025-12-06 23:21:58
- * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-06 23:22:19
- */
 import { Cartesian2, Color } from "cesium";
 import BaseMaterialProperty from "./BaseMaterialProperty";
 import type { FlowLineAdaptiveUniforms as Options } from "../types";
@@ -19,7 +9,7 @@ type CustomMaterial = {
 };
 
 const customMaterial: CustomMaterial = {
-  type: "FlowLineAdaptive",
+  type: "PolylineFlowAdaptive",
   uniforms: {
     color: Color.WHITE,
     image: "",
@@ -31,7 +21,7 @@ const customMaterial: CustomMaterial = {
   },
 };
 
-export default class FlowLineAdaptiveMaterialProperty extends BaseMaterialProperty<Options> {
+export default class PolylineFlowAdaptiveMaterialProperty extends BaseMaterialProperty<Options> {
   constructor(options: Options) {
     const merged = { ...options } as any;
     const norm: any = {

@@ -5,7 +5,7 @@
  * @Email: tigerk96@outlook.com
  * @Date: 2025-12-05 10:18:35
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-08 12:59:20
+ * @LastEditTime: 2025-12-08 16:14:40
  */
 import type { Color, Cartesian2, Cartesian3 } from "cesium";
 import { MaterialType } from "../../enum";
@@ -51,7 +51,6 @@ export interface PolylineDashSliderUniforms extends PolylineDashUniforms {
   reverse?: boolean;
   sliderHeightRatio?: number;
   useCesiumTime?: boolean;
-  moveMode?: number;
 }
 
 export interface PolylineDashFlowUniforms extends PolylineDashUniforms {
@@ -137,10 +136,10 @@ export type MaterialTypeUniformsMap = {
   [MaterialType.PolylineDashConvection]: PolylineDashConvectionUniforms;
   [MaterialType.PolylineDashSlider]: PolylineDashSliderUniforms;
   [MaterialType.PolylineDashFlow]: PolylineDashFlowUniforms;
-  [MaterialType.FlowLine]: FlowLineUniforms;
-  [MaterialType.FlowLineAdaptive]: FlowLineAdaptiveUniforms;
-  [MaterialType.FlowLineMSDF]: FlowLineMSDFUniforms;
-  [MaterialType.FlowPoint]: FlowPointUniforms;
+  [MaterialType.PolylineFlow]: FlowLineUniforms;
+  [MaterialType.PolylineFlowAdaptive]: FlowLineAdaptiveUniforms;
+  [MaterialType.PolylineFlowMSDF]: FlowLineMSDFUniforms;
+  [MaterialType.PolylineFlowPoint]: FlowPointUniforms;
   [MaterialType.ConvectionPoint]: ConvectionPointUniforms;
   [MaterialType.CircleRipple]: CircleRippleUniforms;
   [MaterialType.DynamicWall]: DynamicWallUniforms;
@@ -171,10 +170,12 @@ export type SerializableUniformsMap = {
     gapColor?: string;
     sliderColor?: string;
     sliderLength?: number;
+    sliderHeightRatio?: number;
     dashLength?: number;
     dashPattern?: number | string;
     speed?: number;
     reverse?: boolean;
+    useCesiumTime?: boolean;
   };
   [MaterialType.PolylineDashFlow]: {
     color?: string;
@@ -187,14 +188,14 @@ export type SerializableUniformsMap = {
     reverse?: boolean;
     useCesiumTime?: boolean;
   };
-  [MaterialType.FlowLine]: {
+  [MaterialType.PolylineFlow]: {
     image?: string;
     speed?: number;
     repeat?: [number, number];
     sample1D?: boolean;
     vScale?: number;
   };
-  [MaterialType.FlowLineAdaptive]: {
+  [MaterialType.PolylineFlowAdaptive]: {
     image?: string;
     speed?: number;
     repeat?: [number, number];
@@ -204,7 +205,7 @@ export type SerializableUniformsMap = {
     mode?: number;
     color?: string;
   };
-  [MaterialType.FlowLineMSDF]: {
+  [MaterialType.PolylineFlowMSDF]: {
     image?: string;
     color?: string;
     speed?: number;
@@ -222,7 +223,7 @@ export type SerializableUniformsMap = {
     smooth?: number;
     center?: number;
   };
-  [MaterialType.FlowPoint]: {
+  [MaterialType.PolylineFlowPoint]: {
     point?: string;
     background?: string;
     speed?: number;

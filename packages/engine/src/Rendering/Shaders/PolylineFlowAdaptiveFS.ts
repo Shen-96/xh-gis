@@ -6,7 +6,6 @@
  * @Descripttion: xxx
  * @Date: 2025-12-06 23:15:06
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-07 10:15:35
  */
 export default `
 uniform vec4 color;

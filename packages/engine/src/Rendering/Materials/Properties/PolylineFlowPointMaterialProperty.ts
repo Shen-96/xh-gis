@@ -1,13 +1,3 @@
-/*
- * @Author: Xiaohu.Shen
- * @WeChat: yingnan55
- * @Email: trae@example.com
- * @Version: 1.0.0
- * @Descripttion: xxx
- * @Date: 2025-12-06 19:11:53
- * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-06 20:16:56
- */
 import BaseMaterialProperty from "./BaseMaterialProperty";
 import type { FlowPointUniforms as Options } from "../types";
 
@@ -17,7 +7,7 @@ type CustomMaterial = {
 };
 
 const customMaterial: CustomMaterial = {
-  type: "FlowPoint",
+  type: "PolylineFlowPoint",
   uniforms: {
     point: "",
     background: "",
@@ -26,7 +16,7 @@ const customMaterial: CustomMaterial = {
   },
 };
 
-export default class FlowPointMaterialProperty extends BaseMaterialProperty<Options> {
+export default class PolylineFlowPointMaterialProperty extends BaseMaterialProperty<Options> {
   constructor(options: Options) {
     super(customMaterial.type, options, customMaterial.uniforms);
   }

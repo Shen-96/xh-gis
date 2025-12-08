@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2023-03-29 14:44:48
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2023-04-27 12:52:11
+ * @LastEditTime: 2025-12-08 17:04:35
  */
 
 export default `
@@ -36,18 +36,17 @@ czm_material czm_getMaterial(czm_materialInput materialInput)
     float maskTest = floor(dashPattern / pow(2.0, maskIndex));
     vec4 fragColor = (mod(maskTest, 2.0) < 1.0) ? gapColor : color;
 
-    float sliderLocalLength = sliderLength * czm_pixelRatio;
-
-    vec2 st = materialInput.st;
+    /// 视窗锚定单滑块（循环模式，方向由 reverse 控制）
+    float viewportWidth = czm_viewport.z;
     float timePhase = fract(timeSeconds * speed);
     float dir = reverse ? -1.0 : 1.0;
-
-    // 方案A：视窗锚定单滑块
-    float viewportWidth = czm_viewport.z;
     float centerX = mod(dir * timePhase * viewportWidth, viewportWidth);
 
-    bool insideX = abs(pos.x - centerX) <= (sliderLocalLength * 0.5);
-    bool insideY = abs(st.t - 0.5) <= (sliderHeightRatio * 0.5);
+    /// 计算滑块长度（像素）
+    float sliderLengthPx = sliderLength * czm_pixelRatio;
+    float mT = materialInput.st.t;
+    bool insideX = abs(pos.x - centerX) <= (sliderLengthPx * 0.5);
+    bool insideY = abs(mT - 0.5) <= (sliderHeightRatio * 0.5);
     if (insideX && insideY) {
         fragColor = sliderColor;
     }
@@ -58,7 +57,6 @@ czm_material czm_getMaterial(czm_materialInput materialInput)
 
     fragColor = czm_gammaCorrect(fragColor);
     material.emission = fragColor.rgb;
-    //material.diffuse = fragColor.rgb;
     material.alpha = fragColor.a;
     return material;
 }

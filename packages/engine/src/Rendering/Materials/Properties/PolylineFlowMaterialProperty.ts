@@ -1,13 +1,3 @@
-/*
- * @Author: Xiaohu.Shen
- * @WeChat: yingnan55
- * @Email: trae@example.com
- * @Version: 1.0.0
- * @Descripttion: xxx
- * @Date: 2025-12-06 19:20:04
- * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-06 22:52:45
- */
 import { Cartesian2 } from "cesium";
 import BaseMaterialProperty from "./BaseMaterialProperty";
 import type { FlowLineUniforms as Options } from "../types";
@@ -18,7 +8,7 @@ type CustomMaterial = {
 };
 
 const customMaterial: CustomMaterial = {
-  type: "FlowLine",
+  type: "PolylineFlow",
   uniforms: {
     image: "",
     speed: 1,
@@ -28,7 +18,7 @@ const customMaterial: CustomMaterial = {
   },
 };
 
-export default class FlowLineMaterialProperty extends BaseMaterialProperty<Options> {
+export default class PolylineFlowMaterialProperty extends BaseMaterialProperty<Options> {
   constructor(options: Options) {
     super(customMaterial.type, options, customMaterial.uniforms);
   }

@@ -5,9 +5,9 @@
  * @Email: tigerk96@outlook.com
  * @Date: 2025-12-05 11:13:17
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-08 10:42:23
+ * @LastEditTime: 2025-12-08 18:05:08
  */
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { WidgetEarth as Earth } from "@xh-gis/widgets";
 import { XgEarth, GraphicType, MaterialType, Point3Deg } from "@xh-gis/engine";
 import { Cartesian3 } from "cesium";
@@ -55,86 +55,96 @@ const PolylineEffectsExample: React.FC = () => {
     }
   }, []);
 
-  const presets = useMemo(
-    () => ({
-      FlowLine: {
-        materialType: MaterialType.FlowLine as const,
-        uniforms: {
-          image: createSolidBitmap(64, 64, "#ffffff"),
-          speed: 2.0,
-          repeat: [2, 1] as [number, number],
-          sample1D: false,
-          vScale: 1.0,
+  const createPresets = useCallback(
+    () =>
+      ({
+        FlowLine: {
+          materialType: MaterialType.PolylineFlow as const,
+          uniforms: {
+            image: createSolidBitmap(64, 64, "#ffffff"),
+            speed: 2.0,
+            repeat: [2, 1] as [number, number],
+            sample1D: false,
+            vScale: 1.0,
+          },
         },
-      },
-      FlowLineAdaptive: {
-        materialType: MaterialType.FlowLineAdaptive as const,
-        uniforms: {
-          color: "#00b7ff",
-          image: createTextBitmap("01010101", 256, 6),
-          speed: 2.0,
-          repeat: [2, 1] as [number, number],
-          modeIndex: 1,
-          imageHeightPx: 64,
+        FlowLineAdaptive: {
+          materialType: MaterialType.PolylineFlowAdaptive as const,
+          uniforms: {
+            color: "#00b7ff",
+            image: createTextBitmap("01010101", 256, 6),
+            speed: 2.0,
+            repeat: [2, 1] as [number, number],
+            modeIndex: 1,
+            imageHeightPx: 64,
+          },
         },
-      },
-      MSDFStatic: {
-        materialType: MaterialType.MSDFStatic as const,
-        uniforms: {
-          color: "#ff6a00",
-          image: "/textures/flowline/h_msdf.png",
-          repeat: [24, 1] as [number, number],
-          range: 0.5,
-          smooth: 1.2,
-          center: 0.5,
+        MSDFStatic: {
+          materialType: MaterialType.MSDFStatic as const,
+          uniforms: {
+            color: "#ff6a00",
+            image: "/textures/flowline/h_msdf.png",
+            repeat: [24, 1] as [number, number],
+            range: 0.5,
+            smooth: 1.2,
+            center: 0.5,
+          },
         },
-      },
-      PolylineDash: {
-        materialType: MaterialType.PolylineDash as const,
-        uniforms: {
-          color: "#ff6a00",
+        PolylineDash: {
+          materialType: MaterialType.PolylineDash as const,
+          uniforms: {
+            color: "#ff6a00",
+          },
         },
-      },
-      PolylineDashSlider: {
-        materialType: MaterialType.PolylineDashSlider as const,
-        uniforms: {
-          color: "#00b7ff",
-          sliderColor: "#ffff00",
-          speed: 1.0,
-          reverse: false,
-          sliderLength: 12.0,
-          sliderHeightRatio: 1.0,
-          useCesiumTime: false,
-          moveMode: 0,
+        PolylineDashSlider: {
+          materialType: MaterialType.PolylineDashSlider as const,
+          uniforms: {
+            color: "#00b7ff",
+            sliderColor: "#ffff00",
+            speed: 1.0,
+            reverse: true,
+            sliderLength: 12.0,
+            sliderHeightRatio: 1.0,
+            useCesiumTime: false,
+          },
         },
-      },
-      PolylineDashFlow: {
-        materialType: MaterialType.PolylineDashFlow as const,
-        uniforms: {
-          color: "#00b7ff",
-          gapColor: "#00000000",
-          sliderColor: "#ffff00",
-          sliderLength: 8.0,
-          dashLength: 16.0,
-          dashPattern: 255,
-          speed: 1.0,
-          reverse: false,
-          useCesiumTime: false,
+        PolylineDashFlow: {
+          materialType: MaterialType.PolylineDashFlow as const,
+          uniforms: {
+            color: "#00b7ff",
+            gapColor: "#00000000",
+            sliderColor: "#ffff00",
+            sliderLength: 8.0,
+            dashLength: 16.0,
+            dashPattern: 255,
+            speed: 1.0,
+            reverse: false,
+            useCesiumTime: false,
+          },
         },
-      },
-    }),
+      } as const),
     [createSolidBitmap, createTextBitmap]
   );
+  const presets = useMemo(() => createPresets(), [createPresets]);
+  const [currentKey, setCurrentKey] =
+    useState<keyof typeof presets>("FlowLine");
+  const [compareMode, setCompareMode] = useState(false);
+  const [realIds, setRealIds] = useState<{ main?: string; compare?: string }>({});
 
   const applyPreset = useCallback(
-    (key: keyof typeof presets) => {
+    (key: keyof typeof presets, idSuffix = "") => {
       if (!earth) return;
       const gm = earth.graphicManager;
-      const plId = `polyline-line`;
+      const slot: "main" | "compare" = idSuffix ? "compare" : "main";
+      const realId = realIds[slot];
       const p1: Point3Deg = [110.0, 43.0, 0];
       const p2: Point3Deg = [135.0, 45.0, 0];
-      // 移除旧折线
-      gm.removeById(plId);
+      // 移除旧折线（优先按真实 id），回退按业务 id
+      if (realId) {
+        gm.removeById(realId);
+      } else {
+        gm.removeById(`polyline-line${idSuffix}`);
+      }
       // 新增折线并应用预设材质
       const newPl = gm.create(GraphicType.FREEHAND_LINE);
       newPl.style = {
@@ -145,12 +155,50 @@ const PolylineEffectsExample: React.FC = () => {
       };
       newPl.setPositions([p1, p2]);
       gm.add(newPl);
+      setRealIds((prev) => ({ ...prev, [slot]: newPl.id }));
     },
-    [earth, presets]
+    [earth, presets, realIds]
   );
 
+  const applyCurrent = useCallback(() => {
+    applyPreset(currentKey, "");
+    if (compareMode) applyPreset(currentKey, "-2");
+  }, [applyPreset, currentKey, compareMode]);
+
+  const updateUniform = useCallback(
+    (name: string, value: any) => {
+      if (!earth) return;
+      const gm = earth.graphicManager;
+      const ids = [realIds.main, compareMode ? realIds.compare : undefined].filter(
+        (x): x is string => !!x
+      );
+      ids.forEach((id) => {
+        const entity = gm.getById(id);
+        if (!entity) return;
+        const cur = (entity.style as any)?.uniforms || {};
+        entity.style = {
+          ...entity.style,
+          uniforms: {
+            ...cur,
+            [name]: value,
+          },
+        } as any;
+      });
+    },
+    [earth, compareMode, realIds]
+  );
+
+  useEffect(() => {
+    if (!earth) return;
+    if (!compareMode) {
+      const id = realIds.compare;
+      if (id) earth.graphicManager.removeById(id);
+      setRealIds((prev) => ({ ...prev, compare: undefined }));
+    }
+  }, [compareMode, earth, realIds.compare]);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", height: "100%" }}>
       <div style={{ flex: 1, position: "relative" }}>
         <Earth onInit={handleInit} />
         <div
@@ -162,33 +210,152 @@ const PolylineEffectsExample: React.FC = () => {
             gap: 12,
           }}
         >
-          <button
-            onClick={() => applyPreset("FlowLine")}
-            style={{ padding: "8px 12px" }}
-          >
-            加载折线
+          {(() => {
+            const presetKeys = Object.keys(presets) as Array<
+              keyof typeof presets
+            >;
+            return (
+              <select
+                value={currentKey}
+                onChange={(e) => {
+                  const k = e.target.value as keyof typeof presets;
+                  setCurrentKey(k);
+                  applyPreset(k, "");
+                  if (compareMode) applyPreset(k, "-2");
+                }}
+              >
+                {presetKeys.map((k) => (
+                  <option key={k} value={k}>
+                    {k}
+                  </option>
+                ))}
+              </select>
+            );
+          })()}
+          <button onClick={applyCurrent} style={{ padding: "8px 12px" }}>
+            加载/应用
           </button>
-          <select
-            defaultValue={"FlowLine"}
-            onChange={(e) =>
-              applyPreset(e.target.value as keyof typeof presets)
-            }
-          >
-            <option value="FlowLine">FlowLine</option>
-            <option value="FlowLineAdaptive">FlowLineAdaptive</option>
-            <option value="MSDFStatic">MSDFStatic</option>
-            <option value="PolylineDash">PolylineDash</option>
-            <option value="PolylineDashSlider">PolylineDashSlider</option>
-            <option value="PolylineDashFlow">PolylineDashFlow</option>
-          </select>
+          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <input
+              type="checkbox"
+              checked={compareMode}
+              onChange={(e) => setCompareMode(e.target.checked)}
+            />
+            对比模式
+          </label>
         </div>
       </div>
-      <div style={{ padding: 16 }}>
-        <h3>折线材质切换示例</h3>
-        <ul>
-          <li>加载一条折线</li>
-          <li>使用下拉框切换不同材质</li>
-        </ul>
+      <div
+        style={{
+          width: 340,
+          borderLeft: "1px solid #333",
+          padding: 12,
+          overflow: "auto",
+        }}
+      >
+        <h3 style={{ marginTop: 0 }}>参数面板</h3>
+        {(() => {
+          const u = presets[currentKey].uniforms as any;
+          const entries = Object.entries(u);
+          return (
+            <div
+              style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}
+            >
+              {entries.map(([k, v]) => {
+                const t = typeof v;
+                if (
+                  Array.isArray(v) &&
+                  v.length === 2 &&
+                  v.every((x) => typeof x === "number")
+                ) {
+                  return (
+                    <div key={k}>
+                      <div style={{ fontSize: 12, opacity: 0.8 }}>
+                        {k} (x,y)
+                      </div>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <input
+                          type="number"
+                          defaultValue={v[0]}
+                          onChange={(e) =>
+                            updateUniform(k, [Number(e.target.value), v[1]])
+                          }
+                          style={{ width: 80 }}
+                        />
+                        <input
+                          type="number"
+                          defaultValue={v[1]}
+                          onChange={(e) =>
+                            updateUniform(k, [v[0], Number(e.target.value)])
+                          }
+                          style={{ width: 80 }}
+                        />
+                      </div>
+                    </div>
+                  );
+                }
+                if (t === "boolean") {
+                  return (
+                    <label
+                      key={k}
+                      style={{ display: "flex", alignItems: "center", gap: 6 }}
+                    >
+                      <input
+                        type="checkbox"
+                        defaultChecked={v as boolean}
+                        onChange={(e) => updateUniform(k, e.target.checked)}
+                      />
+                      {k}
+                    </label>
+                  );
+                }
+                if (t === "number") {
+                  const step = 0.1;
+                  return (
+                    <div key={k}>
+                      <div style={{ fontSize: 12, opacity: 0.8 }}>{k}</div>
+                      <input
+                        type="number"
+                        step={step}
+                        defaultValue={v as number}
+                        onChange={(e) =>
+                          updateUniform(k, Number(e.target.value))
+                        }
+                        style={{ width: 120 }}
+                      />
+                    </div>
+                  );
+                }
+                if (t === "string" && /^#/.test(v as string)) {
+                  return (
+                    <div key={k}>
+                      <div style={{ fontSize: 12, opacity: 0.8 }}>{k}</div>
+                      <input
+                        type="color"
+                        defaultValue={(v as string).replace(
+                          /[^#0-9a-f]/gi,
+                          "#ffffff"
+                        )}
+                        onChange={(e) => updateUniform(k, e.target.value)}
+                      />
+                    </div>
+                  );
+                }
+                return (
+                  <div key={k}>
+                    <div style={{ fontSize: 12, opacity: 0.8 }}>{k}</div>
+                    <input
+                      type="text"
+                      defaultValue={String(v)}
+                      onChange={(e) => updateUniform(k, e.target.value)}
+                      style={{ width: 200 }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

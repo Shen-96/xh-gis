@@ -8,7 +8,7 @@ type CustomMaterial = {
 };
 
 const customMaterial: CustomMaterial = {
-  type: "FlowLineMSDF",
+  type: "PolylineFlowMSDF",
   uniforms: {
     image: "",
     speed: 1,
@@ -18,7 +18,7 @@ const customMaterial: CustomMaterial = {
   },
 };
 
-export default class FlowLineMSDFMaterialProperty extends BaseMaterialProperty<Options> {
+export default class PolylineFlowMSDFMaterialProperty extends BaseMaterialProperty<Options> {
   constructor(options: Options) {
     super(customMaterial.type, options, customMaterial.uniforms);
   }

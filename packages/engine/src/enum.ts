@@ -11,11 +11,11 @@ export enum GeometryType {
 
 /// 材质类型
 export enum MaterialType {
-  FlowLine = "FlowLine",
-  FlowLineAdaptive = "FlowLineAdaptive",
-  FlowLineMSDF = "FlowLineMSDF",
+  PolylineFlow = "PolylineFlow",
+  PolylineFlowAdaptive = "PolylineFlowAdaptive",
+  PolylineFlowMSDF = "PolylineFlowMSDF",
   MSDFStatic = "MSDFStatic",
-  FlowPoint = "FlowPoint",
+  PolylineFlowPoint = "PolylineFlowPoint",
   ConvectionPoint = "ConvectionPoint",
   DynamicWall = "DynamicWall",
   PolylineArrow = "PolylineArrow",

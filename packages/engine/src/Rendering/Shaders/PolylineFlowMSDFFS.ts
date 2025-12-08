@@ -3,10 +3,6 @@
  * @WeChat: yingnan55
  * @Email: trae@example.com
  * @Version: 1.0.0
- * @Descripttion: xxx
- * @Date: 2025-12-06 23:16:09
- * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-07 12:50:41
  */
 export default `
 float median(float r, float g, float b) { return max(min(r, g), min(max(r, g), b)); }
