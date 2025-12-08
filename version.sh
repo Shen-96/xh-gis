@@ -60,7 +60,7 @@ show_help() {
 
 # 默认参数
 DRY_RUN=false
-NO_COMMIT=true
+NO_COMMIT=false
 PACKAGE_NAME=""
 NEW_VERSION=""
 AUTO_CONFIRM=false
