@@ -6,7 +6,7 @@
  * @Descripttion: xxx
  * @Date: 2025-12-06 18:56:22
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-06 19:54:03
+ * @LastEditTime: 2025-12-08 10:23:57
  */
 import { Event, JulianDate, defined, Property, MaterialProperty } from "cesium";
 

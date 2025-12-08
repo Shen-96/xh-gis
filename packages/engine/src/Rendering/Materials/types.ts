@@ -5,7 +5,7 @@
  * @Email: tigerk96@outlook.com
  * @Date: 2025-12-05 10:18:35
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-07 17:48:10
+ * @LastEditTime: 2025-12-08 12:59:20
  */
 import type { Color, Cartesian2, Cartesian3 } from "cesium";
 import { MaterialType } from "../../enum";
@@ -30,24 +30,33 @@ export interface EllipsoidWaveUniforms {
 }
 
 // Polyline effects
-export interface PolylineDashConvectionUniforms {
+export interface PolylineDashUniforms {
   color?: Color;
   gapColor?: Color;
-  sliderColor?: Color;
-  sliderLength?: number;
   dashLength?: number;
-  dashPattern?: number | string;
-  startPosition?: Cartesian3;
-  speed?: number;
-}
-export interface PolylineDashSliderUniforms
-  extends PolylineDashConvectionUniforms {
-  reverse?: boolean;
+  dashPattern?: number;
 }
 
-export interface PolylineDashFlowUniforms
-  extends PolylineDashConvectionUniforms {
+export interface PolylineDashConvectionUniforms extends PolylineDashUniforms {
+  sliderColor?: Color;
+  sliderLength?: number;
+  speed?: number;
+  startPosition?: Cartesian3;
+}
+
+export interface PolylineDashSliderUniforms extends PolylineDashUniforms {
+  sliderColor?: Color;
+  sliderLength?: number;
+  speed?: number;
   reverse?: boolean;
+  sliderHeightRatio?: number;
+  useCesiumTime?: boolean;
+  moveMode?: number;
+}
+
+export interface PolylineDashFlowUniforms extends PolylineDashUniforms {
+  reverse?: boolean;
+  useCesiumTime?: boolean;
 }
 
 // Point/Line flow effects
@@ -140,7 +149,11 @@ export type MaterialTypeUniformsMap = {
 // 序列化 Uniforms（用于公共 API 入参，不含 Cesium 实例）
 export type SerializableUniformsMap = {
   [MaterialType.PolylineArrow]: { color?: string };
-  [MaterialType.EllipsoidScan]: { color?: string; speed?: number; smooth?: boolean };
+  [MaterialType.EllipsoidScan]: {
+    color?: string;
+    speed?: number;
+    smooth?: boolean;
+  };
   [MaterialType.EllipsoidElectric]: { color?: string; speed?: number };
   [MaterialType.EllipsoidSpiral]: { color?: string; speed?: number };
   [MaterialType.EllipsoidWave]: { color?: string; speed?: number };
@@ -172,6 +185,7 @@ export type SerializableUniformsMap = {
     dashPattern?: number | string;
     speed?: number;
     reverse?: boolean;
+    useCesiumTime?: boolean;
   };
   [MaterialType.FlowLine]: {
     image?: string;

@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2022-06-14 17:07:39
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-07 19:39:37
+ * @LastEditTime: 2025-12-08 13:00:36
  */
 
 import {
@@ -486,7 +486,8 @@ export default class GraphicUtils {
         break;
       case MaterialType.FlowLineAdaptive:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.FlowLineAdaptive];
+          const u =
+            uniforms as SerializableUniformsMap[MaterialType.FlowLineAdaptive];
           result = new FlowLineAdaptiveMaterialProperty({
             speed: u?.speed,
             image: resolvedImage,
@@ -504,7 +505,8 @@ export default class GraphicUtils {
         break;
       case MaterialType.FlowLineMSDF:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.FlowLineMSDF];
+          const u =
+            uniforms as SerializableUniformsMap[MaterialType.FlowLineMSDF];
           result = new FlowLineMSDFMaterialProperty({
             speed: u?.speed,
             image: resolvedImage,
@@ -519,7 +521,8 @@ export default class GraphicUtils {
         break;
       case MaterialType.MSDFStatic:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.MSDFStatic];
+          const u =
+            uniforms as SerializableUniformsMap[MaterialType.MSDFStatic];
           result = new MSDFStaticMaterialProperty({
             image: resolvedImage,
             repeat: Array.isArray(u?.repeat)
@@ -534,7 +537,8 @@ export default class GraphicUtils {
         break;
       case MaterialType.ConvectionPoint:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.ConvectionPoint];
+          const u =
+            uniforms as SerializableUniformsMap[MaterialType.ConvectionPoint];
           result = new ConvectionPointMaterialProperty({
             speed: u?.speed,
             background: u?.background,
@@ -555,31 +559,27 @@ export default class GraphicUtils {
           const u = uniforms as { color?: string; dashPattern?: number };
           result = new PolylineDashMaterialProperty({
             color: Color.fromCssColorString(u?.color ?? color ?? "#FFF"),
-            dashPattern: typeof u?.dashPattern === "number" ? u.dashPattern : undefined,
+            dashPattern:
+              typeof u?.dashPattern === "number" ? u.dashPattern : undefined,
           });
         }
         break;
       case MaterialType.PolylineDashSlider:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineDashSlider];
+          const u =
+            uniforms as SerializableUniformsMap[MaterialType.PolylineDashSlider];
           result = new PolylineDashSliderMaterialProperty({
             color: Color.fromCssColorString(u?.color ?? "#FFF"),
             sliderColor: Color.fromCssColorString(u?.sliderColor ?? "#FFFF00"),
             reverse: u?.reverse ?? false,
             speed: u?.speed,
-            startPosition: params?.startPosition
-              ? new Cartesian3(
-                  (params?.startPosition as any)[0],
-                  (params?.startPosition as any)[1],
-                  (params?.startPosition as any)[2]
-                )
-              : undefined,
           });
         }
         break;
       case MaterialType.PolylineDashConvection:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineDashConvection];
+          const u =
+            uniforms as SerializableUniformsMap[MaterialType.PolylineDashConvection];
           result = new PolylineDashConvectionMaterialProperty({
             color: Color.fromCssColorString(u?.color ?? "#FFF"),
             sliderColor: Color.fromCssColorString(u?.sliderColor ?? "#FFFF00"),
@@ -596,7 +596,8 @@ export default class GraphicUtils {
         break;
       case MaterialType.PolylineDashFlow:
         {
-          const u = uniforms as SerializableUniformsMap[MaterialType.PolylineDashFlow];
+          const u =
+            uniforms as SerializableUniformsMap[MaterialType.PolylineDashFlow];
           result = new PolylineDashFlowMaterialProperty({
             color: Color.fromCssColorString(u?.color ?? "#FFF"),
             gapColor: Color.fromCssColorString(u?.gapColor ?? "#0000"),
@@ -607,6 +608,7 @@ export default class GraphicUtils {
               typeof u?.dashPattern === "number" ? u?.dashPattern : 255.0,
             speed: u?.speed,
             reverse: (u as any)?.reverse ?? false,
+            useCesiumTime: (u as any)?.useCesiumTime ?? false,
           } as any);
         }
         break;

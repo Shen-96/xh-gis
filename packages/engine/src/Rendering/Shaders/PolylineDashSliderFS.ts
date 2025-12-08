@@ -36,19 +36,20 @@ czm_material czm_getMaterial(czm_materialInput materialInput)
     float maskTest = floor(dashPattern / pow(2.0, maskIndex));
     vec4 fragColor = (mod(maskTest, 2.0) < 1.0) ? gapColor : color;
 
+    float sliderLocalLength = sliderLength * czm_pixelRatio;
+
     vec2 st = materialInput.st;
-    /// 滑块的归化坐标
-    vec2 sliderUV = vec2(fract(czm_frameNumber * 0.01 * speed), .5);
-    /// 偏移量
-    float offsetX = reverse ? -sliderUV.x + 1. - st.s : sliderUV.x - st.s;
+    float timePhase = fract(timeSeconds * speed);
+    float dir = reverse ? -1.0 : 1.0;
 
-    /// 起点屏幕坐标
-    vec4 startPosWinC = czm_modelToWindowCoordinates(vec4(startPosition, 1.));
-    /// 旋转后坐标
-    vec2 startPos = rotate(v_polylineAngle) * startPosWinC.xy;
+    // 方案A：视窗锚定单滑块
+    float viewportWidth = czm_viewport.z;
+    float centerX = mod(dir * timePhase * viewportWidth, viewportWidth);
 
-    if(abs(pos.x - startPos.x) * abs(offsetX) / st.s < (sliderLength / 2. * czm_pixelRatio)){
-        fragColor = sliderColor * 1.5;
+    bool insideX = abs(pos.x - centerX) <= (sliderLocalLength * 0.5);
+    bool insideY = abs(st.t - 0.5) <= (sliderHeightRatio * 0.5);
+    if (insideX && insideY) {
+        fragColor = sliderColor;
     }
 
     if (fragColor.a < 0.005) {   // matches 0/255 and 1/255

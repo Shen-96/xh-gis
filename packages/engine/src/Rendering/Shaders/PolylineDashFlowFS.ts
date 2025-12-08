@@ -6,7 +6,7 @@
  * @Descripttion: xxx
  * @Date: 2025-12-07 20:04:16
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-07 20:09:06
+ * @LastEditTime: 2025-12-08 10:44:53
  */
 export default `
 in float v_polylineAngle;
@@ -32,16 +32,12 @@ czm_material czm_getMaterial(czm_materialInput materialInput)
     float dashPosition = fract(pos.x / (dashLength * czm_pixelRatio));
     float maskIndex = floor(dashPosition * maskLength);
     float maskTest = floor(dashPattern / pow(2.0, maskIndex));
-    vec4 fragColor = (mod(maskTest, 2.0) < 1.0) ? gapColor : color;
 
-    // flow offset using frame number
-    float flow = fract(czm_frameNumber * 0.01 * speed);
-    float flowPos = fract(dashPosition + (reverse ? -flow : flow));
+    float flow = fract(timeSeconds * speed);
+    float flowPos = fract(dashPosition + (reverse ? flow : -flow));
     float flowMaskIndex = floor(flowPos * maskLength);
     float flowMaskTest = floor(dashPattern / pow(2.0, flowMaskIndex));
-    if (mod(flowMaskTest, 2.0) >= 1.0) {
-        fragColor = mix(fragColor, sliderColor, 0.8);
-    }
+    vec4 fragColor = (mod(flowMaskTest, 2.0) < 1.0) ? gapColor : color;
 
     if (fragColor.a < 0.005) {
         discard;

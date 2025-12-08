@@ -5,9 +5,9 @@
  * @Email: tigerk96@outlook.com
  * @Date: 2025-12-05 11:13:17
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-07 20:12:45
+ * @LastEditTime: 2025-12-08 10:42:23
  */
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { WidgetEarth as Earth } from "@xh-gis/widgets";
 import { XgEarth, GraphicType, MaterialType, Point3Deg } from "@xh-gis/engine";
 import { Cartesian3 } from "cesium";
@@ -100,8 +100,12 @@ const PolylineEffectsExample: React.FC = () => {
         uniforms: {
           color: "#00b7ff",
           sliderColor: "#ffff00",
-          speed: 2.0,
+          speed: 1.0,
           reverse: false,
+          sliderLength: 12.0,
+          sliderHeightRatio: 1.0,
+          useCesiumTime: false,
+          moveMode: 0,
         },
       },
       PolylineDashFlow: {
@@ -113,8 +117,9 @@ const PolylineEffectsExample: React.FC = () => {
           sliderLength: 8.0,
           dashLength: 16.0,
           dashPattern: 255,
-          speed: 2.0,
+          speed: 1.0,
           reverse: false,
+          useCesiumTime: false,
         },
       },
     }),
@@ -172,10 +177,10 @@ const PolylineEffectsExample: React.FC = () => {
             <option value="FlowLine">FlowLine</option>
             <option value="FlowLineAdaptive">FlowLineAdaptive</option>
             <option value="MSDFStatic">MSDFStatic</option>
-          <option value="PolylineDash">PolylineDash</option>
-          <option value="PolylineDashSlider">PolylineDashSlider</option>
-          <option value="PolylineDashFlow">PolylineDashFlow</option>
-        </select>
+            <option value="PolylineDash">PolylineDash</option>
+            <option value="PolylineDashSlider">PolylineDashSlider</option>
+            <option value="PolylineDashFlow">PolylineDashFlow</option>
+          </select>
         </div>
       </div>
       <div style={{ padding: 16 }}>
