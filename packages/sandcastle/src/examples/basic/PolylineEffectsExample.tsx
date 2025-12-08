@@ -5,7 +5,7 @@
  * @Email: tigerk96@outlook.com
  * @Date: 2025-12-05 11:13:17
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-08 18:05:08
+ * @LastEditTime: 2025-12-08 20:13:04
  */
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { WidgetEarth as Earth } from "@xh-gis/widgets";
@@ -14,6 +14,16 @@ import { Cartesian3 } from "cesium";
 
 const PolylineEffectsExample: React.FC = () => {
   const [earth, setEarth] = useState<XgEarth | null>(null);
+  const [customImage, setCustomImage] = useState<string | null>(null);
+  const [customImageHeight, setCustomImageHeight] = useState<number | null>(
+    null
+  );
+
+  // 默认纹理路径（兼容不同 base 配置）
+  const defaultTexture0101 = useMemo(
+    () => `${import.meta.env.BASE_URL}textures/0101.png`,
+    []
+  );
 
   const createTextBitmap = useCallback((text = "01010101", w = 256, h = 64) => {
     const canvas = document.createElement("canvas");
@@ -61,7 +71,7 @@ const PolylineEffectsExample: React.FC = () => {
         FlowLine: {
           materialType: MaterialType.PolylineFlow as const,
           uniforms: {
-            image: createSolidBitmap(64, 64, "#ffffff"),
+            image: defaultTexture0101,
             speed: 2.0,
             repeat: [2, 1] as [number, number],
             sample1D: false,
@@ -72,7 +82,7 @@ const PolylineEffectsExample: React.FC = () => {
           materialType: MaterialType.PolylineFlowAdaptive as const,
           uniforms: {
             color: "#00b7ff",
-            image: createTextBitmap("01010101", 256, 6),
+            image: defaultTexture0101,
             speed: 2.0,
             repeat: [2, 1] as [number, number],
             modeIndex: 1,
@@ -83,7 +93,7 @@ const PolylineEffectsExample: React.FC = () => {
           materialType: MaterialType.MSDFStatic as const,
           uniforms: {
             color: "#ff6a00",
-            image: "/textures/flowline/h_msdf.png",
+            image: "/textures/h_msdf.png",
             repeat: [24, 1] as [number, number],
             range: 0.5,
             smooth: 1.2,
@@ -125,11 +135,16 @@ const PolylineEffectsExample: React.FC = () => {
       } as const),
     [createSolidBitmap, createTextBitmap]
   );
-  const presets = useMemo(() => createPresets(), [createPresets]);
+  const presets = useMemo(
+    () => createPresets(),
+    [createPresets, defaultTexture0101]
+  );
   const [currentKey, setCurrentKey] =
     useState<keyof typeof presets>("FlowLine");
   const [compareMode, setCompareMode] = useState(false);
-  const [realIds, setRealIds] = useState<{ main?: string; compare?: string }>({});
+  const [realIds, setRealIds] = useState<{ main?: string; compare?: string }>(
+    {}
+  );
 
   const applyPreset = useCallback(
     (key: keyof typeof presets, idSuffix = "") => {
@@ -147,17 +162,26 @@ const PolylineEffectsExample: React.FC = () => {
       }
       // 新增折线并应用预设材质
       const newPl = gm.create(GraphicType.FREEHAND_LINE);
+      // 根据自定义纹理覆盖 image 与可能的高度
+      const baseUniforms = presets[key].uniforms as any;
+      const overriddenUniforms = {
+        ...baseUniforms,
+        image: customImage ?? baseUniforms.image,
+        ...(key === "FlowLineAdaptive" && customImageHeight
+          ? { imageHeightPx: customImageHeight }
+          : {}),
+      };
       newPl.style = {
         width: 6,
         clampToGround: false,
         materialType: presets[key].materialType,
-        uniforms: presets[key].uniforms as any,
+        uniforms: overriddenUniforms,
       };
       newPl.setPositions([p1, p2]);
       gm.add(newPl);
       setRealIds((prev) => ({ ...prev, [slot]: newPl.id }));
     },
-    [earth, presets, realIds]
+    [earth, presets, realIds, customImage, customImageHeight]
   );
 
   const applyCurrent = useCallback(() => {
@@ -169,9 +193,10 @@ const PolylineEffectsExample: React.FC = () => {
     (name: string, value: any) => {
       if (!earth) return;
       const gm = earth.graphicManager;
-      const ids = [realIds.main, compareMode ? realIds.compare : undefined].filter(
-        (x): x is string => !!x
-      );
+      const ids = [
+        realIds.main,
+        compareMode ? realIds.compare : undefined,
+      ].filter((x): x is string => !!x);
       ids.forEach((id) => {
         const entity = gm.getById(id);
         if (!entity) return;
@@ -186,6 +211,32 @@ const PolylineEffectsExample: React.FC = () => {
       });
     },
     [earth, compareMode, realIds]
+  );
+
+  // 处理文件上传：读取为 dataURL，并更新材质图像；若为自适应材质，自动更新高度
+  const handleImageUpload = useCallback(
+    (file?: File) => {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        setCustomImage(dataUrl);
+        updateUniform("image", dataUrl);
+        // 解析图片高度用于 FlowLineAdaptive 的 imageHeightPx
+        const img = new Image();
+        img.onload = () => {
+          // 仅在当前预设包含 imageHeightPx 时才更新
+          const curUniforms = presets[currentKey].uniforms as any;
+          if ("imageHeightPx" in curUniforms) {
+            setCustomImageHeight(img.height);
+            updateUniform("imageHeightPx", img.height);
+          }
+        };
+        img.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    },
+    [updateUniform, presets, currentKey]
   );
 
   useEffect(() => {
@@ -261,8 +312,35 @@ const PolylineEffectsExample: React.FC = () => {
             <div
               style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}
             >
+              {/* 当存在 image 参数时，显示文件选择控件并与参数一起布局 */}
+              {"image" in u && (
+                <div key="__image_upload__">
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>
+                    image 选择文件
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                  />
+                </div>
+              )}
               {entries.map(([k, v]) => {
                 const t = typeof v;
+                // 对 image 参数做定制：展示当前值并支持文本编辑，文件选择已在上方
+                if (k === "image") {
+                  return (
+                    <div key={k}>
+                      <div style={{ fontSize: 12, opacity: 0.8 }}>{k}</div>
+                      <input
+                        type="text"
+                        defaultValue={String(v)}
+                        onChange={(e) => updateUniform(k, e.target.value)}
+                        style={{ width: 200 }}
+                      />
+                    </div>
+                  );
+                }
                 if (
                   Array.isArray(v) &&
                   v.length === 2 &&

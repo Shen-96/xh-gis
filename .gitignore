@@ -174,3 +174,8 @@ packages/*/node_modules/
 # Development tools
 .eslintcache
 .stylelintcache
+
+# Allow committing static assets in sandcastle/public, but exclude public/xh-gis
+!/packages/sandcastle/public/
+!/packages/sandcastle/public/**
+/packages/sandcastle/public/xh-gis/
