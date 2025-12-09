@@ -249,7 +249,7 @@ const ModelFxBindingExample: React.FC = () => {
                 <li>
                   扫角动画模拟扫描摆动：
                   <code>
-                    sweep: {"{"} axis: 'y', speed {"}"}
+                    sweep: {"{"} axis: &apos;y&apos;, speed {"}"}
                   </code>
                 </li>
               </ul>

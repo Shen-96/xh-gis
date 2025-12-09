@@ -819,6 +819,17 @@ export type FrustumGraphicOptions = FrustumStyleOptions & {
   position?: PositionOptions;
 };
 
+/// 四面体样式
+export type TetrahedronStyleOptions = {
+  show?: boolean;
+  material?: PolygonMaterialOptions;
+  edgeLength: number;
+};
+
+export type TetrahedronGraphicOptions = TetrahedronStyleOptions & {
+  position?: PositionOptions;
+};
+
 /// 箭头样式
 export type ArrowStyleOptions<
   T extends StraightArrowParams | TailAttackArrowParams | PincerArrowParams
@@ -854,7 +865,11 @@ export type SpecialEffectGraphicOptions<T = XgFxStyleOptions> = Omit<
 };
 
 export type SpecialEffectStereoStyleOptions<
-  T = ConeStyleOptions | EllipsoidStyleOptions | FrustumStyleOptions
+  T =
+    | ConeStyleOptions
+    | EllipsoidStyleOptions
+    | FrustumStyleOptions
+    | TetrahedronStyleOptions
 > = Omit<T, "orientation"> & {
   orientation?: UnitQuaternionValue;
 };
@@ -882,6 +897,11 @@ export type XgFrustumFxStyleOptions =
 export type XgFrustumFxGraphicOptions =
   SpecialEffectGraphicOptions<XgFrustumFxStyleOptions>;
 
+export type XgTetrahedronFxStyleOptions =
+  SpecialEffectStereoStyleOptions<TetrahedronStyleOptions>;
+export type XgTetrahedronFxGraphicOptions =
+  SpecialEffectGraphicOptions<XgTetrahedronFxStyleOptions>;
+
 export type XgSuperGifFxStyleOptions = BillboardStyleOptions & {
   delay?: number;
   loop?: boolean;
@@ -901,9 +921,11 @@ export type XgFxGraphicOptions =
   | XgFrustumFxGraphicOptions
   | XgSuperGifFxGraphicOptions;
 
-export type FxStereoStyleOptions<T = ConeStyleOptions | EllipsoidStyleOptions | FrustumStyleOptions> =
-  SpecialEffectStereoStyleOptions<T>;
-export type FxGraphicOptions<T = XgFxStyleOptions> = SpecialEffectGraphicOptions<T>;
+export type FxStereoStyleOptions<
+  T = ConeStyleOptions | EllipsoidStyleOptions | FrustumStyleOptions
+> = SpecialEffectStereoStyleOptions<T>;
+export type FxGraphicOptions<T = XgFxStyleOptions> =
+  SpecialEffectGraphicOptions<T>;
 export type FxOptions<T = XgFxStyleOptions> = SpecialEffectOptions<T>;
 /// 特效实例
 // export type SpecialEffect<T = CustomGraphicOptions> = {

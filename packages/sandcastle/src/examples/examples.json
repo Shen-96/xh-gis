@@ -46,7 +46,7 @@
       "kde"
     ],
     "level": "intermediate",
-    "thumbnail": "xh-gis/Assets/Particle/circular.jpg"
+    "thumbnail": "thumbnails/analysis/heatmap.png"
   },
   {
     "id": "layer-manager",
@@ -69,7 +69,7 @@
       "popup"
     ],
     "level": "beginner",
-    "thumbnail": "xh-gis/Assets/Textures/Billboard/purple_box.png"
+    "thumbnail": "thumbnails/ui/xg-popup.png"
   },
   {
     "id": "model-fx-binding",
@@ -93,9 +93,21 @@
       "material"
     ],
     "level": "intermediate",
-    "thumbnail": "xh-gis/Assets/Maps/globe_2.png"
-  }
-  ,
+    "thumbnail": "thumbnails/effects/polyline-effects.png"
+  },
+  {
+    "id": "tetrahedron-fx",
+    "categoryId": "effects",
+    "title": "正四面体特效",
+    "description": "使用自定义顶点着色器渲染正四面体，支持轮廓",
+    "tags": [
+      "fx",
+      "geometry",
+      "shader"
+    ],
+    "level": "intermediate",
+    "thumbnail": "thumbnails/effects/tetrahedron-fx.png"
+  },
   {
     "id": "camera-bookmarks",
     "categoryId": "basic",

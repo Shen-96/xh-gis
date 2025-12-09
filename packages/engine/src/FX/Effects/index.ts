@@ -3,3 +3,4 @@ export { default as XgEllipsoidFX } from './XgEllipsoidFX';
 export { default as XgFrustumFX } from './XgFrustumFX';
 export { default as XgParticleFX } from './XgParticleFX';
 export { default as XgSuperGifFX } from './XgSuperGifFX';
+export { default as XgTetrahedronFX } from './XgTetrahedronFX';

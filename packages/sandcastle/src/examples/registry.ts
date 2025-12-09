@@ -40,6 +40,7 @@ const importerMap: Record<string, () => Promise<{ default: React.ComponentType<a
   'model-fx-binding': () => import('../examples/basic/ModelFxBindingExample'),
   'polyline-effects': () => import('../examples/basic/PolylineEffectsExample'),
   'camera-bookmarks': () => import('../examples/basic/CameraBookmarksExample'),
+  'tetrahedron-fx': () => import('../examples/basic/TetrahedronFxExample'),
 };
 
 export const examples: ExampleMeta[] = (rawExamples as any[]).map((e) => ({
