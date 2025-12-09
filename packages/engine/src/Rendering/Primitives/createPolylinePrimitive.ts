@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2023-01-10 10:36:24
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2023-01-12 17:38:20
+ * @LastEditTime: 2025-12-09 16:09:25
  */
 import {
   Cartesian3,
@@ -13,13 +13,13 @@ import {
   Primitive,
   PolylineGeometry,
 } from 'cesium';
-import type { PolylineGraphicOptions } from '../../types';
+import type { PolylineStyleOptions } from '../../types';
 import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
 
 function createPolylinePrimitive(
   this: any,
   id = createGuid(),
-  style: PolylineGraphicOptions,
+  style: PolylineStyleOptions,
   positions: Array<Cartesian3>
 ) {
   this.id = id;
@@ -48,10 +48,7 @@ createPolylinePrimitive.prototype.update = function (
   }
 
   /// 初始参数
-  const appearance = createAppearance(
-    this.style,
-    { startPosition: this.positions?.[0] }
-  );
+  const appearance = createAppearance(this.style, { geometry: 'polyline' });
 
   const geometryInstance = new GeometryInstance({
     id: this.id,

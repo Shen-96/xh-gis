@@ -12,7 +12,7 @@ import {
 } from "cesium";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 import AbstractFx from "./AbstractFx";
-import type { PositionOptions, SpecialEffectGraphicOptions } from "../../types";
+import type { PositionOptions, FxGraphicOptions } from "../../types";
 
 // A minimal scene-centric options expected for FX implementations.
 // Note: legacy SceneFxGraphicOptions is replaced by flattened SpecialEffectGraphicOptions
@@ -20,7 +20,7 @@ import type { PositionOptions, SpecialEffectGraphicOptions } from "../../types";
 export default abstract class AbstractSceneFx<T = unknown> extends AbstractFx {
   #name?: string;
   #availability?: TimeIntervalCollection;
-  readonly #graphics: SpecialEffectGraphicOptions<T>;
+  readonly #graphics: FxGraphicOptions<T>;
   #position?: Cartesian3 | PositionProperty;
   readonly #primitives: PrimitiveCollection;
   #geometryInstanceIdType: {
@@ -43,7 +43,7 @@ export default abstract class AbstractSceneFx<T = unknown> extends AbstractFx {
     name?: string;
     availability?: string | Array<string> | TimeIntervalCollection;
     show?: boolean;
-    graphics: SpecialEffectGraphicOptions<T>;
+    graphics: FxGraphicOptions<T>;
   }) {
     super(id ?? createGuid(), show ?? true);
     this.#name = name;

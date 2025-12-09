@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2023-01-10 10:36:24
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-03-25 09:10:49
+ * @LastEditTime: 2025-12-09 15:33:09
  */
 import {
   Math as CesiumMath,
@@ -15,14 +15,14 @@ import {
   Cartesian3,
   GeometryInstance,
   PerspectiveFrustum,
-  Quaternion
-} from 'cesium';
-import type { FrustumGraphicOptions } from '../../types';
-import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
+  Quaternion,
+} from "cesium";
+import type { FrustumStyleOptions } from "../../types";
+import { createAppearance } from "../Materials/Appearances/createCustomMaterialAppearance";
 
 function createFrustumPrimitive(
   id = createGuid(),
-  style: FrustumGraphicOptions,
+  style: FrustumStyleOptions,
   modelMatrix = Matrix4.IDENTITY
   // attitude?: Attitude,
   // translation?: Cartesian3
@@ -33,16 +33,16 @@ function createFrustumPrimitive(
   const frustum = new PerspectiveFrustum({
       fov: CesiumMath.toRadians(60.0),
       aspectRatio: 16 / 9,
-      ...style
+      ...style,
     }),
     geometry = new FrustumGeometry({
       frustum: frustum,
       origin: Cartesian3.ZERO,
-      orientation: Quaternion.IDENTITY
+      orientation: Quaternion.IDENTITY,
     }),
     instance = new GeometryInstance({
       id,
-      geometry: geometry
+      geometry: geometry,
     });
 
   if (!instance) return undefined;
@@ -52,7 +52,7 @@ function createFrustumPrimitive(
     appearance: createAppearance(style),
     modelMatrix,
     allowPicking: false,
-    releaseGeometryInstances: true
+    releaseGeometryInstances: true,
   });
 
   return primitive;

@@ -16,11 +16,11 @@ import {
   Color,
   ColorGeometryInstanceAttribute,
 } from "cesium";
-import type { CylinderGraphicOptions } from "../../types";
+import type { CylinderStyleOptions } from "../../types";
 
 function createCylinderInstance(
   id = createGuid(),
-  style: CylinderGraphicOptions
+  style: CylinderStyleOptions
   // modelMatrix = Matrix4.IDENTITY,
   // attitude: Attitude = { elevation: -90 },
   // translation?: Cartesian3

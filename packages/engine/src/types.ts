@@ -855,52 +855,37 @@ export type StagingAreaGraphicOptions = StagingAreaStyleOptions & {
   positions?: PositionListOptions;
 };
 
-/// 特效
-///
-export type SpecialEffectGraphicOptions<T = XgFxStyleOptions> = Omit<
-  T,
-  "show"
-> & {
+export type FxGraphicOptions<T = unknown> = Omit<T, "show"> & {
   position?: PositionOptions;
 };
 
-export type SpecialEffectStereoStyleOptions<
-  T =
-    | ConeStyleOptions
-    | EllipsoidStyleOptions
-    | FrustumStyleOptions
-    | TetrahedronStyleOptions
-> = Omit<T, "orientation"> & {
+export type FxStereoStyleOptions<T = unknown> = Omit<T, "orientation"> & {
   orientation?: UnitQuaternionValue;
 };
 
-export type SpecialEffectOptions<T = XgFxStyleOptions> = {
+export type FxOptions<T = unknown> = {
   id?: string;
   name?: string;
   show?: boolean;
   availability?: string | Array<string>;
-  graphics: SpecialEffectGraphicOptions<T>;
+  graphics: FxGraphicOptions<T>;
 };
 
-export type XgConeFxStyleOptions =
-  SpecialEffectStereoStyleOptions<ConeStyleOptions>;
+export type XgConeFxStyleOptions = FxStereoStyleOptions<ConeStyleOptions>;
 export type XgConeFxGraphicOptions =
-  SpecialEffectGraphicOptions<XgConeFxStyleOptions>;
+  FxGraphicOptions<XgConeFxStyleOptions>;
 
-export type XgEllipsoidFxStyleOptions =
-  SpecialEffectStereoStyleOptions<EllipsoidStyleOptions>;
+export type XgEllipsoidFxStyleOptions = FxStereoStyleOptions<EllipsoidStyleOptions>;
 export type XgEllipsoidFxGraphicOptions =
-  SpecialEffectGraphicOptions<XgEllipsoidFxStyleOptions>;
+  FxGraphicOptions<XgEllipsoidFxStyleOptions>;
 
-export type XgFrustumFxStyleOptions =
-  SpecialEffectStereoStyleOptions<FrustumStyleOptions>;
+export type XgFrustumFxStyleOptions = FxStereoStyleOptions<FrustumStyleOptions>;
 export type XgFrustumFxGraphicOptions =
-  SpecialEffectGraphicOptions<XgFrustumFxStyleOptions>;
+  FxGraphicOptions<XgFrustumFxStyleOptions>;
 
-export type XgTetrahedronFxStyleOptions =
-  SpecialEffectStereoStyleOptions<TetrahedronStyleOptions>;
+export type XgTetrahedronFxStyleOptions = FxStereoStyleOptions<TetrahedronStyleOptions>;
 export type XgTetrahedronFxGraphicOptions =
-  SpecialEffectGraphicOptions<XgTetrahedronFxStyleOptions>;
+  FxGraphicOptions<XgTetrahedronFxStyleOptions>;
 
 export type XgSuperGifFxStyleOptions = BillboardStyleOptions & {
   delay?: number;
@@ -908,12 +893,13 @@ export type XgSuperGifFxStyleOptions = BillboardStyleOptions & {
   iterations?: number;
 };
 export type XgSuperGifFxGraphicOptions =
-  SpecialEffectGraphicOptions<XgSuperGifFxStyleOptions>;
+  FxGraphicOptions<XgSuperGifFxStyleOptions>;
 
 export type XgFxStyleOptions =
   | XgConeFxStyleOptions
   | XgEllipsoidFxStyleOptions
   | XgFrustumFxStyleOptions
+  | XgTetrahedronFxStyleOptions
   | XgSuperGifFxStyleOptions;
 export type XgFxGraphicOptions =
   | XgConeFxGraphicOptions
@@ -921,12 +907,6 @@ export type XgFxGraphicOptions =
   | XgFrustumFxGraphicOptions
   | XgSuperGifFxGraphicOptions;
 
-export type FxStereoStyleOptions<
-  T = ConeStyleOptions | EllipsoidStyleOptions | FrustumStyleOptions
-> = SpecialEffectStereoStyleOptions<T>;
-export type FxGraphicOptions<T = XgFxStyleOptions> =
-  SpecialEffectGraphicOptions<T>;
-export type FxOptions<T = XgFxStyleOptions> = SpecialEffectOptions<T>;
 /// 特效实例
 // export type SpecialEffect<T = CustomGraphicOptions> = {
 //     // availability?: TimeIntervalCollection;

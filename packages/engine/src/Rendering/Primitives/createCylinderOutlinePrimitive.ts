@@ -13,11 +13,11 @@ import {
   PerInstanceColorAppearance
 } from 'cesium';
 import createCylinderOutlineInstance from './createCylinderOutlineInstance';
-import type { CylinderGraphicOptions } from '../../types';
+import type { CylinderStyleOptions } from '../../types';
 
 function createCylinderOutlinePrimitive(
   id = createGuid(),
-  style: CylinderGraphicOptions,
+  style: CylinderStyleOptions,
   modelMatrix = Matrix4.IDENTITY,
   // attitude?: Attitude,
   // translation?: Cartesian3,

@@ -21,11 +21,11 @@ import {
   ColorGeometryInstanceAttribute,
   createGuid,
 } from "cesium";
-import type { FrustumGraphicOptions } from "../../types";
+import type { FrustumStyleOptions } from "../../types";
 
 function createFrustumOutlinePrimitive(
   id = createGuid(),
-  style: FrustumGraphicOptions,
+  style: FrustumStyleOptions,
   modelMatrix = Matrix4.IDENTITY,
   // attitude?: Attitude,
   // translation?: Cartesian3

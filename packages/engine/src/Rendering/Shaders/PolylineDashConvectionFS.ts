@@ -4,7 +4,7 @@
  * @version: 1.0.0
  * @Date: 2023-03-29 14:44:48
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2023-04-28 10:37:14
+ * @LastEditTime: 2025-12-09 15:24:44
  */
 
 export default `
@@ -36,23 +36,19 @@ czm_material czm_getMaterial(czm_materialInput materialInput)
     float maskTest = floor(dashPattern / pow(2.0, maskIndex));
     vec4 fragColor = (mod(maskTest, 2.0) < 1.0) ? gapColor : color;
 
-    vec2 st = materialInput.st;
-    /// 滑块的归化坐标
-    vec2 sliderUV = vec2(fract(czm_frameNumber * 0.01 * speed), .5);
+    /// 视窗锚定双滑块（顺/逆流各一个），不再依赖起点
+    float viewportWidth = czm_viewport.z;
+    float t = fract(czm_frameNumber * 0.01 * speed);
+    float centerFwd = mod(t * viewportWidth, viewportWidth);
+    float centerRev = mod((1.0 - t) * viewportWidth, viewportWidth);
 
-    /// 起点屏幕坐标
-    vec4 startPosWinC = czm_modelToWindowCoordinates(vec4(startPosition, 1.));
-    /// 旋转后坐标
-    vec2 startPos = rotate(v_polylineAngle) * startPosWinC.xy;
-
-    /// 顺流
-    if(abs(pos.x - startPos.x) * abs(sliderUV.x - st.s) / st.s < (sliderLength / 2. * czm_pixelRatio)){
-        fragColor = sliderColor * 1.5;
-    }
-
-    /// 逆流
-    if(abs(pos.x - startPos.x) * abs(-sliderUV.x + 1. - st.s) / st.s < (sliderLength / 2. * czm_pixelRatio)){
-        fragColor = sliderColor * 1.5;
+    float sliderLengthPx = sliderLength * czm_pixelRatio;
+    float mT = materialInput.st.t;
+    bool insideXFwd = abs(pos.x - centerFwd) <= (sliderLengthPx * 0.5);
+    bool insideXRev = abs(pos.x - centerRev) <= (sliderLengthPx * 0.5);
+    bool insideY   = abs(mT - 0.5) <= (sliderHeightRatio * 0.5);
+    if ((insideXFwd || insideXRev) && insideY) {
+        fragColor = sliderColor;
     }
 
     if (fragColor.a < 0.005) {   // matches 0/255 and 1/255

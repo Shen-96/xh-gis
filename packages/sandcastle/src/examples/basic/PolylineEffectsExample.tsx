@@ -5,7 +5,7 @@
  * @Email: tigerk96@outlook.com
  * @Date: 2025-12-05 11:13:17
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-08 20:13:04
+ * @LastEditTime: 2025-12-09 15:49:22
  */
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { WidgetEarth as Earth } from "@xh-gis/widgets";
@@ -116,6 +116,18 @@ const PolylineEffectsExample: React.FC = () => {
             sliderLength: 12.0,
             sliderHeightRatio: 1.0,
             useCesiumTime: false,
+          },
+        },
+        PolylineDashConvection: {
+          materialType: MaterialType.PolylineDashConvection as const,
+          uniforms: {
+            color: "#00b7ff",
+            gapColor: "#00000000",
+            sliderColor: "#ffff00",
+            sliderLength: 12.0,
+            dashLength: 16.0,
+            dashPattern: 255,
+            speed: 1.0,
           },
         },
         PolylineDashFlow: {

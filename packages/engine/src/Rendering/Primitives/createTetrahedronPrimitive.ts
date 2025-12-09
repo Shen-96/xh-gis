@@ -5,7 +5,7 @@
  * @Email: trae@example.com
  * @Date: 2025-12-09 10:36:10
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-12-09 14:19:44
+ * @LastEditTime: 2025-12-09 15:16:23
  * @Version: 1.0.0
  */
 /*
@@ -16,11 +16,11 @@
 import { Matrix4, createGuid, Primitive, GeometryInstance } from "cesium";
 import { createAppearance } from "../Materials/Appearances/createCustomMaterialAppearance";
 import TetrahedronGeometry from "../Geometries/Tetrahedron/TetrahedronGeometry";
-import { TetrahedronGraphicOptions } from "../../types";
+import { TetrahedronStyleOptions } from "../../types";
 
 function createTetrahedronPrimitive(
   id = createGuid(),
-  style: TetrahedronGraphicOptions,
+  style: TetrahedronStyleOptions,
   modelMatrix = Matrix4.IDENTITY
 ) {
   const geom = TetrahedronGeometry.createGeometry(

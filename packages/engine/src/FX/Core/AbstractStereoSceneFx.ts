@@ -10,14 +10,11 @@
 /* */
 import { Property, Quaternion, VelocityOrientationProperty, Matrix3, Matrix4, Cartesian3 } from "cesium";
 import AbstractSceneFx from "./AbstractSceneFx";
-import type {
-  SpecialEffectStereoStyleOptions,
-  SpecialEffectGraphicOptions,
-} from "../../types";
+import type { FxStereoStyleOptions, FxGraphicOptions } from "../../types";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 
 export default abstract class AbstractStereoSceneFx<T = unknown> extends AbstractSceneFx<
-  SpecialEffectStereoStyleOptions<T>
+  FxStereoStyleOptions<T>
 > {
   #orientation?: Quaternion | VelocityOrientationProperty | Property;
 
@@ -26,11 +23,11 @@ export default abstract class AbstractStereoSceneFx<T = unknown> extends Abstrac
     name?: string;
     availability?: string | Array<string>;
     show?: boolean;
-    graphics: SpecialEffectGraphicOptions<SpecialEffectStereoStyleOptions<T>>;
+    graphics: FxGraphicOptions<FxStereoStyleOptions<T>>;
   }) {
     super(opts);
     const orientation = (
-      opts.graphics as SpecialEffectGraphicOptions<SpecialEffectStereoStyleOptions<T>>
+      opts.graphics as FxGraphicOptions<FxStereoStyleOptions<T>>
     ).orientation;
     this.#orientation = orientation
       ? CoordinateUtils.unitQuaternionValueToQuaternion(orientation)
@@ -48,9 +45,7 @@ export default abstract class AbstractStereoSceneFx<T = unknown> extends Abstrac
   }
 
   _updateOrientation(val?: Quaternion) {
-    const graphics = this._getGraphics() as SpecialEffectGraphicOptions<
-      SpecialEffectStereoStyleOptions<any>
-    >;
+    const graphics = this._getGraphics() as FxGraphicOptions<FxStereoStyleOptions<any>>;
     const prev = graphics.orientation
       ? CoordinateUtils.unitQuaternionValueToQuaternion(graphics.orientation)
       : undefined;

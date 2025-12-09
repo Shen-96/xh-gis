@@ -12,12 +12,12 @@ import {
   Primitive,
   PerInstanceColorAppearance
 } from 'cesium';
-import type { EllipsoidGraphicOptions } from '../../types';
+import type { EllipsoidStyleOptions } from '../../types';
 import createEllipsoidOutlineInstance from './createEllipsoidOutlineInstance';
 
 function createEllipsoidOutlinePrimitive(
   id = createGuid(),
-  style: EllipsoidGraphicOptions,
+  style: EllipsoidStyleOptions,
   modelMatrix = Matrix4.IDENTITY,
   // attitude?: Attitude,
   // translation?: Cartesian3

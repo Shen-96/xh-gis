@@ -14,11 +14,11 @@ import {
   Color,
   Cartesian3
 } from 'cesium';
-import type { EllipsoidGraphicOptions } from '../../types';
+import type { EllipsoidStyleOptions } from '../../types';
 
 function createEllipsoidOutlineInstance(
   id = createGuid(),
-  style: EllipsoidGraphicOptions
+  style: EllipsoidStyleOptions
 ): GeometryInstance | undefined {
   try {
     /// 初始参数

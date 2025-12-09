@@ -9,11 +9,11 @@
 import { Matrix4, createGuid, Primitive } from 'cesium';
 import createEllipsoidInstance from './createEllipsoidInstance';
 import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
-import type { EllipsoidGraphicOptions } from '../../types';
+import type { EllipsoidStyleOptions } from '../../types';
 
 function createEllipsoidPrimitive(
   id = createGuid(),
-  style: EllipsoidGraphicOptions,
+  style: EllipsoidStyleOptions,
   modelMatrix = Matrix4.IDENTITY
 ) {
   /// 初始参数
@@ -33,7 +33,7 @@ function createEllipsoidPrimitive(
     //         ),
     //     }),
     // }),
-    appearance: createAppearance(style),
+    appearance: createAppearance(style, { geometry: 'surface' }),
     modelMatrix
   });
 

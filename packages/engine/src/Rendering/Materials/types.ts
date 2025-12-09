@@ -40,8 +40,8 @@ export interface PolylineDashUniforms {
 export interface PolylineDashConvectionUniforms extends PolylineDashUniforms {
   sliderColor?: Color;
   sliderLength?: number;
+  sliderHeightRatio?: number;
   speed?: number;
-  startPosition?: Cartesian3;
 }
 
 export interface PolylineDashSliderUniforms extends PolylineDashUniforms {
@@ -161,6 +161,7 @@ export type SerializableUniformsMap = {
     gapColor?: string;
     sliderColor?: string;
     sliderLength?: number;
+    sliderHeightRatio?: number;
     dashLength?: number;
     dashPattern?: number | string;
     speed?: number;

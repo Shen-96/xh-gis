@@ -22,11 +22,11 @@ import {
   ColorGeometryInstanceAttribute,
 } from "cesium";
 import TetrahedronOutlineGeometry from "../Geometries/Tetrahedron/TetrahedronOutlineGeometry";
-import { TetrahedronGraphicOptions } from "../../types";
+import { TetrahedronStyleOptions } from "../../types";
 
 function createTetrahedronOutlinePrimitive(
   id = createGuid(),
-  style: TetrahedronGraphicOptions,
+  style: TetrahedronStyleOptions,
   modelMatrix = Matrix4.IDENTITY,
   maximumAliasedLineWidth = 1
 ) {

@@ -1,27 +1,5 @@
-import {
-  Color,
-  Material,
-  MaterialAppearance,
-  Cartesian2,
-  Cartesian3,
-  PolylineMaterialAppearance,
-} from "cesium";
+import { Color, Material, MaterialAppearance, Cartesian2, PolylineMaterialAppearance } from "cesium";
 import { registerAppearance } from "./AppearanceRegistry";
-import type {
-  EllipsoidScanUniforms,
-  EllipsoidElectricUniforms,
-  EllipsoidSpiralUniforms,
-  EllipsoidWaveUniforms,
-  FlowLineUniforms,
-  FlowLineAdaptiveUniforms,
-  FlowLineMSDFUniforms,
-  FlowPointUniforms,
-  ConvectionPointUniforms,
-  PolylineDashConvectionUniforms,
-  PolylineDashSliderUniforms,
-  CircleRippleUniforms,
-  DynamicWallUniforms,
-} from "../types";
 import { MaterialType } from "../../../enum";
 import EllipsoidScanFS from "../../Shaders/EllipsoidScanFS";
 import EllipsoidElectricFS from "../../Shaders/EllipsoidElectricFS";
@@ -148,9 +126,9 @@ try {
           gapColor: Color.TRANSPARENT,
           sliderColor: Color.RED,
           sliderLength: 8.0,
+          sliderHeightRatio: 1.0,
           dashLength: 16.0,
           dashPattern: 255.0,
-          startPosition: Cartesian3.ZERO,
           speed: 1,
         },
         source: PolylineDashConvectionFS,
@@ -288,9 +266,7 @@ try {
 
 registerAppearance(
   MaterialType.EllipsoidScan,
-  (style: {
-    material?: { customTexture?: { uniforms?: EllipsoidScanUniforms } };
-  }) =>
+  (style) =>
     new MaterialAppearance({
       material: new Material({
         fabric: {
@@ -303,9 +279,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.EllipsoidElectric,
-  (style: {
-    material?: { customTexture?: { uniforms?: EllipsoidElectricUniforms } };
-  }) =>
+  (style) =>
     new MaterialAppearance({
       material: new Material({
         fabric: {
@@ -318,9 +292,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.EllipsoidSpiral,
-  (style: {
-    material?: { customTexture?: { uniforms?: EllipsoidSpiralUniforms } };
-  }) =>
+  (style) =>
     new MaterialAppearance({
       material: new Material({
         fabric: {
@@ -333,9 +305,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.EllipsoidWave,
-  (style: {
-    material?: { customTexture?: { uniforms?: EllipsoidWaveUniforms } };
-  }) =>
+  (style) =>
     new MaterialAppearance({
       material: new Material({
         fabric: {
@@ -348,9 +318,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.PolylineFlow,
-  (style: {
-    material?: { customTexture?: { uniforms?: FlowLineUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     return new MaterialAppearance({
       material: new Material({
@@ -365,9 +333,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.PolylineFlowAdaptive,
-  (style: {
-    material?: { customTexture?: { uniforms?: FlowLineAdaptiveUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     const modeVal = (u as any).modeIndex ?? (u as any).mode;
     return new PolylineMaterialAppearance({
@@ -386,9 +352,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.PolylineFlowMSDF,
-  (style: {
-    material?: { customTexture?: { uniforms?: FlowLineMSDFUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     return new PolylineMaterialAppearance({
       material: new Material({
@@ -403,9 +367,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.MSDFStatic,
-  (style: {
-    material?: { customTexture?: { uniforms?: FlowLineMSDFUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     return new PolylineMaterialAppearance({
       material: new Material({
@@ -420,9 +382,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.PolylineFlowPoint,
-  (style: {
-    material?: { customTexture?: { uniforms?: FlowPointUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     return new MaterialAppearance({
       material: new Material({
@@ -437,9 +397,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.ConvectionPoint,
-  (style: {
-    material?: { customTexture?: { uniforms?: ConvectionPointUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     return new MaterialAppearance({
       material: new Material({
@@ -454,20 +412,12 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.PolylineDashConvection,
-  (
-    style: {
-      material?: {
-        customTexture?: { uniforms?: PolylineDashConvectionUniforms };
-      };
-    },
-    params
-  ) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     const dashPatternNormalized =
       typeof u.dashPattern === "string"
         ? parseInt(u.dashPattern as any, 2)
         : undefined;
-    const start = params?.startPosition;
     return new PolylineMaterialAppearance({
       material: new Material({
         fabric: {
@@ -477,7 +427,6 @@ registerAppearance(
             ...(dashPatternNormalized !== undefined
               ? { dashPattern: dashPatternNormalized }
               : {}),
-            ...(start !== undefined ? { startPosition: start } : {}),
           },
         },
       }),
@@ -487,18 +436,12 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.PolylineDashSlider,
-  (
-    style: {
-      material?: { customTexture?: { uniforms?: PolylineDashSliderUniforms } };
-    },
-    params
-  ) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     const dashPatternNormalized =
       typeof u.dashPattern === "string"
         ? parseInt(u.dashPattern as any, 2)
         : undefined;
-    const start = params?.startPosition;
     return new PolylineMaterialAppearance({
       material: new Material({
         fabric: {
@@ -508,7 +451,6 @@ registerAppearance(
             ...(dashPatternNormalized !== undefined
               ? { dashPattern: dashPatternNormalized }
               : {}),
-            ...(start !== undefined ? { startPosition: start } : {}),
           },
         },
       }),
@@ -518,9 +460,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.CircleRipple,
-  (style: {
-    material?: { customTexture?: { uniforms?: CircleRippleUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     return new MaterialAppearance({
       material: new Material({
@@ -535,9 +475,7 @@ registerAppearance(
 
 registerAppearance(
   MaterialType.DynamicWall,
-  (style: {
-    material?: { customTexture?: { uniforms?: DynamicWallUniforms } };
-  }) => {
+  (style) => {
     const u = style.material?.customTexture?.uniforms ?? {};
     return new MaterialAppearance({
       material: new Material({
