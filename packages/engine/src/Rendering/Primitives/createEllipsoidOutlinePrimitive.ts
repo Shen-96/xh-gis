@@ -10,10 +10,14 @@ import {
   Matrix4,
   createGuid,
   Primitive,
-  PerInstanceColorAppearance
+  GeometryInstance,
+  PerInstanceColorAppearance,
+  EllipsoidOutlineGeometry,
+  ColorGeometryInstanceAttribute,
+  Color,
+  Cartesian3
 } from 'cesium';
 import type { EllipsoidStyleOptions } from '../../types';
-import createEllipsoidOutlineInstance from './createEllipsoidOutlineInstance';
 
 function createEllipsoidOutlinePrimitive(
   id = createGuid(),
@@ -25,8 +29,25 @@ function createEllipsoidOutlinePrimitive(
 ) {
   /// 初始参数
 
-  const instance = createEllipsoidOutlineInstance(id, style);
-  if (!instance) return undefined;
+  const { radii, innerRadii, minimumClock, maximumClock, minimumCone, maximumCone, material } = style;
+  const geometry = new EllipsoidOutlineGeometry({
+    radii: Cartesian3.fromArray(radii),
+    innerRadii: innerRadii && Cartesian3.fromArray(innerRadii),
+    minimumClock,
+    maximumClock,
+    minimumCone,
+    maximumCone,
+  });
+  const colorStr = material?.outlineColor ?? 'rgba(255,255,255,0.95)';
+  const instance = new GeometryInstance({
+    id,
+    geometry,
+    attributes: {
+      color: ColorGeometryInstanceAttribute.fromColor(
+        Color.fromCssColorString(colorStr)
+      ),
+    },
+  });
 
   const primitive = new Primitive({
     geometryInstances: instance,

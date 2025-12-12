@@ -4,17 +4,10 @@
  * @version: 1.0.0
  * @Date: 2023-11-01 17:04:27
  * @LastEditors: Xiaohu.Shen
- * @LastEditTime: 2025-03-25 09:04:32
+ * @LastEditTime: 2025-12-12 10:21:52
  */
 
-import {
-  Cartesian3,
-  Math as CesiumMath,
-  Matrix3,
-  Matrix4,
-  Quaternion,
-  defined,
-} from "cesium";
+import { Cartesian3, Matrix3, Matrix4, Quaternion, defined } from "cesium";
 import {
   EllipsoidStyleOptions,
   FxOptions,
@@ -22,7 +15,6 @@ import {
   FxGraphicOptions,
 } from "../../types";
 import CoordinateUtils from "../../Core/CoordinateUtils";
-import MathUtils from "../../Core/MathUtils";
 import createEllipsoidPrimitive from "../../Rendering/Primitives/createEllipsoidPrimitive";
 import createEllipsoidOutlinePrimitive from "../../Rendering/Primitives/createEllipsoidOutlinePrimitive";
 import AbstractStereoSceneFx from "../Core/AbstractStereoSceneFx";
@@ -46,7 +38,8 @@ export default class XgEllipsoidFX extends AbstractStereoSceneFx<EllipsoidStyleO
   }
 
   protected init() {
-    const gfx = this._getGraphics() as FxGraphicOptions<XgEllipsoidFxStyleOptions>,
+    const gfx =
+        this._getGraphics() as FxGraphicOptions<XgEllipsoidFxStyleOptions>,
       { radii, material } = gfx,
       fill = material?.fill ?? true,
       outline = material?.outline ?? true;
@@ -83,7 +76,8 @@ export default class XgEllipsoidFX extends AbstractStereoSceneFx<EllipsoidStyleO
   }
 
   computeModelMatrix(): Matrix4 {
-    const gfx = this._getGraphics() as FxGraphicOptions<XgEllipsoidFxStyleOptions>,
+    const gfx =
+        this._getGraphics() as FxGraphicOptions<XgEllipsoidFxStyleOptions>,
       { position, orientation } = gfx,
       /// 初始坐标
       originPos = position

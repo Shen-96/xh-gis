@@ -6,8 +6,7 @@
  * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2023-10-13 10:06:41
  */
-import { Matrix4, createGuid, Primitive } from 'cesium';
-import createEllipsoidInstance from './createEllipsoidInstance';
+import { Matrix4, createGuid, Primitive, GeometryInstance, EllipsoidGeometry, Cartesian3, VertexFormat } from 'cesium';
 import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
 import type { EllipsoidStyleOptions } from '../../types';
 
@@ -19,8 +18,17 @@ function createEllipsoidPrimitive(
   /// 初始参数
   // const { material } = style;
 
-  const instance = createEllipsoidInstance(id, style);
-  if (!instance) return undefined;
+  const { radii, innerRadii, minimumClock, maximumClock, minimumCone, maximumCone } = style;
+  const geometry = new EllipsoidGeometry({
+    radii: Cartesian3.fromArray(radii),
+    innerRadii: innerRadii && Cartesian3.fromArray(innerRadii),
+    vertexFormat: VertexFormat.POSITION_NORMAL_AND_ST,
+    minimumClock,
+    maximumClock,
+    minimumCone,
+    maximumCone,
+  });
+  const instance = new GeometryInstance({ id, geometry });
 
   const primitive = new Primitive({
     geometryInstances: instance,

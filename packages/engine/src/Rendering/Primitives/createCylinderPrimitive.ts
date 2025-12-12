@@ -6,8 +6,7 @@
  * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-03-25 09:11:37
  */
-import { Matrix4, createGuid, Primitive } from 'cesium';
-import createCylinderInstance from './createCylinderInstance';
+import { Matrix4, createGuid, Primitive, GeometryInstance, CylinderGeometry } from 'cesium';
 import type { CylinderStyleOptions } from '../../types';
 import { createAppearance } from '../Materials/Appearances/createCustomMaterialAppearance';
 
@@ -21,8 +20,14 @@ function createCylinderPrimitive(
   /// 初始参数
   const { material } = style;
 
-  const instance = createCylinderInstance(id, style);
-  if (!instance) return undefined;
+  const { length, slices, topRadius, bottomRadius } = style;
+  const geometry = new CylinderGeometry({
+    topRadius,
+    bottomRadius,
+    length,
+    slices,
+  });
+  const instance = new GeometryInstance({ id, geometry });
 
   const primitive = new Primitive({
     geometryInstances: instance,

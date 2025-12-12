@@ -7,18 +7,13 @@
  * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-12-04 17:03:15
  */
-export * from "./createCylinderInstance";
-export * from "./createCylinderOutlineInstance";
 export * from "./createCylinderPrimitive";
 export * from "./createCylinderOutlinePrimitive";
 export * from "./createFrustumPrimitive";
 export * from "./createFrustumOutlinePrimitive";
 export * from "./createEllipsoidPrimitive";
 export * from "./createEllipsoidOutlinePrimitive";
-export * from "./createEllipsoidOutlineInstance";
-export * from "./createEllipsoidInstance";
 export * from "./createPolylinePrimitive";
-export * from "./createPolylineInstance";
 export * from "./createSectorPrimitive";
 export * from "./createConeGeometry";
 export * from "./ConeGeometryLibrary";

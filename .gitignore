@@ -121,6 +121,7 @@ public
 *.swp
 *.swo
 *~
+*.trae
 
 # OS generated files
 .DS_Store

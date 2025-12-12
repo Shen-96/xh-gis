@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaohu.Shen
  * @WeChat: yingnan55
- * @Email: trae@example.com
+ * @Email: tigerk96@outlook.com
  * @Version: 1.0.0
  * @Descripttion: xxx
  * @Date: 2025-12-06 23:15:06

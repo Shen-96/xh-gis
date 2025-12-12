@@ -10,9 +10,12 @@ import {
   Matrix4,
   createGuid,
   Primitive,
-  PerInstanceColorAppearance
+  GeometryInstance,
+  PerInstanceColorAppearance,
+  CylinderOutlineGeometry,
+  ColorGeometryInstanceAttribute,
+  Color
 } from 'cesium';
-import createCylinderOutlineInstance from './createCylinderOutlineInstance';
 import type { CylinderStyleOptions } from '../../types';
 
 function createCylinderOutlinePrimitive(
@@ -23,8 +26,22 @@ function createCylinderOutlinePrimitive(
   // translation?: Cartesian3,
   maximumAliasedLineWidth = 1
 ) {
-  const instance = createCylinderOutlineInstance(id, style);
-  if (!instance) return undefined;
+  const { length, slices, topRadius, bottomRadius, material } = style;
+  const geometry = new CylinderOutlineGeometry({
+    topRadius,
+    bottomRadius,
+    length,
+    slices,
+  });
+  const instance = new GeometryInstance({
+    id,
+    geometry,
+    attributes: {
+      color: ColorGeometryInstanceAttribute.fromColor(
+        Color.fromCssColorString(material?.outlineColor ?? '#fffb00ff')
+      ),
+    },
+  });
 
   const primitive = new Primitive({
     geometryInstances: instance,

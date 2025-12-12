@@ -1,3 +1,12 @@
+/*
+ * @Descripttion: xxx
+ * @Author: Xiaohu.Shen
+ * @Wechat: yingnan55
+ * @Email: tigerk96@outlook.com
+ * @Date: 2025-12-09 10:32:33
+ * @LastEditors: Xiaohu.Shen
+ * @LastEditTime: 2025-12-12 10:55:09
+ */
 import {
   BoundingSphere,
   Geometry,
