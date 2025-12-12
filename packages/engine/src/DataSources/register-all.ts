@@ -31,9 +31,12 @@ import "./Graphics/Polygon/StagingArea";
 // 导入所有线图元
 import "./Graphics/Line/Curve";
 import "./Graphics/Line/FreehandLine";
+import "./Graphics/Line/Polyline";
 
 // 导入所有点图元
 import "./Graphics/Point/Mark";
+import "./Graphics/Point/Label";
+import "./Graphics/Point/Billboard";
 
 // 导入所有符号
 import "./Graphics/Symbol/ZyTjArrow";

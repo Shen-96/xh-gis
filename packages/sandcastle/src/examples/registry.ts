@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaohu.Shen
  * @WeChat: yingnan55
- * @Email: trae@example.com
+ * @Email: tigerk96@outlook.com
  * @Version: 1.0.0
  * @Descripttion: xxx
  * @Date: 2025-12-06 11:10:04
@@ -41,6 +41,10 @@ const importerMap: Record<string, () => Promise<{ default: React.ComponentType<a
   'polyline-effects': () => import('../examples/basic/PolylineEffectsExample'),
   'camera-bookmarks': () => import('../examples/basic/CameraBookmarksExample'),
   'tetrahedron-fx': () => import('../examples/basic/TetrahedronFxExample'),
+  'ellipsoid-fx': () => import('../examples/basic/EllipsoidFxExample'),
+  'cone-fx': () => import('../examples/basic/ConeFxExample'),
+  'frustum-fx': () => import('../examples/basic/FrustumFxExample'),
+  'circle-ripple': () => import('../examples/basic/CircleRippleExample'),
 };
 
 export const examples: ExampleMeta[] = (rawExamples as any[]).map((e) => ({

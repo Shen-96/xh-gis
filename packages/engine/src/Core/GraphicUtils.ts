@@ -27,6 +27,8 @@ import {
   PolylineGraphics,
   PolylineOutlineMaterialProperty,
   VerticalOrigin,
+  Material,
+  ConstantProperty,
 } from "cesium";
 import type {
   PolylineGraphicOptions,
@@ -57,6 +59,8 @@ import PolylineFlowPointMaterialProperty from "../Rendering/Materials/Properties
 import PolylineDashConvectionMaterialProperty from "../Rendering/Materials/Properties/PolylineDashConvectionMaterialProperty";
 import PolylineDashSliderMaterialProperty from "../Rendering/Materials/Properties/PolylineDashSliderMaterialProperty";
 import PolylineDashFlowMaterialProperty from "../Rendering/Materials/Properties/PolylineDashFlowMaterialProperty";
+import CircleRippleMaterialProperty from "../Rendering/Materials/Properties/CircleRippleMaterialProperty";
+import DynamicWallMaterialProperty from "../Rendering/Materials/Properties/DynamicWallMaterialProperty";
 
 const defaultPointStyle: Pick<
   PointStyleOptions,
@@ -681,6 +685,52 @@ export default class GraphicUtils {
   }
 
   /**
+   * @descripttion: 创建面的材质
+   * @param {PolygonStyleOptions} options
+   * @return {*}
+   * @author: Xiaohu.Shen
+   */
+  static generatePolygonMaterialPropertyByMaterialOptions(
+    options?: Partial<PolygonStyleOptions>
+  ): MaterialProperty {
+    const { color, materialType, uniforms } = options ?? {};
+
+    let result: MaterialProperty;
+
+    switch (materialType) {
+      case MaterialType.CircleRipple:
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.CircleRipple];
+          result = new CircleRippleMaterialProperty({
+            color: u?.color ? (typeof u.color === "string" ? Color.fromCssColorString(u.color) : u.color) : Color.fromCssColorString(color ?? "#FFF"),
+            speed: u?.speed,
+            count: u?.count,
+            gradient: u?.gradient,
+          });
+        }
+        break;
+      case MaterialType.DynamicWall:
+        {
+          const u = uniforms as SerializableUniformsMap[MaterialType.DynamicWall];
+          result = new DynamicWallMaterialProperty({
+            color: u?.color ? (typeof u.color === "string" ? Color.fromCssColorString(u.color) : u.color) : Color.fromCssColorString(color ?? "#FFF"),
+            image: u?.image,
+            speed: u?.speed,
+          });
+        }
+        break;
+
+      default:
+        result = new ColorMaterialProperty(
+          Color.fromCssColorString(color ?? defaultPolygonStyle.color)
+        );
+        break;
+    }
+
+    return result;
+  }
+
+  /**
    * @descripttion:
    * @param {SymbolMergeStyleOptions} options
    * @return {*}
@@ -689,11 +739,11 @@ export default class GraphicUtils {
   static generatePolygonGraphicsOptionsFromStyle(
     options: Partial<PolygonStyleOptions>
   ): PolygonGraphics.ConstructorOptions {
-    const { show, fill, color } = options ?? {};
+    const { show, fill, color, materialType } = options ?? {};
 
     return {
       show: show ?? fill ?? true,
-      material: Color.fromCssColorString(color ?? defaultPolygonStyle.color),
+      material: this.generatePolygonMaterialPropertyByMaterialOptions(options),
     };
   }
 

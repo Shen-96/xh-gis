@@ -1,0 +1,59 @@
+/*
+ * @Descripttion: Billboard Graphic
+ * @Author: Xiaohu.Shen
+ * @version: 1.0.0
+ */
+import { Cartesian3, createGuid } from "cesium";
+import AbstractPoint from "../Abstract/AbstractPoint";
+import { MarkStyle } from "../types";
+import AbstractCore from "../../../Core/AbstractCore";
+import { Point3Deg } from "../../../types";
+import AbstractGraphic from "../Abstract/AbstractGraphic";
+import { GeometryType, GraphicType } from "../../../enum";
+import registry from "../../../Core/GraphicRegistry";
+
+export class Billboard extends AbstractPoint {
+  graphicType: GraphicType;
+
+  constructor({
+    core,
+    style,
+    position,
+  }: {
+    core: AbstractCore;
+    style?: MarkStyle;
+    position?: Point3Deg;
+  }) {
+    super({ core, style, position });
+
+    this.graphicType = GraphicType.BILLBOARD;
+    this.graphicName = "广告牌";
+    this.hintText = "单击确定位置";
+  }
+
+  protected addPoint(
+    cartesian: Cartesian3,
+    callback?: (
+      position: Point3Deg,
+      self: AbstractGraphic<GeometryType.POINT>
+    ) => void
+  ): void {
+    this.points.set(createGuid(), cartesian);
+
+    if (this.points.size === 1) {
+      this.finishDrawing(callback);
+    }
+  }
+
+  protected updateMovingPoint(cartesian: Cartesian3): void {
+    this.setGeometryPoints([cartesian]);
+  }
+
+  protected generateGeometry(points: Cartesian3[]): Cartesian3[] {
+    return points;
+  }
+}
+
+// 模块内自注册
+registry.registerGraphic(GraphicType.BILLBOARD, Billboard as any);
+

@@ -96,6 +96,19 @@
     "thumbnail": "thumbnails/effects/polyline-effects.png"
   },
   {
+    "id": "circle-ripple",
+    "categoryId": "effects",
+    "title": "圆形波纹材质",
+    "description": "展示 CircleRipple 圆形波纹材质特效，支持单波纹扩散和多层波纹动画",
+    "tags": [
+      "material",
+      "circle",
+      "ripple"
+    ],
+    "level": "intermediate",
+    "thumbnail": "thumbnails/effects/circle-ripple.png"
+  },
+  {
     "id": "tetrahedron-fx",
     "categoryId": "effects",
     "title": "正四面体特效",
@@ -107,6 +120,45 @@
     ],
     "level": "intermediate",
     "thumbnail": "thumbnails/effects/tetrahedron-fx.png"
+  },
+  {
+    "id": "ellipsoid-fx",
+    "categoryId": "effects",
+    "title": "椭球特效",
+    "description": "展示 XgEllipsoidFX 椭球特效，支持扫描、脉冲等效果",
+    "tags": [
+      "fx",
+      "ellipsoid",
+      "shader"
+    ],
+    "level": "intermediate",
+    "thumbnail": "thumbnails/effects/ellipsoid-fx.png"
+  },
+  {
+    "id": "cone-fx",
+    "categoryId": "effects",
+    "title": "圆锥特效",
+    "description": "展示 XgConeFX 圆锥特效，支持不同尺寸和颜色的圆锥体",
+    "tags": [
+      "fx",
+      "cone",
+      "geometry"
+    ],
+    "level": "intermediate",
+    "thumbnail": "thumbnails/effects/cone-fx.png"
+  },
+  {
+    "id": "frustum-fx",
+    "categoryId": "effects",
+    "title": "视椎体特效",
+    "description": "展示 XgFrustumFX 视椎体特效，常用于扫描、视野范围等场景",
+    "tags": [
+      "fx",
+      "frustum",
+      "geometry"
+    ],
+    "level": "intermediate",
+    "thumbnail": "thumbnails/effects/frustum-fx.png"
   },
   {
     "id": "camera-bookmarks",
