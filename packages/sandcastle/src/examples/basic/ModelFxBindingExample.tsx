@@ -44,7 +44,7 @@ const ModelFxBindingExample: React.FC = () => {
       });
 
       // 加载 GLB 模型（飞机），并让其按圆形轨迹绕圈飞行，显示路径
-      const url = "/models/Cesium_Air.glb";
+      const url = `${import.meta.env.BASE_URL}models/Cesium_Air.glb`;
       const centerDeg = { lon: 120.1551, lat: 30.2741 };
       const altitude = 12000; // 米
       const radius = 20000; // 圆半径（米）
