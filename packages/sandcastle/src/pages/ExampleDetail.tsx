@@ -84,19 +84,21 @@ const ExampleDetail: React.FC = () => {
         <h2 style={{ margin: 0 }}>{meta.title}</h2>
         {meta.description && <p style={{ color: '#64748b' }}>{meta.description}</p>}
         <div style={{ display: 'flex', gap: 8 }}>
-          <button
-            onClick={handleSaveThumbnail}
-            disabled={saving}
-            style={{
-              padding: '6px 12px',
-              borderRadius: 6,
-              border: '1px solid #e2e8f0',
-              background: saving ? '#e5e7eb' : '#f1f5f9',
-              cursor: saving ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {saving ? '保存中…' : '保存缩略图'}
-          </button>
+          {import.meta.env.DEV && (
+            <button
+              onClick={handleSaveThumbnail}
+              disabled={saving}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 6,
+                border: '1px solid #e2e8f0',
+                background: saving ? '#e5e7eb' : '#f1f5f9',
+                cursor: saving ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {saving ? '保存中…' : '保存缩略图'}
+            </button>
+          )}
         </div>
       </div>
       <Suspense fallback={<div style={{ padding: 24 }}>加载示例中...</div>}>

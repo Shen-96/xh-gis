@@ -92,14 +92,6 @@ const ModelFxBindingExample: React.FC = () => {
 
       // 调整模型朝向（VelOri 基于运动方向，模型需加 180° 偏航修正）
       const velOri = new VelocityOrientationProperty(positionProperty);
-      // const orientationProperty = new CallbackProperty((time) => {
-      //   const base = velOri.getValue(time) as Quaternion | undefined;
-      //   if (!base) return base;
-      //   const offset = Quaternion.fromHeadingPitchRoll(
-      //     new HeadingPitchRoll(CesiumMath.toRadians(180), 0, 0)
-      //   );
-      //   return Quaternion.multiply(base, offset, new Quaternion());
-      // }, false);
 
       const entity = viewer.entities.add({
         position: positionProperty,
@@ -122,7 +114,7 @@ const ModelFxBindingExample: React.FC = () => {
 
       // 摄像机跟随飞机，并设置视角相对机体的偏移
       entity.viewFrom = new ConstantProperty(
-        new Cartesian3(-10000, -10000, 5000)
+        new Cartesian3(-2000, -2000, 1000)
       );
       viewer.trackedEntity = entity;
 
