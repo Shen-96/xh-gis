@@ -116,7 +116,10 @@ const ModelFxBindingExample: React.FC = () => {
       entity.viewFrom = new ConstantProperty(
         new Cartesian3(-2000, -2000, 1000)
       );
-      viewer.trackedEntity = entity;
+      // 使用 flyTo 确保模型加载完成后再绑定相机跟随，避免异步加载导致的相机设置失败
+      viewer.flyTo(entity).then(() => {
+        viewer.trackedEntity = entity;
+      });
 
       // 创建并绑定视锥 FX 到飞机模型实体，实现扫描效果
       const fxId = "plane-frustum-fx";
