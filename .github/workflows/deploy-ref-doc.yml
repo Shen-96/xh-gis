@@ -1,9 +1,22 @@
-name: Deploy Sandcastle to GitHub Pages
+name: Deploy Ref Docs to GitHub Pages
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'packages/engine/**'
+      - 'packages/widgets/**'
+      - 'packages/ref-doc/**'
+      - 'pnpm-lock.yaml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'packages/engine/**'
+      - 'packages/widgets/**'
+      - 'packages/ref-doc/**'
+      - 'pnpm-lock.yaml'
   workflow_dispatch:
 
 permissions:
@@ -12,7 +25,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-ref-doc
   cancel-in-progress: true
 
 jobs:
@@ -26,6 +39,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
@@ -34,9 +48,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Build vite-plugin-xhgis
-        run: pnpm -r --filter vite-plugin-xhgis build
 
       - name: Build engine
         run: pnpm -r --filter @xh-gis/engine build
@@ -48,21 +59,10 @@ jobs:
         working-directory: packages/ref-doc
         run: pnpm build
 
-      - name: Build sandcastle with base
-        working-directory: packages/sandcastle
-        env:
-          BASE: /xh-gis/
-        run: pnpm build
-
-      - name: Merge ref-doc into sandcastle artifact
-        run: |
-          mkdir -p packages/sandcastle/dist/ref-doc
-          rsync -a packages/ref-doc/dist/ packages/sandcastle/dist/ref-doc/
-
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: packages/sandcastle/dist
+          path: packages/ref-doc/dist
           name: github-pages
 
   deploy:

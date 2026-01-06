@@ -1,0 +1,14 @@
+{
+  "name": "@xh-gis/ref-doc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "XH-GIS API reference documentation generator",
+  "type": "module",
+  "scripts": {
+    "build": "typedoc --options typedoc.json && node rename-modules.mjs && node build-index.mjs && node postprocess.mjs",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typedoc": "^0.25.0"
+  }
+}

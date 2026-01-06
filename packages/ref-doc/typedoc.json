@@ -1,0 +1,27 @@
+{
+  "entryPoints": [
+    "../engine/dist/index.d.ts",
+    "../widgets/dist/index.d.ts"
+  ],
+  "out": "dist",
+  "name": "XH-GIS API",
+  "includeVersion": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeExternals": false,
+  "categorizeByGroup": true,
+  "githubPages": false,
+  "skipErrorChecking": true,
+  "tsconfig": "tsconfig.json",
+  "entryPointStrategy": "resolve",
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": false,
+    "@alpha": false,
+    "@beta": false,
+    "@internal": false
+  }
+}
+

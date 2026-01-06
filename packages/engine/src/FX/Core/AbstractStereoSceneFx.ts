@@ -13,6 +13,10 @@ import AbstractSceneFx from "./AbstractSceneFx";
 import type { FxStereoStyleOptions, FxGraphicOptions } from "../../types";
 import CoordinateUtils from "../../Core/CoordinateUtils";
 
+/**
+ * @internal
+ * 抽象立体场景特效基类，仅供框架内部继承使用
+ */
 export default abstract class AbstractStereoSceneFx<T = unknown> extends AbstractSceneFx<
   FxStereoStyleOptions<T>
 > {

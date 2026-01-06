@@ -48,6 +48,10 @@ export type AbstractPopupOptions<T extends ElementType = any> = {
   xgCore: AbstractCore;
 };
 
+/**
+ * @internal
+ * 抽象弹窗基类，仅供框架内部继承使用
+ */
 export default abstract class AbstractPopup<T extends ElementType = any> {
   readonly xgCore: AbstractCore;
   readonly #id: string;

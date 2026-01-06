@@ -32,7 +32,7 @@ import GeometryUtils from "./Core/GeometryUtils";
 import Constant from "./Core/Constant";
 // import SpatialAnalysis from "./Core/SpatialAnalysis";
 // FX 模块兼容层导出（统一从 FX 入口 re-export）
-export { FxManager, FxType, AbstractFx } from "./FX";
+export { FxManager, FxType, AbstractFx } from "./FX"; // AbstractFx 标记为 @internal
 // 提供命名空间导出，便于以 FX.XgFrustumFX 等方式访问现有特效类
 export * as FX from "./FX";
 import AbstractCore from "./Core/AbstractCore";
@@ -57,7 +57,7 @@ import HeatmapManager from "./Core/HeatmapManager";
 
 export {
   RoamManager,
-  AbstractCore,
+  AbstractCore, // @internal - 仅供类型引用，不对外暴露
   XgEarth,
   XgMap,
   // XgIntegrated,

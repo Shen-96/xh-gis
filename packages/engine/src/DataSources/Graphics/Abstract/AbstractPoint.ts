@@ -28,6 +28,10 @@ import { Point3Deg } from "../../../types";
 import CoordinateUtils from "../../../Core/CoordinateUtils";
 import { GeometryType } from "../../../enum";
 
+/**
+ * @internal
+ * 抽象点图形基类，仅供框架内部继承使用
+ */
 export default abstract class AbstractPoint extends AbstractGraphic<GeometryType.POINT> {
   geometryType: GeometryType.POINT;
   minPointsForShape: number;

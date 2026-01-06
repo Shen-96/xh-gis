@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": false,
+    "skipLibCheck": true
+  },
+  "include": [
+    "../engine/dist/**/*.d.ts",
+    "../widgets/dist/**/*.d.ts"
+  ]
+}
+
+

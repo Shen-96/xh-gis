@@ -2,9 +2,13 @@
 
 一个基于 CesiumJS 的强大 GIS 开发框架，提供完整的三维地理可视化解决方案。
 
-## 🚀 在线沙盒
+## 🌐 在线沙盒
 
 - https://shen-96.github.io/xh-gis/
+
+## 📚 API 文档
+
+- https://shen-96.github.io/xh-gis/ref-doc/
 
 ## 📦 包结构
 
@@ -81,105 +85,10 @@ earth.graphicManager.setDrawEventHandler('point', (result) => {
 });
 ```
 
-#### 🔥 热力图使用
+## 🔥 示例预览
 
-热力图通过 `HeatmapManager`/`HeatmapLayer` 提供，支持三种渲染方式：`imagery`（单瓦片影像，推荐）、`entity`、`primitive`。可选显示等值线（基于 `d3-contour`）。
-
-- 核心 API
-  - `heatmapManager.add(id, options)` 创建热力图
-  - `heatmapManager.update(id, { heatmap, dataRange, radius, contour })` 更新配置
-  - `heatmapManager.getById(id)` 获取实例
-  - `heatmapManager.clearAll()` 清空
-
-示例（仅使用引擎）：
-
-```typescript
-import { XgEarth, HeatmapOption } from 'xh-gis';
-
-const earth = new XgEarth('cesiumContainer');
-
-// 随机生成点（经纬度 + value）
-const points: Array<{ x: number; y: number; value?: number }> = [];
-for (let i = 0; i < 1000; i++) {
-  const x = 115 + Math.random() * 3; // 经度
-  const y = 39 + Math.random() * 2;  // 纬度
-  const value = Math.round(Math.random() * 100);
-  points.push({ x, y, value });
-}
-
-const options: HeatmapOption = {
-  renderType: 'imagery',
-  points,
-  heatmapOptions: {
-    radius: 30,
-    maxOpacity: 0.8,
-    minOpacity: 0.2,
-    blur: 0.85,
-    gradient: {
-      0.25: 'rgb(0,0,255)',
-      0.55: 'rgb(0,255,0)',
-      0.85: 'yellow',
-      1.0: 'rgb(255,0,0)'
-    }
-  },
-  heatmapDataOptions: { min: 0, max: 100 },
-  zoomToLayer: true,
-  contourLineOption: { show: true, contourCount: 8, width: 2, color: '#ff0000' }
-};
-
-const id = 'demo-heatmap';
-earth.heatmapManager.add(id, options);
-
-// 动态更新
-earth.heatmapManager.update(id, {
-  radius: 50,
-  heatmap: { opacity: 0.7 },
-  dataRange: { min: 0, max: 120 },
-  contour: { show: true, contourCount: 10 }
-});
-
-// 清空
-earth.heatmapManager.clearAll();
-```
-
-示例（与 React 组件结合）：
-
-```tsx
-import React from 'react';
-import { Earth } from 'xh-gis';
-import type { XgEarth, HeatmapOption } from 'xh-gis';
-
-export default function App() {
-  const handleInit = (inst: XgEarth) => {
-    const points = Array.from({ length: 500 }, () => ({
-      x: 116 + Math.random() * 2,
-      y: 39 + Math.random(),
-      value: Math.round(Math.random() * 100)
-    }));
-
-    const options: HeatmapOption = {
-      renderType: 'imagery',
-      points,
-      heatmapOptions: { radius: 30 },
-      heatmapDataOptions: { min: 0, max: 100 },
-      zoomToLayer: true
-    };
-
-    const id = 'demo-heatmap';
-    if (!inst.heatmapManager.isExists(id)) {
-      inst.heatmapManager.add(id, options);
-    }
-  };
-
-  return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <Earth onInit={handleInit} />
-    </div>
-  );
-}
-```
-
-提示：热力图无需额外静态资源；若需要统一静态资源路径，请参考下文“静态资源路径约定”。
+- 基础地图、标绘、图层、特效、热力图等，请访问在线沙盒查看交互演示
+- 详细 API、参数与示例代码，请访问上面的 API 文档
 
 ## 🌟 主要功能
 
@@ -228,46 +137,9 @@ export default function App() {
   - `console.log(getResourceUrl('SkyBox/tycho2t3_80_px.jpg')) // => '/xh-gis/Assets/SkyBox/tycho2t3_80_px.jpg'`
   - 浏览器 Network 中应看到 HTTP 请求（非 `file://`），返回 200
 
-## 📖 文档
+## 📖 更多文档
 
-详细文档请访问：[XH-GIS 文档](https://github.com/Shen-96/xh-gis#readme)
-
-### XgPopup 快速使用（引擎侧）
-
-`XgPopup` 支持三种内容类型：`string`（HTML 字符串）、`HTMLElement`、以及 React 元素（JSX）。当前版本在 React 模式下采用“宽松识别 + try/catch 兜底”策略：只要传入内容不是 `string`、不是 `HTMLElement`，就尝试用 `react-dom/client` 渲染，失败则降级为文本，避免空白。
-
-```typescript
-import { XgEarth, XgPopup } from '@xh-gis/engine';
-
-const earth = new XgEarth('cesiumContainer');
-
-// HTML 字符串
-new XgPopup({ id: 'html', xgCore: earth, position: [116.39, 39.9], element: '<div>HTML</div>' });
-
-// HTMLElement
-const el = document.createElement('div');
-el.textContent = 'DOM';
-new XgPopup({ id: 'dom', xgCore: earth, position: [116.40, 39.91], element: el });
-
-// React 元素（建议在客户端环境中创建并传入）
-```
-
-```tsx
-'use client';
-import React, { useEffect } from 'react';
-import { XgEarth, XgPopup } from '@xh-gis/engine';
-
-export default function Demo() {
-  useEffect(() => {
-    const earth = new XgEarth('cesiumContainer');
-    const content = (<div style={{ color: '#fff' }}>React 内容</div>);
-    new XgPopup({ id: 'react', xgCore: earth, position: [116.41, 39.92], element: content });
-  }, []);
-  return <div id="cesiumContainer" style={{ width: '100vw', height: '100vh' }} />;
-}
-```
-
-提示：在 Next.js 中建议将地图/弹窗组件通过 `dynamic(..., { ssr: false })` 关闭 SSR，并在 `useEffect` 中创建 JSX 再传入。
+- 详细 API 与用法请访问上面的“API 文档”
 
 ## 🤝 贡献
 

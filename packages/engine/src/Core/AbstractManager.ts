@@ -10,6 +10,10 @@
 import { createGuid, defined, Viewer } from "cesium";
 import AbstractCore from "./AbstractCore";
 
+/**
+ * @internal
+ * 抽象管理器基类，仅供框架内部继承使用
+ */
 export default abstract class AbstractManager {
   protected readonly guid = createGuid();
   protected readonly core: AbstractCore;

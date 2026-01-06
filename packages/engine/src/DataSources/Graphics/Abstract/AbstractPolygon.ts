@@ -32,6 +32,10 @@ import CoordinateUtils from "../../../Core/CoordinateUtils";
 import GraphicUtils from "../../../Core/GraphicUtils";
 import { GeometryType } from "../../../enum";
 
+/**
+ * @internal
+ * 抽象多边形图形基类，仅供框架内部继承使用
+ */
 export default abstract class AbstractPolygon extends AbstractGraphic<GeometryType.POLYGON> {
   geometryType: GeometryType.POLYGON;
 

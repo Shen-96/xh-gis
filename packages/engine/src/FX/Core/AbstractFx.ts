@@ -10,6 +10,7 @@
 import type { Cartesian3, Matrix4, PrimitiveCollection, Quaternion } from "cesium";
 
 /**
+ * @internal
  * FX 抽象基类：统一对外接口，供 FX 管理器与具体特效实现继承。
  * - 标准化 id/show 与图元集合访问
  * - 标准化位姿更新（位置/姿态）与矩阵重算触发

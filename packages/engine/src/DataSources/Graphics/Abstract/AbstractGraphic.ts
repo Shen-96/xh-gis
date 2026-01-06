@@ -48,6 +48,10 @@ interface ConcreteGeometryDrawEventCallbackMap extends GeometryDrawEventCallback
   ) => void;
 }
 
+/**
+ * @internal
+ * 抽象图形基类，仅供框架内部继承使用
+ */
 export default abstract class AbstractGraphic<T extends GeometryType> {
   protected readonly core: AbstractCore<CoreType>;
   protected readonly viewer: Viewer;

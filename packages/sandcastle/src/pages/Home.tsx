@@ -22,7 +22,7 @@ const Home: React.FC = () => {
       icon: '📚',
       title: 'API文档',
       description: '查看详细的API文档和使用指南',
-      link: '/docs',
+      link: (import.meta as any).env.BASE_URL + 'ref-doc/',
       color: 'var(--sc-gradient-progress-end, #8b5cf6)'
     },
     {

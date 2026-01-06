@@ -158,6 +158,8 @@ Camera.DEFAULT_VIEW_RECTANGLE = Rectangle.fromDegrees(30, -20, 180, 70);
 // Camera.DEFAULT_VIEW_FACTOR = 0.0;
 
 /**
+ * @internal
+ * 抽象基类，仅供框架内部继承使用，不对外暴露
  * @descripttion: 定制化视图
  * @author: Xiaohu.Shen
  */

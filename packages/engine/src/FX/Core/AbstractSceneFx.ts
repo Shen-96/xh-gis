@@ -17,6 +17,10 @@ import type { PositionOptions, FxGraphicOptions } from "../../types";
 // A minimal scene-centric options expected for FX implementations.
 // Note: legacy SceneFxGraphicOptions is replaced by flattened SpecialEffectGraphicOptions
 
+/**
+ * @internal
+ * 抽象场景特效基类，仅供框架内部继承使用
+ */
 export default abstract class AbstractSceneFx<T = unknown> extends AbstractFx {
   #name?: string;
   #availability?: TimeIntervalCollection;
