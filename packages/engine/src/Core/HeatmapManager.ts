@@ -1,4 +1,4 @@
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 import {
   HeatmapLayer,
@@ -16,7 +16,7 @@ export interface HeatmapRecord {
 /**
  * 热度图管理器
  */
-export default class HeatmapManager extends AbstractManager {
+export default class HeatmapManager extends BaseManager {
   private readonly records: Map<string, HeatmapRecord> = new Map();
 
   constructor(core: AbstractCore) {

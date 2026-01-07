@@ -35,14 +35,14 @@ import {
 } from "cesium";
 import type { CameraInfo } from "../types";
 import Geographic from "./Geographic";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 漫游管理器
  * @author: Xiaohu.Shen
  */
-export default class RoamManager extends AbstractManager {
+export default class RoamManager extends BaseManager {
   // pathManager: PartialPrivate<PathManager>;
   // #isStarted;
   // #isPaused;

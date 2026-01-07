@@ -267,15 +267,94 @@ export const resourcePreloader = globalPreloader;
 // 导出单例实例
 export const resourceManager = new ResourceManager();
 
-// 导出便捷函数
+/**
+ * 设置全局资源配置（高级用法）
+ * 
+ * @description
+ * 大多数场景下不需要调用此方法。推荐使用零配置方案：
+ * - 将静态资源拷贝到 `public/xh-gis/Assets` 目录
+ * - 使用环境变量 `XH_GIS_BASE_URL` 配置基础路径
+ * - 引擎会自动检测并应用配置
+ * 
+ * @param config - 资源配置对象
+ * 
+ * @example
+ * // 一般场景：无需调用，使用默认配置即可
+ * // 默认路径：/xh-gis/Assets
+ * 
+ * @example
+ * // 高级场景：使用 CDN
+ * setResourceConfig({
+ *   urlResolver: (path) => `https://cdn.example.com/assets/${path}`
+ * });
+ * 
+ * @example
+ * // 高级场景：自定义路径映射
+ * setResourceConfig({
+ *   pathMapping: {
+ *     'SkyBox/': 'textures/skybox/',
+ *     'globe.jpg': 'images/earth.jpg'
+ *   }
+ * });
+ * 
+ * @remarks
+ * 此方法主要用于以下场景：
+ * - 使用 CDN 托管资源
+ * - 资源路径与约定不一致
+ * - 需要动态修改配置
+ * 
+ * @see {@link getResourceConfig} 获取当前配置
+ * @see {@link getResourceUrl} 获取资源 URL
+ */
 export function setResourceConfig(config: ResourceConfig) {
   resourceManager.setConfig(config);
 }
 
+/**
+ * 获取资源的完整 URL（调试/验证用途）
+ * 
+ * @description
+ * 用于获取资源路径的完整 URL，主要用于调试、验证资源路径是否正确。
+ * 一般场景不需要调用此方法，引擎会自动处理资源路径。
+ * 
+ * @param path - 资源路径（如 'SkyBox/skybox_px.jpg'）
+ * @returns 完整的资源 URL（如 '/xh-gis/Assets/SkyBox/skybox_px.jpg'）
+ * 
+ * @example
+ * // 调试资源路径
+ * const url = getResourceUrl('SkyBox/skybox_px.jpg');
+ * console.log('资源 URL:', url); // '/xh-gis/Assets/SkyBox/skybox_px.jpg'
+ * 
+ * @remarks
+ * 此方法主要用于：
+ * - 调试资源路径是否正确
+ * - 验证资源配置是否生效
+ * - 在自定义代码中使用资源（高级场景）
+ */
 export function getResourceUrl(path: string): string {
   return resourceManager.getResourceUrl(path);
 }
 
+/**
+ * 获取当前的资源配置（调试用途）
+ * 
+ * @description
+ * 用于获取当前的资源配置，主要用于调试和验证。
+ * 一般场景不需要调用此方法。
+ * 
+ * @returns 当前的资源配置对象
+ * 
+ * @example
+ * // 调试资源配置
+ * const config = getResourceConfig();
+ * console.log('当前配置:', config);
+ * // { basePath: '/xh-gis/Assets', isDevelopment: false }
+ * 
+ * @remarks
+ * 此方法主要用于：
+ * - 调试资源配置是否正确
+ * - 验证环境变量是否生效
+ */
 export function getResourceConfig(): ResourceConfig {
   return resourceManager.getConfig();
 }

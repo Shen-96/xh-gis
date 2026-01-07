@@ -37,7 +37,7 @@ import { BasemapConfig, Layer, LayerConfig, LayerItem } from "../types";
 import { GraphicType, LayerType } from "../enum";
 import CoordinateUtils from "./CoordinateUtils";
 import MathUtils from "./MathUtils";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 import GeometryUtils from "./GeometryUtils";
 import {
@@ -67,7 +67,7 @@ type LayerManagerEvent =
  * @descripttion: 图层记录管理器
  * @author: Xiaohu.Shen
  */
-class LayerManager extends AbstractManager {
+class LayerManager extends BaseManager {
   readonly #layerMap: Map<string, Layer<LayerItem>>;
   /**
    * 事件监听集合（轻量版）。

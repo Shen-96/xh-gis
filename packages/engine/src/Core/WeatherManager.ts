@@ -8,14 +8,14 @@
  */
 import { Cartesian3, Viewer } from "cesium";
 import { WindDirectionType } from "../enum";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 天气管理器
  * @author: Xiaohu.Shen
  */
-class WeatherManager extends AbstractManager {
+class WeatherManager extends BaseManager {
   //私有属性
   #direction: WindDirectionType;
   #level: number;

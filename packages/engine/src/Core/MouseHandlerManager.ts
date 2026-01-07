@@ -16,13 +16,13 @@
 //   Cartesian2,
 // } from "cesium";
 // import { TimeHandler, MouseEventHandler, MouseHandlerCallback } from "..";
-// import AbstractManager from "./AbstractManager";
+// import BaseManager from "./BaseManager";
 
 // /**
 //  * @descripttion: 监听管理器
 //  * @author: Xiaohu.Shen
 //  */
-// class MouseHandlerManager extends AbstractManager {
+// class MouseHandlerManager extends BaseManager {
 //   readonly #handlerArr: Array<MouseEventHandler>;
 //   readonly #clickTimerArr: Array<TimeHandler>;
 

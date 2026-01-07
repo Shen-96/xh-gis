@@ -12,9 +12,9 @@ import AbstractCore from "./AbstractCore";
 
 /**
  * @internal
- * 抽象管理器基类，仅供框架内部继承使用
+ * 管理器基类，提供基础功能实现，仅供框架内部继承使用
  */
-export default abstract class AbstractManager {
+export default class BaseManager {
   protected readonly guid = createGuid();
   protected readonly core: AbstractCore;
   protected readonly viewer: Viewer;
@@ -188,3 +188,4 @@ export default abstract class AbstractManager {
   //   return result;
   // }
 }
+

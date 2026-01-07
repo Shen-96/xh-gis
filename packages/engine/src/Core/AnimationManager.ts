@@ -28,14 +28,14 @@ import RoamManager from "./RoamManager";
 import WeatherManager from "./WeatherManager";
 import { Animation, AnimationGroup, Particle } from "../types";
 import CoordinateUtils from "./CoordinateUtils";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 事件模拟
  * @author: Xiaohu.Shen
  */
-class AnimationManager extends AbstractManager {
+class AnimationManager extends BaseManager {
   /// 动画集合
   readonly #animationGroups: Array<AnimationGroup>;
   //帧监听

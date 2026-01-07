@@ -22,7 +22,7 @@ npm install @xh-gis/engine
 
 ## 静态资源配置
 
-从 v2.0 开始，xh-gis 引擎提供了灵活的静态资源配置系统，支持多种部署场景。
+xh-gis 引擎提供了灵活的静态资源配置系统，支持多种部署场景。
 
 ### 默认行为（零配置）
 
@@ -33,18 +33,157 @@ npm install @xh-gis/engine
 
 这样在开发与生产环境中均通过 HTTP 访问，避免浏览器阻止的 `file://` 路径。
 
-### 快速配置
+### Vite 项目集成（推荐）
+
+使用官方插件 `vite-plugin-xhgis`，实现零配置集成：
+
+#### 1. 安装插件
+
+```bash
+npm install vite-plugin-xhgis --save-dev
+```
+
+#### 2. 配置 Vite
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react'; // 或 vue()
+import { xhgis } from 'vite-plugin-xhgis';
+
+export default defineConfig({
+  plugins: [
+    react(), // 或 vue()
+    xhgis({
+      baseUrl: '/xh-gis/Assets', // 默认值，可省略
+    }),
+  ],
+});
+```
+
+#### 3. 使用（无需额外配置）
+
+```tsx
+// App.tsx
+import { useEffect, useRef } from 'react';
+import { XgEarth } from '@xh-gis/engine';
+
+function App() {
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      // 无需调用 setResourceConfig，插件已自动配置
+      const earth = new XgEarth(mapRef.current);
+    }
+  }, []);
+
+  return <div ref={mapRef} style={{ width: '100vw', height: '100vh' }} />;
+}
+```
+
+**插件功能：**
+- ✅ 自动将资源拷贝到 `public/xh-gis/Assets`
+- ✅ 自动注入 `XH_GIS_BASE_URL` 全局变量
+- ✅ 开发和生产环境自动处理
+- ✅ 零代码配置，开箱即用
+
+### Next.js 项目集成
+
+#### 1. 配置 Webpack
+
+```javascript
+// next.config.mjs
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  webpack: (config, { isServer, webpack }) => {
+    // 只在客户端构建时添加插件
+    if (!isServer) {
+      const xhGisBaseUrl = '/xh-gis/Assets';
+      
+      config.plugins.push(
+        // 拷贝 XH-GIS 静态资源
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: join(__dirname, 'node_modules/@xh-gis/engine/dist/Assets'),
+              to: join(__dirname, 'public/xh-gis/Assets'),
+              globOptions: {
+                ignore: ['**/.DS_Store'],
+              },
+            },
+          ],
+        }),
+        
+        // 定义全局变量（XH-GIS 会自动检测）
+        new webpack.DefinePlugin({
+          XH_GIS_BASE_URL: JSON.stringify(xhGisBaseUrl),
+        })
+      );
+    }
+
+    return config;
+  },
+};
+
+export default nextConfig;
+```
+
+#### 2. 安装依赖
+
+```bash
+npm install copy-webpack-plugin --save-dev
+```
+
+#### 3. 使用（无需额外配置）
+
+```tsx
+// components/MapComponent.tsx
+'use client';
+import { useEffect, useRef } from 'react';
+import { XgEarth } from '@xh-gis/engine';
+
+export default function MapComponent() {
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      // 无需调用 setResourceConfig，webpack 已自动配置
+      const earth = new XgEarth(mapRef.current);
+    }
+  }, []);
+
+  return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
+}
+```
+
+### 手动配置（高级场景）
+
+如果使用其他构建工具或需要自定义配置，可以手动调用 `setResourceConfig`：
 
 ```typescript
 import { setResourceConfig } from '@xh-gis/engine';
 
-// Next.js 项目配置
+// 基本配置
 setResourceConfig({
-  isDevelopment: process.env.NODE_ENV === 'development',
-  basePath: '/xh-gis/Assets'  // 对应 public/xh-gis/Assets 目录
+  basePath: '/xh-gis/Assets' // 对应 public/xh-gis/Assets 目录
 });
+```
 
-// 或使用 CDN
+### CDN 方案（备选）
+
+仅在无法使用本地资源的场景下使用：
+
+```typescript
+import { setResourceConfig } from '@xh-gis/engine';
+
 setResourceConfig({
   urlResolver: (resourcePath) => {
     return `https://cdn.jsdelivr.net/npm/@xh-gis/engine@latest/dist/Assets/${resourcePath}`;
@@ -52,45 +191,13 @@ setResourceConfig({
 });
 ```
 
-### Next.js 集成
-
-**推荐方案：使用 CDN（无需拷贝资源）**
-
-```typescript
-import { useEffect } from 'react';
-import { setResourceConfig } from '@xh-gis/engine';
-
-export default function MapComponent() {
-  useEffect(() => {
-    setResourceConfig({
-      urlResolver: (resourcePath) => {
-        return `https://cdn.jsdelivr.net/npm/@xh-gis/engine@latest/dist/Assets/${resourcePath}`;
-      }
-    });
-  }, []);
-  
-  // 你的地图组件...
-}
-```
-
-**本地资源方案（统一推荐路径）：**
-
-1. 将资源放置在 `public/xh-gis/Assets/` 目录下
-2. 可选：在代码中配置（多数场景不需要调用）
-
-```typescript
-setResourceConfig({
-  isDevelopment: process.env.NODE_ENV === 'development',
-  basePath: '/xh-gis/Assets'
-});
-```
+> ⚠️ **注意**：CDN 方案需要网络连接，不适用于离线环境。
 
 ### 高级配置
 
 ```typescript
 // 自定义路径映射
 setResourceConfig({
-  isDevelopment: true,
   basePath: '/static',
   pathMapping: {
     'SkyBox/': 'textures/skybox/',
@@ -111,16 +218,20 @@ setResourceConfig({
 
 ### API 参考
 
-#### `setResourceConfig(config: ResourceConfig)`
-设置全局资源配置。
+#### `setResourceConfig(config: ResourceConfig)`（高级用法）
+
+设置全局资源配置。大多数场景不需要调用，推荐使用框架插件或环境变量。
 
 #### `getResourceUrl(resourcePath: string): string`
-获取资源的完整 URL。
+
+获取资源的完整 URL，主要用于调试和验证。
 
 #### `getResourceConfig(): ResourceConfig`
-获取当前的资源配置。
+
+获取当前的资源配置，主要用于调试。
 
 #### `ResourceConfig` 接口
+
 ```typescript
 interface ResourceConfig {
   basePath?: string;           // 基础路径
@@ -129,8 +240,6 @@ interface ResourceConfig {
   urlResolver?: (resourcePath: string, config: ResourceConfig) => string; // 自定义解析器
 }
 ```
-
-> 💡 **提示**: 详细的 Next.js 集成指南请参考项目根目录的 `NEXTJS_INTEGRATION_GUIDE.md` 文件。
 
 ## 🚀 使用
 

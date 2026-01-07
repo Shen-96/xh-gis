@@ -26,14 +26,14 @@ import { ParticleType } from "../enum";
 import WeatherManager from "./WeatherManager";
 // 使用资源路径字符串而不是直接导入二进制文件
 import { getResourceUrl } from "./ResourceConfig";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 粒子系统
  * @author: Xiaohu.Shen
  */
-class ParticleManager extends AbstractManager {
+class ParticleManager extends BaseManager {
   readonly #particlerArr: Array<Particle>;
   #tickListener: void | undefined;
 

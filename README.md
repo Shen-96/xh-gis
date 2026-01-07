@@ -127,15 +127,41 @@ earth.graphicManager.setDrawEventHandler('point', (result) => {
 - **React**: ^18.3.1（使用 widgets 包时）
 - **TypeScript**: ^5.0.0
 
-## 🗂️ 静态资源路径约定
+## 🗂️ 静态资源配置
+
+### Vite 项目（推荐）
+
+使用官方插件 `vite-plugin-xhgis`，实现零配置集成：
+
+```bash
+npm install vite-plugin-xhgis --save-dev
+```
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { xhgis } from 'vite-plugin-xhgis';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    xhgis(), // 零配置，自动处理资源
+  ],
+});
+```
+
+### Next.js 项目
+
+在 `next.config.mjs` 中配置 webpack，详见 [@xh-gis/engine README](./packages/engine/README.md#nextjs-项目集成)。
+
+### 默认行为
 
 - 统一基础路径：`/xh-gis/Assets`
-- 放置方式：将 `node_modules/@xh-gis/engine/dist/Assets` 拷贝到应用的 `public/xh-gis/Assets`
-- 零代码改动：无需在业务代码中调用 `setResourceConfig`，引擎默认解析到上述路径
-- 子路径部署：如应用部署在 `'/app'`，在构建工具中注入 `XH_GIS_BASE_URL='/app/xh-gis/Assets'`
-- 验证方式：
-  - `console.log(getResourceUrl('SkyBox/tycho2t3_80_px.jpg')) // => '/xh-gis/Assets/SkyBox/tycho2t3_80_px.jpg'`
-  - 浏览器 Network 中应看到 HTTP 请求（非 `file://`），返回 200
+- 将 `node_modules/@xh-gis/engine/dist/Assets` 拷贝到 `public/xh-gis/Assets`
+- 无需在业务代码中调用 `setResourceConfig`，引擎自动检测配置
+
+> 📖 详细的配置说明请参考 [@xh-gis/engine 文档](./packages/engine/README.md#静态资源配置)
 
 ## 📖 更多文档
 

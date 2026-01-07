@@ -13,14 +13,14 @@ import {
   Clock,
   Timeline,
 } from "cesium";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 
 /**
  * @descripttion: 时间系统管理器
  * @author: Xiaohu.Shen
  */
-class TimeManager extends AbstractManager {
+class TimeManager extends BaseManager {
   readonly clock: Clock;
   #localizable: boolean;
   #timeline?: Timeline;

@@ -7,7 +7,7 @@
  * @LastEditors: Xiaohu.Shen
  * @LastEditTime: 2025-12-04 14:56:48
  */
-import AbstractManager from "../../Core/AbstractManager";
+import BaseManager from "../../Core/BaseManager";
 import LayerManager from "../../Core/LayerManager";
 import AbstractFx from "./AbstractFx";
 import {
@@ -54,7 +54,7 @@ type FxBindingRecord = {
 };
 
 // FX 管理器：在兼容旧实现的基础上，提供特效与实体/模型的绑定更新能力
-export default class FxManager extends AbstractManager {
+export default class FxManager extends BaseManager {
   #bindings = new Map<string, FxBindingRecord>();
   #tickListener?: (clock: Clock) => void;
   #layerManager: PartialPrivate<LayerManager>;

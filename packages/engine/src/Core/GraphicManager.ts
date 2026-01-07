@@ -45,7 +45,7 @@ import {
   XgMark,
   XgKidneyShaped,
 } from "../DataSources";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 
 /**
  * 管理器事件类型枚举：
@@ -86,7 +86,7 @@ type GraphicManagerListenerMap = {
  * @return {*}
  * @author: Xiaohu.Shen
  */
-export default class GraphicManager extends AbstractManager {
+export default class GraphicManager extends BaseManager {
   /// 标绘集合
   private readonly graphicCollection: Map<
     string,

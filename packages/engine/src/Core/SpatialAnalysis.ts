@@ -25,10 +25,10 @@
 // } from "..";
 // import CoordinateUtils from "./CoordinateUtils";
 // import { SymbolType } from "xh-gis";
-// import AbstractManager from "./AbstractManager";
+// import BaseManager from "./BaseManager";
 // import AbstractCore from "./AbstractCore";
 
-// export default class SpatialAnalysis extends AbstractManager {
+// export default class SpatialAnalysis extends BaseManager {
 //   #graphicManager: PartialPrivate<GraphicManager>;
 //   /// 测量对象的数据源集合
 //   readonly #dataSourceList: Array<{ id: string; dataSource: CustomDataSource }>;

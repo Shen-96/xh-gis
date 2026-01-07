@@ -9,7 +9,7 @@
 
 import { Scene, JulianDate } from "cesium";
 import { SceneListenerType } from "../enum";
-import AbstractManager from "./AbstractManager";
+import BaseManager from "./BaseManager";
 import AbstractCore from "./AbstractCore";
 
 type Listener = {
@@ -18,7 +18,7 @@ type Listener = {
   listener: (scene: Scene, time: JulianDate) => void;
 };
 
-class SceneListenerManager extends AbstractManager {
+class SceneListenerManager extends BaseManager {
   #listenerArr: Array<Listener>;
 
   constructor(core: AbstractCore) {
