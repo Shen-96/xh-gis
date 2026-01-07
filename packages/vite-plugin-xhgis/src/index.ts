@@ -53,7 +53,7 @@ function copyDirSync(src: string, dest: string) {
  * XH-GIS Vite 插件
  * 统一方案：始终将引擎资源复制到项目的 public 目录下
  */
-export function xhgis(options: XHGISPluginOptions = {}): PluginOption {
+function xhgis(options: XHGISPluginOptions = {}): PluginOption {
   const {
     baseUrl = '/xh-gis/Assets',
     xhgisPath = 'node_modules/@xh-gis/engine',
@@ -115,4 +115,5 @@ export function xhgis(options: XHGISPluginOptions = {}): PluginOption {
   };
 }
 
+// 默认导出
 export default xhgis;
