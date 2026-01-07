@@ -27,7 +27,7 @@ pnpm add vite-plugin-xhgis --save-dev
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import { xhgis } from 'vite-plugin-xhgis';
+import xhgis from 'vite-plugin-xhgis';
 
 export default defineConfig({
   plugins: [
@@ -41,7 +41,7 @@ export default defineConfig({
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import { xhgis } from 'vite-plugin-xhgis';
+import xhgis from 'vite-plugin-xhgis';
 
 export default defineConfig({
   plugins: [
@@ -118,7 +118,7 @@ This plugin follows the same patterns as `vite-plugin-cesium`:
 // vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { xhgis } from 'vite-plugin-xhgis';
+import xhgis from 'vite-plugin-xhgis';
 
 export default defineConfig({
   plugins: [
@@ -158,7 +158,7 @@ export default App;
 // vite.config.ts
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { xhgis } from 'vite-plugin-xhgis';
+import xhgis from 'vite-plugin-xhgis';
 
 export default defineConfig({
   plugins: [

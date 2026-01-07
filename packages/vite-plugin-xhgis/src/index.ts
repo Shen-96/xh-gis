@@ -1,4 +1,4 @@
-import type { Plugin, PluginOption, ResolvedConfig } from 'vite';
+import type { Plugin, PluginOption, ResolvedConfig, ConfigEnv } from 'vite';
 import { resolve, join } from 'path';
 import { existsSync, mkdirSync, rmSync, readdirSync, statSync, copyFileSync } from 'fs';
 
@@ -70,7 +70,9 @@ export function xhgis(options: XHGISPluginOptions = {}): PluginOption {
 
     configResolved(config: ResolvedConfig) {
       root = config.root;
-      resolvedPublicDir = publicDir || (config.publicDir as string) || join(root, 'public');
+      // Vite 7: publicDir 可能是 false | string，需要正确处理
+      const vitePublicDir = typeof config.publicDir === 'string' ? config.publicDir : false;
+      resolvedPublicDir = publicDir || vitePublicDir || join(root, 'public');
       if (debug) {
         console.log('[vite-plugin-xhgis] Config resolved:', {
           root,
@@ -99,7 +101,7 @@ export function xhgis(options: XHGISPluginOptions = {}): PluginOption {
       }
     },
 
-    config(config: any, { command }: { command: string }) {
+    config(config: any, env: ConfigEnv) {
       // 定义全局变量，类似 CESIUM_BASE_URL
       config.define = config.define || {};
       config.define.XH_GIS_BASE_URL = JSON.stringify(baseUrl);
