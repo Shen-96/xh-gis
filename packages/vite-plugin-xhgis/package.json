@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-xhgis",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Vite plugin for XH-GIS integration, similar to vite-plugin-cesium",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
