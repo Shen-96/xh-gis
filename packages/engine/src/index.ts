@@ -20,7 +20,7 @@ export * from "./DataSources";
 // import TimeManager from "./Core/TimeManager";
 // import RoamManager from "./Core/RoamManager";
 // import AnimationManager from "./Core/AnimationManager";
-// import Geographic from "./Core/Geographic";
+import Geographic from "./Core/Geographic";
 // import LayerManager from "./Core/LayerManager";
 // import ParticleManager from "./Core/ParticleManager";
 // import SceneListenerManager from "./Core/SceneListenerManager";
@@ -72,6 +72,7 @@ export {
   MouseEventUtils,
   GraphicUtils,
   GeometryUtils,
+  Geographic,
 
   // 资源配置 API
   setResourceConfig, // 高级用法：配置资源路径
