@@ -11,9 +11,10 @@
 import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import cesium from "vite-plugin-cesium";
-import { xhgis } from "vite-plugin-xhgis";
+import xhgis from "vite-plugin-xhgis";
 import { resolve } from "path";
 import thumbnailPlugin from "./dev/thumbnailPlugin";
+import refDocPlugin from "./dev/refDocPlugin";
 
 export default defineConfig({
   // 基础路径，用于 GitHub Pages 等子路径部署
@@ -21,11 +22,9 @@ export default defineConfig({
   plugins: [
     react(),
     cesium(),
-    // 指定 monorepo 中引擎包路径与基础资源 URL，由插件负责拷贝到 public
-    xhgis({
-      baseUrl: "/xh-gis/Assets",
-    }),
+    xhgis(),
     thumbnailPlugin(),
+    refDocPlugin(),
   ],
   resolve: {
     alias: {

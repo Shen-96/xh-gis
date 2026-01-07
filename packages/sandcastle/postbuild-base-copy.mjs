@@ -88,6 +88,25 @@ function main() {
     console.warn('⚠️ 复制 Engine Assets 失败：', e?.message || e);
   }
 
+  // 复制 ref-doc 到 BASE/ref-doc（如果存在）
+  const srcRefDoc = join(distRoot, 'ref-doc');
+  if (existsSync(srcRefDoc)) {
+    const destRefDoc = join(targetRoot, 'ref-doc');
+    copyDir(srcRefDoc, destRefDoc);
+    console.log('✅ 已复制 ref-doc 到:', destRefDoc);
+  } else {
+    // 尝试从 ../ref-doc/dist 复制（本地开发场景）
+    const refDocSource = join(__dirname, '../ref-doc/dist');
+    if (existsSync(refDocSource)) {
+      const destRefDoc = join(targetRoot, 'ref-doc');
+      copyDir(refDocSource, destRefDoc);
+      // 同时复制到根目录，方便直接访问
+      const rootRefDoc = join(distRoot, 'ref-doc');
+      copyDir(refDocSource, rootRefDoc);
+      console.log('✅ 已从 ../ref-doc/dist 复制 ref-doc 到:', destRefDoc, '和', rootRefDoc);
+    }
+  }
+
   // 复制 favicon（如果存在）到 BASE/
   const srcFavicon = join(distRoot, 'vite.svg');
   if (existsSync(srcFavicon)) {

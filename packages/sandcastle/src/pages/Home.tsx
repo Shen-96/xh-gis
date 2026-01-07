@@ -59,18 +59,38 @@ const Home: React.FC = () => {
         <div className={styles.container}>
           <h2 className={styles.featuresTitle}>功能特性</h2>
           <div className={styles.featuresGrid}>
-            {features.map((feature, index) => (
-              <Link
-                key={index}
-                to={feature.link}
-                className={styles.featureCard}
-                style={{ '--accent-color': feature.color } as React.CSSProperties}
-              >
-                <div className={styles.featureIcon}>{feature.icon}</div>
-                <h3 className={styles.featureTitle}>{feature.title}</h3>
-                <p className={styles.featureDescription}>{feature.description}</p>
-              </Link>
-            ))}
+            {features.map((feature, index) => {
+              // API 文档是静态 HTML，使用 <a> 标签而不是 Link
+              const isExternalLink = feature.link.includes('ref-doc');
+              
+              if (isExternalLink) {
+                return (
+                  <a
+                    key={index}
+                    href={feature.link}
+                    className={styles.featureCard}
+                    style={{ '--accent-color': feature.color } as React.CSSProperties}
+                  >
+                    <div className={styles.featureIcon}>{feature.icon}</div>
+                    <h3 className={styles.featureTitle}>{feature.title}</h3>
+                    <p className={styles.featureDescription}>{feature.description}</p>
+                  </a>
+                );
+              }
+              
+              return (
+                <Link
+                  key={index}
+                  to={feature.link}
+                  className={styles.featureCard}
+                  style={{ '--accent-color': feature.color } as React.CSSProperties}
+                >
+                  <div className={styles.featureIcon}>{feature.icon}</div>
+                  <h3 className={styles.featureTitle}>{feature.title}</h3>
+                  <p className={styles.featureDescription}>{feature.description}</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

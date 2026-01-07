@@ -54,16 +54,16 @@ jobs:
         working-directory: packages/ref-doc
         run: pnpm build
 
+      - name: Copy ref-doc to sandcastle dist (before build)
+        run: |
+          mkdir -p packages/sandcastle/dist/ref-doc
+          rsync -a packages/ref-doc/dist/ packages/sandcastle/dist/ref-doc/
+
       - name: Build sandcastle with base
         working-directory: packages/sandcastle
         env:
           BASE: /xh-gis/
         run: pnpm build
-
-      - name: Merge ref-doc into sandcastle artifact
-        run: |
-          mkdir -p packages/sandcastle/dist/ref-doc
-          rsync -a packages/ref-doc/dist/ packages/sandcastle/dist/ref-doc/
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
