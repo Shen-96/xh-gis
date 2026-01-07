@@ -12,8 +12,62 @@ npm install cesium@1.108.0
 
 ## 📦 安装
 
+**推荐使用 pnpm**，避免模块重复加载问题：
+
 ```bash
+# 使用 pnpm（推荐）
+pnpm install @xh-gis/engine
+
+# 使用 npm（可能需要配置模块去重）
 npm install @xh-gis/engine
+```
+
+> ⚠️ **注意**：如果使用 npm 且遇到类名重复问题（如 `XgEarth2`、`AbstractCore2`），请在构建工具中配置模块去重。
+
+### npm 用户：模块去重配置
+
+如果使用 npm 且遇到类名重复问题，需要在构建工具中配置模块去重：
+
+#### Vite 项目
+
+在 `vite.config.ts` 中添加：
+
+```typescript
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  resolve: {
+    dedupe: ['@xh-gis/engine'], // 确保只加载一个版本的 engine
+  },
+});
+```
+
+#### Webpack 项目
+
+在 `webpack.config.js` 中添加：
+
+```javascript
+module.exports = {
+  resolve: {
+    alias: {
+      '@xh-gis/engine': path.resolve(__dirname, 'node_modules/@xh-gis/engine'),
+    },
+  },
+};
+```
+
+#### 使用 pnpm resolutions
+
+在项目的 `package.json` 中添加：
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "@xh-gis/engine": "^1.0.27"
+    }
+  }
+}
 ```
 
 ## 🔗 相关链接

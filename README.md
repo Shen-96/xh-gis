@@ -22,12 +22,24 @@ XH-GIS 采用 monorepo 架构，包含以下三个 npm 包：
 
 ### 安装
 
+**推荐使用 pnpm**，避免模块重复加载问题：
+
 ```bash
-# 安装完整包（推荐）
-npm install xh-gis
+# 使用 pnpm（推荐）
+pnpm install xh-gis
 
 # 或者单独安装
-npm install @xh-gis/engine @xh-gis/widgets
+pnpm install @xh-gis/engine @xh-gis/widgets
+```
+
+如果使用 npm，可能需要配置模块去重以避免类名重复问题（如 `XgEarth2`、`AbstractCore2`）：
+
+```bash
+# 使用 npm
+npm install xh-gis
+
+# 如果遇到类名重复问题，在 vite.config.ts 中添加：
+# resolve: { dedupe: ['@xh-gis/engine'] }
 ```
 
 ### 使用
