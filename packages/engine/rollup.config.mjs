@@ -44,13 +44,7 @@ export default {
         comments: false,
         beautify: false,
       },
-      mangle: {
-        toplevel: true,
-        reserved: [
-          'Cesium',
-          'XgEarth', 'XgMap', 'GraphicManager', 'LayerManager', 'HeatmapOption', 'CoreType', 'AbstractCore'
-        ],
-      },
+      mangle: false, // 完全禁用混淆，确保所有类名和函数名都被保留
     }),
   ],
 };
