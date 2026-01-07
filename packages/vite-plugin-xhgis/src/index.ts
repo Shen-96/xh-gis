@@ -11,7 +11,7 @@ export interface XHGISPluginOptions {
   
   /**
    * XH-GIS 包的路径
-   * @default 'node_modules/@xh-gis/engine'
+   * @default 'node_modules/xh-gis'
    */
   xhgisPath?: string;
   
@@ -56,7 +56,7 @@ function copyDirSync(src: string, dest: string) {
 function xhgis(options: XHGISPluginOptions = {}): PluginOption {
   const {
     baseUrl = '/xh-gis/Assets',
-    xhgisPath = 'node_modules/@xh-gis/engine',
+    xhgisPath = 'node_modules/xh-gis',
     assetsDir = 'Assets',
     publicDir,
     debug = false,
@@ -83,6 +83,7 @@ function xhgis(options: XHGISPluginOptions = {}): PluginOption {
         });
       }
       // 统一在这里拷贝资源到绝对 publicDir，避免相对路径落到 project 根目录
+      // 从根包 xh-gis 的 dist/Assets 目录获取静态资源
       const xhgisAssetsPath = resolve(root, xhgisPath, 'dist', assetsDir);
       if (!existsSync(xhgisAssetsPath)) {
         console.warn(`[vite-plugin-xhgis] XH-GIS assets not found at: ${xhgisAssetsPath}`);

@@ -72,7 +72,7 @@ const core = new AbstractCore(container, {
 |--------|------|---------|-------------|
 | `baseUrl` | `string` | `'/xh-gis/Assets'` | Base URL for XH-GIS assets |
 | `devMode` | `boolean` | `true` | Enable development mode features |
-| `xhgisPath` | `string` | `'node_modules/@xh-gis/engine'` | Path to XH-GIS package |
+| `xhgisPath` | `string` | `'node_modules/xh-gis'` | Path to XH-GIS package |
 | `assetsDir` | `string` | `'Assets'` | Assets directory name |
 | `debug` | `boolean` | `false` | Enable debug logging |
 
